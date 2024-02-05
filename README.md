@@ -48,7 +48,15 @@ In this space please either provide images (around 4) showing your prototypes, O
 **[Link to Figma](https://www.figma.com/file/Vxt0M3oShbiWj1XL5J7iBw/Untitled?type=design&node-id=0%3A1&mode=design&t=zHEhx6isTzfChw6u-1)
 
 ![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
-![](https://github.com/csci5117s24/project-1-404notfound/blob/main/search%20with%20login.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/RegisterPagelogin.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/homepage.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/image_upload.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/profile.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/search_with_login.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/search_without_login.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/user_prof_page.png)
+
+
 
 ## External Dependencies
 
