@@ -11,7 +11,8 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 ### Students
 
 * First Last, x500@umn.edu
-* ...
+* Jiyu Huang, huan2803@umn.edu
+* 
 
 
 ## Key Features
