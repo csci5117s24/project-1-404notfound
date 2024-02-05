@@ -4,7 +4,7 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 
 ## App Info:
 
-* Team Name: TODO
+* Team Name: 404notfound
 * App Name: TODO
 * App Link: <https://TODO.com/>
 
