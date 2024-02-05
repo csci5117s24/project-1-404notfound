@@ -13,7 +13,7 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 * First Last, x500@umn.edu
 * Jiyu Huang, huan2803@umn.edu
 * Xizhen Kang, kang0552@umn.edu
-
+* Zirui Chen Chen6713@umn.edu
 
 ## Key Features
 
