@@ -66,8 +66,6 @@ In this space please either provide images (around 4) showing your prototypes, O
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/search_without_login.png)
 - These two images show the Search Bar, which exists in the majority of the pages of the platform. The search bar will include some reconmendation of the text fill (depends on if they previously visit the site, and if they login or not). 
 
-A detailed version of the mock up in Figma can be found [here](https://www.figma.com/file/Vxt0M3oShbiWj1XL5J7iBw/Untitled?type=design&node-id=0%3A1&mode=design&t=zHEhx6isTzfChw6u-1)
-
 
 
 
