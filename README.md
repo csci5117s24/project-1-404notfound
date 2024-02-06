@@ -50,10 +50,10 @@ In this space please either provide images (around 4) showing your prototypes, O
 - In this page, user will choose either login to existing account or create a new account.Once users click login or register, they will be redirected to the Home Page.
 ### 2. Home Page
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/homepage.png)
-- This is the Home Page of the website. On the top, it is the search bar that users can tap in key words that they want to search. On the right top corner, it is the button that user can show/hide user side bar (Which is showed below). In the center of the page, it has a panel for Trending contents and a panel for recommendation contents (if user has login).In addition, for most of the pages, if the user has login, there will be a "+" button on the left bottom corner of the page, which user can use to navigate to Image Upload Page. 
+- This is the Home Page of the website. On the top, it is the search bar that users can tap in key words that they want to search. On the right top corner, it is the button that user can use to navigate to User Profile Page. In the center of the page, it has a panel for Trending contents and a panel for recommendation contents (if user has login).In addition, for most of the pages, if the user has login, there will be a "+" button on the left bottom corner of the page, which users can use to navigate to Image Upload Page to upload their own art work. Clicking on any block (redpink/gray block, serve as place holder for art contents) will navigate to the Art Profile Page.
 ### 3. Image Upload Page
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/image_upload.png)
-- This is the Image Upload page, where user uploads their images to the platform. User need to type in the title of the art, prompt that used to generate the art, and use the Upload button to select the art for upload. 
+- This is the Image Upload page, where user uploads their images to the platform. User need to type in the title of the art, prompt that used to generate the art, and use the Upload button to select the art for upload.
 ### 4. User Profile Page
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/user_prof_page.png)
 - This the User Profile Page, which contains information about the user, which include Name, Description, Email, number of Subscription, Followers,and Like. It also has a list of art works. When user click any art work listed in the Profile page, they will be redirected to the Art Profile Page
@@ -63,7 +63,7 @@ In this space please either provide images (around 4) showing your prototypes, O
 ### 6. Search Bar
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/search_with_login.png)
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/mock/search_without_login.png)
-- These two images show the Search Bar, which exists in the majority of the pages of the platform. The search bar will include some reconmendation of the text fill (depends on if they previously visit the site, and if they login or not). 
+- These two images show the Search Bar, which exists in the majority of the pages of the platform. The search bar will include some reconmendation of the text fill (depends on if they previously visit the site, and if they login or not). By clicking "return", user will jump to a similar page with only the art contents that match the searching keyword.
 
 
 
