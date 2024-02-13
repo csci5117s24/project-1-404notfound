@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .search-container {
+            width: 75%;
+            text-align: center;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc; 
+            border-radius: 20px; 
+            background-color: #808080;
+            color: #fff; 
+            font-size: 16px;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5%;
+            box-sizing: border-box;
+            border-bottom: 1px solid #ccc;
+            z-index: 1000;
+        }
+        .footer {
+            width: 100%;
+            padding: 10px 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            position: relative; /* Ensures footer is at the bottom */
+            bottom: 0;
+            left: 0;
+        }
+        .login {
+            cursor: pointer;
+            color: #fff; /* White text */
+            background-color: #808080; /* Grey background */
+            padding: 10px 15px; /* Adds padding around the text */
+            border-radius: 20px; /* Rounded corners */
+            text-decoration: none;
+            display: inline-block; /* Allows padding and background to be applied */
+            margin-left: 20px; /* Adds space to the left of the login block */
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Creates a responsive grid */
+            gap: 20px; /* Space between grid items */
+            padding: 20px; /* Padding around the grid */
+            padding-top: 50px;
+        }
+        .grid-item {
+            background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
+            padding-bottom: 100%; /* This creates a square aspect ratio */
+            position: relative;
+            border-radius: 10px; /* Adds rounded corners */
+        }
+        .image-name {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            text-align: center;
+            padding: 5px 0; /* Padding above and below the text */
+        }
+    </style>
+    <script>
+        function adjustContentMargin() {
+            var header = document.getElementById('header');
+            var gridContainer = document.getElementById('gridContainer');
+    
+            var headerHeight = header.offsetHeight;
+            var extraSpacing = 20;
+            gridContainer.style.paddingTop = (headerHeight + extraSpacing) + 'px';
+        }
+    
+        // Adjust on load
+        window.onload = adjustContentMargin;
+    
+        // Adjust on window resize
+        window.onresize = adjustContentMargin;
+    </script>
+    <head>
+        <meta charset="UTF-8">
+        <title>EchoSpective</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Sixtyfour&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div id="header" class="header">
+            <h1>AI Art Museum</h1>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search...">
+            </div>
+            {% if session %}
+                <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
+            {% else %}
+                <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
+            {% endif %}
+        </div>
+        <div class="content">
+            {%block content%}{%endblock%}
+        </div>
+        <div class="footer">
+            <h1>404NotFound</h1>
+        </div>
+    </body>
+</html>
