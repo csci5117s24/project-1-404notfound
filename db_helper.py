@@ -3,9 +3,13 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('EXTERNAL_DATABASE_URL')
 
-db_pool = pool.ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
+db_pool = None
+
+def init_db_pool():
+    global db_pool
+    db_pool = pool.ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
 
 def get_db_connection():
     return db_pool.getconn()

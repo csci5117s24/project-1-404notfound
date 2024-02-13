@@ -72,6 +72,14 @@ TABLES_SETUP_SQL = [
         FOREIGN KEY (image1_id) REFERENCES images(image_id) ON DELETE CASCADE,
         FOREIGN KEY (image2_id) REFERENCES images(image_id) ON DELETE CASCADE
     );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS descriptions (
+        description_id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        description TEXT NOT NULL,
+        foreign_key (user_id) references users(user_id) on delete cascade
+    );
     """
 ]
 

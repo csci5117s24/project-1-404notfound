@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
 
 
+
 oauth = OAuth(app)
 
 oauth.register(
@@ -45,6 +46,7 @@ def login():
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
+    print(token,flush=True)
     session["user"] = token
 
     user_info = token['userinfo']
@@ -82,9 +84,9 @@ def logout():
         )
     )
 
-@app.teardown_appcontext
-def close_db_connections(exception):
-    db.close_db_connections()
+
 if __name__ == "__main__":
+    with app.app_context():
+        db.init_db_pool()
     app.run(debug=True)
     # app.run(host="0.0.0.0", port=env.get("PORT", 3000))
