@@ -1,46 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Profile Page</title>
+{% extends 'base.html' %}
+
+{% block content %}
 <style>
+    body {
+    padding-top: 100px; 
+    background: #f7f7f7; 
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .profile-container {
+    max-width: 800px; 
+    margin: 3rem auto;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 4rem;
+  }
+
+  .user-info img {
+    border-radius: 50%;
+    width: 100px; 
+    height: 100px; /* Adjust as needed */
+  }
+
+  .user-details {
+    text-align: center;
+  }
+
+  .user-details h1 {
+    margin: 0.8rem 0;
+  }
+
+  .user-details p {
+    margin: 1rem 0;
+    color: #666;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    background: #eee; /* Light grey background */
+    padding: 0.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .stats div {
+    margin: 0 1rem;
+  }
+
+  .user-works {
+    text-align: center;
+  }
+
+  .work-item {
+    display: inline-block;
+    margin: 0.5rem;
+    width: 150px; /* Adjust size as needed */
+    height: 150px; /* Adjust size as needed */
+    background-color: #f0f0f0;
+    border: 5px solid #ffc0cb; /* Pink border */
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .like-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
 </style>
-</head>
-<body>
-    <div class="search-bar">
-        <!-- Search form -->
-        <input type="text" placeholder="Search Here...">
-    </div>
-
+<div class="profile-container">
     <div class="user-info">
-        <img src="profile-picture.jpg" alt="User Profile Picture">
-        <h1>Jason Wolf</h1>
-        <p>jason_wolf12@gmail.com</p>
-        <p>Description start here</p>
-        <div class="user-stats">
-            <span>Subscriptions: 200</span>
-            <span>Fans: 100</span>
-            <span>Likes: 400</span>
-        </div>
+      <!-- Check if the session has a user and a profile picture -->
+      {% if session.user and session.user.profile_picture %}
+        <img src="{{ session.user.profile_picture }}" alt="{{ session.user.name }}">
+      {% endif %}
+      <div class="user-details">
+        <!-- Use session data for user details -->
+        <h1>{{ session.user.name if session.user.name else 'Default User Name' }}</h1>
+        <p>{{ session.user.email if session.user.email else 'defaultemail@example.com' }}</p>
+        <p>{{ session.user.description if session.user.description else 'Default description here...' }}</p>
+      </div>
     </div>
-
+    <div class="stats">
+      <div>Subscriptions: {{ session.user.subscriptions if session.user.subscriptions else '0' }}</div>
+      <div>Fans: {{ session.user.fans if session.user.fans else '0' }}</div>
+      <div>Likes: {{ session.user.likes if session.user.likes else '0' }}</div>
+    </div>
     <div class="user-works">
-        <h2>My Works</h2>
-        <div class="works-list">
-            <!-- Repeat this block for each artwork 
+      <h2>My Works</h2>
+      <div class="works-list">
+        {% if session.user and session.user.artworks %}
+          {% for artwork in session.user.artworks %}
             <div class="work-item">
-                <a href="link-to-art-profile-page.html">
-                    <img src="artwork-url.jpg" alt="Artwork Title">-->
-                    <p>Template</p>
-                </a>
-                <span class="like-icon">❤️</span>
+              <!-- Use the URL for the artwork if available -->
+              {% if artwork.url %}
+                <img src="{{ artwork.url }}" alt="{{ artwork.title if artwork.title else 'Artwork' }}">
+              {% endif %}
+              <span class="like-icon">❤️</span>
+              <p>{{ artwork.title if artwork.title else 'Template' }}</p>
             </div>
-            <!-- End of artwork block -->
-        </div>
+          {% endfor %}
+        {% endif %}
+      </div>
     </div>
-<script>
-// Optional JavaScript for interactivity
-</script>
-</body>
-</html>
+  </div>  
+
+{% endblock %}
