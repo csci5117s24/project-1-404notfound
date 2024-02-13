@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
     <style>
-        .search-container {
-            width: 75%;
-            text-align: center;
-        }
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc; 
-            border-radius: 20px; 
-            background-color: #808080;
-            color: #fff; 
-            font-size: 16px;
-        }
         .header {
             position: fixed;
             top: 0;
@@ -69,23 +56,43 @@
             text-align: center;
             padding: 5px 0; /* Padding above and below the text */
         }
-    </style>
-    <script>
-        function adjustContentMargin() {
-            var header = document.getElementById('header');
-            var gridContainer = document.getElementById('gridContainer');
-    
-            var headerHeight = header.offsetHeight;
-            var extraSpacing = 20;
-            gridContainer.style.paddingTop = (headerHeight + extraSpacing) + 'px';
+        .search-container {
+            width: 75%;
+            text-align: center;
+            position: relative;
         }
-    
-        // Adjust on load
-        window.onload = adjustContentMargin;
-    
-        // Adjust on window resize
-        window.onresize = adjustContentMargin;
-    </script>
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc; 
+            border-radius: 20px; 
+            background-color: #808080;
+            color: #fff; 
+            font-size: 16px;
+        }
+        .search-history {
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px; 
+            display: none; /* Hidden by default */
+            background-color: #808080; /* Matching the search bar's background color */
+            color: #fff; /* Matching the search bar's text color */
+            position: absolute;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            overflow: hidden; /* Ensures the rounded corners contain the child elements */
+        }
+        .search-history a {
+            padding: 10px 10px; /* Matching the search bar's padding */
+            text-decoration: none;
+            display: block;
+            color: #fff; /* Ensure the text color matches the search bar */
+        }
+
+        .search-history a:hover {
+            background-color: #666; /* Slightly darker shade for hover effect */
+        }
+    </style>
     <head>
         <meta charset="UTF-8">
         <title>EchoSpective</title>
@@ -96,8 +103,9 @@
     <body>
         <div id="header" class="header">
             <h1>AI Art Museum</h1>
-            <div class="search-container">
-                <input type="text" class="search-bar" placeholder="Search...">
+            <div class="search-container" id="searchContainer">
+                <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
+                <div class="search-history" id="searchHistory"></div>
             </div>
             {% if session %}
                 <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
@@ -111,5 +119,50 @@
         <div class="footer">
             <h1>404NotFound</h1>
         </div>
+        <script>
+            document.getElementById('searchBar').addEventListener('focus', function() {
+                var searchHistory = document.getElementById('searchHistory');
+                searchHistory.style.display = 'block';
+    
+                // Dummy search history data
+                var searches = ['Search 1', 'Search 2', 'Search 3'];
+                
+                // Clear previous history
+                searchHistory.innerHTML = '';
+    
+                // Populate search history
+                searches.forEach(function(search) {
+                    var entry = document.createElement('a');
+                    entry.href = '#';
+                    entry.textContent = search;
+                    entry.onclick = function() {
+                        document.getElementById('searchBar').value = search; // Fill search bar with clicked history item
+                        searchHistory.style.display = 'none'; // Hide history dropdown
+                    };
+                    searchHistory.appendChild(entry);
+                });
+            });
+    
+            // Hide search history when clicked outside
+            window.addEventListener('click', function(e) {
+                if (!document.getElementById('searchContainer').contains(e.target)) {
+                    document.getElementById('searchHistory').style.display = 'none';
+                }
+            });
+            function adjustContentMargin() {
+                var header = document.getElementById('header');
+                var gridContainer = document.getElementById('gridContainer');
+        
+                var headerHeight = header.offsetHeight;
+                var extraSpacing = 20;
+                gridContainer.style.paddingTop = (headerHeight + extraSpacing) + 'px';
+            }
+        
+            // Adjust on load
+            window.onload = adjustContentMargin;
+        
+            // Adjust on window resize
+            window.onresize = adjustContentMargin;
+        </script>
     </body>
 </html>
