@@ -44,9 +44,11 @@
         }
         .grid-item {
             background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
-            padding-bottom: 100%; /* This creates a square aspect ratio */
             position: relative;
+            height: auto;
+            flex-direction: column; /* Stack children vertically */
             border-radius: 10px; /* Adds rounded corners */
+            display: flex;
         }
         .image-name {
             position: absolute;
@@ -126,6 +128,12 @@
             max-width: 50%; /* Limits image width to half of the .art-item container */
             height: auto; /* Maintains aspect ratio */
             border-radius: 25px; /* Optional: Adds rounded corners to the image */
+        }
+        .art-image-in-grid {
+            width: 100%; /* Makes the image take the full width of its container */
+            height: auto; /* Maintains the aspect ratio of the image */
+            display: block; /* Removes any default inline spacing */
+            border-radius: 10px; /* Optional: Adds rounded corners to the image */
         }
 
         .art-title {

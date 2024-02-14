@@ -39,7 +39,7 @@ def home():
 
 @app.route('/art/<id>')
 def art(id):
-    return render_template('art_page.html', art_id=id)
+    return render_template('art_page.html', session=session.get("user"), art_id=id)
 
 @app.route("/user_profile")
 def user_profile():
@@ -64,6 +64,7 @@ def user_profile():
 
 @app.route("/login")
 def login():
+    print("here")
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
