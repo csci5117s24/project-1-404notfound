@@ -338,7 +338,25 @@ def upload_image_to_s3(image):
     )
     return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{image.filename}"
 
+###############
+# 模拟的用户数据
+users = {
+    "following": [
+        {"id": 1, "name": "Alice", "bio": "Loves art and photography", "avatar_url": "https://example.com/avatar/alice.jpg"},
+        {"id": 2, "name": "Bob", "bio": "Music enthusiast and guitar player", "avatar_url": "https://example.com/avatar/bob.jpg"},
+    ],
+    "followers": [
+        {"id": 3, "name": "Charlie", "bio": "Tech geek and blogger", "avatar_url": "https://example.com/avatar/charlie.jpg"},
+        {"id": 4, "name": "Dana", "bio": "Adventure lover and book reader", "avatar_url": "https://example.com/avatar/dana.jpg"},
+    ]
+}
+@app.route('/user/following')
+def show_following():
+    # 直接从定义好的字典中获取关注的人列表
+    following = users['following']
+    return render_template('follow.html', following=following)
 
+##############
 
 if __name__ == "__main__":
     with app.app_context():
