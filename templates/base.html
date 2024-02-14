@@ -141,6 +141,20 @@
             margin-left: 20px; /* Adds some space between the image and the title */
             font-size: 24px; /* Adjusts the title size */
         }
+        .user-icon {
+            display: inline-block;
+            width: 30px; /* Circle size */
+            height: 30px; /* Circle size */
+            border-radius: 50%; /* Makes the div a circle */
+            background-color: #444; /* Circle color, change as needed */
+            margin-left: 10px; /* Space between the login text and the circle */
+            vertical-align: middle; /* Aligns with the text if necessary */
+            cursor: pointer; /* Changes the cursor to indicate it's clickable */
+        }
+
+        .user-icon:hover {
+            background-color: #666; /* Darker shade on hover */
+        }
     </style>
     <head>
         <meta charset="UTF-8">
@@ -158,6 +172,7 @@
             </div>
             {% if session %}
                 <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
+                <a href="/user_profile" class="user-icon"></a> 
             {% else %}
                 <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
             {% endif %}
