@@ -97,6 +97,12 @@ def store_new_user(user_info):
             "INSERT INTO users (auth0_user_id, email) VALUES (%s, %s)",
             (user_info["sub"], user_info["email"]),
         )
+    #get user id from db and store in session
+    user = db.query_db(
+        "SELECT * FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
+    )
+    session["user"]["user_id"] = user["user_id"]
+        
     return
 
 
@@ -131,10 +137,16 @@ def upload_image():
             return "No selected file",  400
         if image:
             image_url = upload_image_to_s3(image)
+            title = request.form.get("title", "")
+            description = request.form.get("description", "")
+            prompt = request.form.get("prompt", "")
+            user_id = session["user"]["user_id"] 
+            # user_id = 1
             db.modify_db(
-                "INSERT INTO images (user_id, title, image_url) VALUES (%s, %s, %s)",
-                (session["user"]["sub"], request.form["title"], image_url),
+                "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
+                (user_id, title, description, image_url, prompt),
             )
+            print(image_url, flush=True)
             return 'Image uploaded successfully!', 200
     return render_template("upload.html")
 
@@ -144,7 +156,7 @@ def upload_image_to_s3(image):
         image,
         env.get("S3_BUCKET"),
         image.filename,
-        ExtraArgs={"ACL": "public-read", "ContentType": image.content_type},
+        ExtraArgs={"ContentType": image.content_type},
     )
     return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{image.filename}"
 
