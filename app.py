@@ -55,11 +55,13 @@ def home():
 @app.route('/art/<id>')
 def art(id):
     #put into interaction db for viewed/
-    user_id = session['user']['userinfo']['user_id']
-    db.modify_db(
-        "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
-        (user_id, id),
-    )
+    if 'user' in session and 'userinfo' in session['user']:
+        user_id = session['user']['userinfo'].get('user_id')
+        if user_id:
+            db.modify_db(
+                "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
+                (user_id, id),
+            )
     return render_template('art_page.html', session=session.get("user"), art_id=id)
 
 @app.route("/user_profile")

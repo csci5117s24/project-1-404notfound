@@ -1,0 +1,40 @@
+<!-- This is the content of the modal that will be included -->
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleModal();">&times;</span>
+        <form>
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title"><br>
+    
+            <label for="prompt">Prompt:</label><br>
+            <input type="text" id="prompt" name="prompt"><br>
+    
+            <label for="fileUpload">File Upload:</label><br>
+            <input type="file" id="fileUpload" name="fileUpload"><br><br>
+    
+            <input type="button" value="Upload">
+            <input type="button" value="Cancel" onclick="toggleModal();">
+        </form>
+    </div>
+</div>
+
+<script>
+// Function to toggle the modal display
+function toggleModal() {
+    var modal = document.getElementById('myModal');
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'block';
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+// Close the modal if the user clicks outside of it
+window.onclick = function(event) {
+    var modal = document.getElementById('myModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
