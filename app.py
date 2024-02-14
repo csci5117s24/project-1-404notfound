@@ -57,7 +57,11 @@ def art(id):
     #put into interaction db for viewed/
     if 'user' in session and 'userinfo' in session['user']:
         user_id = session['user']['userinfo'].get('user_id')
-        if user_id:
+        viewd = db.query_db(
+            "SELECT * FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, id),one=True
+        )
+
+        if user_id and not viewd:
             db.modify_db(
                 "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
                 (user_id, id),
@@ -80,7 +84,7 @@ def user_profile():
     user_data = {
         'name': user_info['userinfo']['name'],  
         'email': user_info['userinfo']['email'],  
-        'description': 'Description start here',  # Store this in the session or database as well
+        'description': get_user_description(user_id),  # Store this in the session or database as well
         'subscriptions': get_user_subscriptions(user_id),  
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
@@ -92,6 +96,12 @@ def user_profile():
         'artworks': get_user_artworks(user_id)
     }
     return render_template('user_profile.html', user=user_data)
+
+def get_user_description(user_id):
+    description = db.query_db(
+        "SELECT description FROM descriptions WHERE user_id = %s", (user_id,),one=True
+    )
+    return description[0] if description else "No description yet"
 def get_user_likes(user_id):
     likes = db.query_db(
         "SELECT COUNT(*) FROM image_interactions WHERE user_id = %s AND liked = TRUE", (user_id,),one=True

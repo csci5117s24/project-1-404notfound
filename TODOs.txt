@@ -1,6 +1,9 @@
 #backend:
 func calculate_similarity
 func get_most_similar
+func add_friend
+func remove_friend
+
 
 #frontend:
 change description of the of profile page
