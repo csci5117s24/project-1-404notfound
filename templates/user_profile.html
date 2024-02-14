@@ -121,6 +121,35 @@
         <p>{{ session.user.description if session.user.description else 'Default description here...' }}</p>
       </div>
     </div>
+    <div class="user-details">
+        <!-- Other user details -->
+        <p id="userDescription">{{ session.user.description if session.user.description else 'Default description here...' }}</p>
+        <button onclick="editDescription()">Edit</button>
+      </div>
+
+      <script>
+        function editDescription() {
+          var currentDescription = document.getElementById('userDescription').innerText;
+          var newDescription = prompt("Edit your description:", currentDescription);
+          if (newDescription !== null && newDescription !== currentDescription) {
+            // Submit the new description to the server without AJAX
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ url_for('update_description') }}";
+            
+            var hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'description';
+            hiddenField.value = newDescription;
+            
+            form.appendChild(hiddenField);
+            
+            document.body.appendChild(form);
+            form.submit();
+          }
+        }
+        </script>
+    
     <div class="stats">
       <!-- var rawData = {{ user | tojson | safe }};
       <script>console.log(rawData);</script> -->
