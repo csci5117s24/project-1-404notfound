@@ -4,38 +4,43 @@
 <div class="grid-container" id="gridContainer"></div>
 
 <script>
-  const imageData = ['Image Name 1', 'Image Name 2', 'Image Name 3', 
-  'Image Name 4', 'Image Name 5', 'Image Name 6', 'Image Name 7', 'Image Name 8',
-  'Image Name 9', 'Image Name 10', 'Image Name 11', 'Image Name 12', 'Image Name 13',
-  'Image Name 14', 'Image Name 15', 'Image Name 16', 
-  'Image Name 17', 'Image Name 18', 'Image Name 19', 'Image Name 20', 'Image Name 21',
-  'Image Name 22', 'Image Name 23', 'Image Name 24', 'Image Name 25', 'Image Name 26',
-  'Image Name 27', 'Image Name 28', 'Image Name 29', 'Image Name 30'];
 
+  const imageData = [
+    { id: '1', name: 'Artwork 1'},
+    { id: '2', name: 'Artwork 2'},
+    // Add more images as needed
+  ];
   // Function to create a grid item
-  function createGridItem(name) {
+  function createGridItem(name, id, imagePath) {
+    const link = document.createElement('a');
+    link.href = `/art/${id}`; // Construct the URL with the unique id
+    link.className = 'image-link';
     // Create the outer div
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
-
+    // Create the img element for the art image
+    const image = document.createElement('img');
+    image.src = "{{ url_for('static', filename='images/sample.png') }}"; // Set the image source to the provided imagePath
+    image.alt = name; // Use the art name as the alt text for accessibility
+    image.className = 'art-image-in-grid'; // Optional: add a class for styling the image
     // Create the inner div for the image name
     const imageName = document.createElement('div');
     imageName.className = 'image-name';
     imageName.textContent = name;
-
-    // Append the image name div to the grid item div
+    // Append the image and image name div to the grid item div
+    gridItem.appendChild(image);
     gridItem.appendChild(imageName);
-
+    link.appendChild(gridItem);
     // Return the complete grid item
-    return gridItem;
-  }
+    return link;
+}
 
   // Get the container element
   const container = document.getElementById('gridContainer');
 
   // Loop through the image data array and create grid items
-  imageData.forEach(name => {
-    const gridItem = createGridItem(name);
+  imageData.forEach(data => {
+    const gridItem = createGridItem(data.name, data.id);
     container.appendChild(gridItem); // Add the grid item to the container
   });
 </script>

@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
     <style>
-        .search-container {
-            width: 75%;
-            text-align: center;
-        }
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc; 
-            border-radius: 20px; 
-            background-color: #808080;
-            color: #fff; 
-            font-size: 16px;
-        }
         .header {
             position: fixed;
             top: 0;
@@ -57,9 +44,11 @@
         }
         .grid-item {
             background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
-            padding-bottom: 100%; /* This creates a square aspect ratio */
             position: relative;
+            height: auto;
+            flex-direction: column; /* Stack children vertically */
             border-radius: 10px; /* Adds rounded corners */
+            display: flex;
         }
         .image-name {
             position: absolute;
@@ -69,23 +58,90 @@
             text-align: center;
             padding: 5px 0; /* Padding above and below the text */
         }
-    </style>
-    <script>
-        function adjustContentMargin() {
-            var header = document.getElementById('header');
-            var gridContainer = document.getElementById('gridContainer');
-    
-            var headerHeight = header.offsetHeight;
-            var extraSpacing = 20;
-            gridContainer.style.paddingTop = (headerHeight + extraSpacing) + 'px';
+        .search-container {
+            width: 75%;
+            text-align: center;
+            position: relative;
         }
-    
-        // Adjust on load
-        window.onload = adjustContentMargin;
-    
-        // Adjust on window resize
-        window.onresize = adjustContentMargin;
-    </script>
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc; 
+            border-radius: 20px; 
+            background-color: #808080;
+            color: #fff; 
+            font-size: 16px;
+        }
+        .search-history {
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px; 
+            display: none; /* Hidden by default */
+            background-color: #808080; /* Matching the search bar's background color */
+            color: #fff; /* Matching the search bar's text color */
+            position: absolute;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            overflow: hidden; /* Ensures the rounded corners contain the child elements */
+        }
+        .search-history a {
+            padding: 10px 10px; /* Matching the search bar's padding */
+            text-decoration: none;
+            display: block;
+            color: #fff; /* Ensure the text color matches the search bar */
+        }
+
+        .search-history a:hover {
+            background-color: #666; /* Slightly darker shade for hover effect */
+        }
+        .art-container {
+            flex-direction: column;
+            justify-content: center; /* Vertically centers the content */
+            align-items: center; /* Horizontally centers the content */
+            min-height: 50vh; /* Ensures the container takes at least the full height of the viewport */
+            width: 80%; /* Adjust the width as needed */
+            margin: auto; /* Centers the container in the viewport */
+            background-color: #f0f0f0; /* Your desired background color */
+            border-radius: 50px; /* Adjust this value to control the roundness of the corners */
+            padding: 20px; /* Adds some padding inside the container */
+            box-sizing: border-box; /* Ensures padding and border are included in the width and height */
+        }
+        .art-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the title and description within the info box */
+            justify-content: center; /* Optionally centers content vertically */
+            padding: 15px;
+            text-align: center; /* Ensures text within the info box is centered */
+            flex: 1; /* Takes up the remaining space in the .art-item container */
+        }
+        .art-item {
+            display: flex; /* Enables flexbox for direct children, i.e., image and title */
+            align-items: center;
+            width: 100%; /* Use the full width of the container */
+            margin-bottom: 20px; /* Adds some space between art items if you have more than one */
+            border-radius: 25px;
+        }
+
+        .art-image {
+            flex: 1; /* Allows the image to grow and take up space */
+            max-width: 50%; /* Limits image width to half of the .art-item container */
+            height: auto; /* Maintains aspect ratio */
+            border-radius: 25px; /* Optional: Adds rounded corners to the image */
+        }
+        .art-image-in-grid {
+            width: 100%; /* Makes the image take the full width of its container */
+            height: auto; /* Maintains the aspect ratio of the image */
+            display: block; /* Removes any default inline spacing */
+            border-radius: 10px; /* Optional: Adds rounded corners to the image */
+        }
+
+        .art-title {
+            flex: 1; /* Allows the title to take up the remaining space */
+            margin-left: 20px; /* Adds some space between the image and the title */
+            font-size: 24px; /* Adjusts the title size */
+        }
+    </style>
     <head>
         <meta charset="UTF-8">
         <title>EchoSpective</title>
@@ -96,8 +152,9 @@
     <body>
         <div id="header" class="header">
             <h1>AI Art Museum</h1>
-            <div class="search-container">
-                <input type="text" class="search-bar" placeholder="Search...">
+            <div class="search-container" id="searchContainer">
+                <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
+                <div class="search-history" id="searchHistory"></div>
             </div>
             {% if session %}
                 <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
@@ -111,5 +168,50 @@
         <div class="footer">
             <h1>404NotFound</h1>
         </div>
+        <script>
+            document.getElementById('searchBar').addEventListener('focus', function() {
+                var searchHistory = document.getElementById('searchHistory');
+                searchHistory.style.display = 'block';
+    
+                // Dummy search history data
+                var searches = ['Search 1', 'Search 2', 'Search 3'];
+                
+                // Clear previous history
+                searchHistory.innerHTML = '';
+    
+                // Populate search history
+                searches.forEach(function(search) {
+                    var entry = document.createElement('a');
+                    entry.href = '#';
+                    entry.textContent = search;
+                    entry.onclick = function() {
+                        document.getElementById('searchBar').value = search; // Fill search bar with clicked history item
+                        searchHistory.style.display = 'none'; // Hide history dropdown
+                    };
+                    searchHistory.appendChild(entry);
+                });
+            });
+    
+            // Hide search history when clicked outside
+            window.addEventListener('click', function(e) {
+                if (!document.getElementById('searchContainer').contains(e.target)) {
+                    document.getElementById('searchHistory').style.display = 'none';
+                }
+            });
+            function adjustContentMargin() {
+                var header = document.getElementById('header');
+                var gridContainer = document.getElementById('gridContainer');
+        
+                var headerHeight = header.offsetHeight;
+                var extraSpacing = 20;
+                gridContainer.style.paddingTop = (headerHeight + extraSpacing) + 'px';
+            }
+        
+            // Adjust on load
+            window.onload = adjustContentMargin;
+        
+            // Adjust on window resize
+            window.onresize = adjustContentMargin;
+        </script>
     </body>
 </html>

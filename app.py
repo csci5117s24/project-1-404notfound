@@ -48,8 +48,34 @@ def home():
         pretty=json.dumps(session.get("user"), indent=4),
     )
 
+@app.route('/art/<id>')
+def art(id):
+    return render_template('art_page.html', session=session.get("user"), art_id=id)
+
+@app.route("/user_profile")
+def user_profile():
+    # Check if user data is in the session
+    user_info = session.get('user')
+    
+    if not user_info:
+        # Redirect to login page or handle the case where there is no user info
+        return redirect(url_for('login'))
+
+    # Assuming the user_info contains all the necessary data
+    user_data = {
+        'name': user_info.get('name'),  
+        'email': user_info.get('email'),  
+        'description': 'Description start here',  # Store this in the session or database as well
+        'subscriptions': 0,  
+        'fans': 0,  
+        'likes': 0,  # This should come from the database or session
+        'artworks': ['Template 1', 'Template 2', 'Template 3', 'Template 4']  # This list should come from the session
+    }
+    return render_template('user_profile.html', user=user_data)
+
 @app.route("/login")
 def login():
+    print("here")
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
