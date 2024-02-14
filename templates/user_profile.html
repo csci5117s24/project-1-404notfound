@@ -110,21 +110,23 @@
 <div class="profile-container">
     <div class="user-info">
       <!-- Check if the session has a user and a profile picture -->
-      {% if session.user and session.user.profile_picture %}
+      {% if session.user and session.user.userinfo.picture %}
       <!-- Profile picture -->
-    <img class="profile-picture" src="{{ url_for('static', filename=session.user.profile_picture if session.user and session.user.profile_picture else 'images/sample.png') }}" alt="{{ session.user.name if session.user and session.user.name else 'Default User Name' }}'s Profile Picture">
+      <img class="profile-picture" src="{{ session['user']['userinfo']['picture'] if session.get('user') and session.get('user').get('userinfo') and session.get('user').get('userinfo').get('picture') else url_for('static', filename='images/sample.png') }}" alt="{{ session.get('user').get('name', 'Default User Name') }}'s Profile Picture">
       {% endif %}
       <div class="user-details">
         <!-- Use session data for user details -->
-        <h1>{{ session.user.userinfo.name if session.user.userinfo.name else 'Default Name'}}</h1>
-        <p>{{ session.user.userinfo.email if session.user.userinfo.email else 'defaultemail@example.com' }}</p>
+        <h1>{{ user.name if user.name else 'Default Name'}}</h1>
+        <p>{{ user.email if user.email else 'defaultemail@example.com' }}</p>
         <p>{{ session.user.description if session.user.description else 'Default description here...' }}</p>
       </div>
     </div>
     <div class="stats">
-      <div>Subscriptions: {{ session.user.subscriptions if session.user.subscriptions else '0' }}</div>
-      <div>Fans: {{ session.user.fans if session.user.fans else '0' }}</div>
-      <div>Likes: {{ session.user.likes if session.user.likes else '0' }}</div>
+      <!-- var rawData = {{ user | tojson | safe }};
+      <script>console.log(rawData);</script> -->
+      <div>Subscriptions: {{ user.subscriptions }}</div>
+      <div>Fans: {{ user.fans  }}</div>
+      <div>Likes: {{user.likes  }}</div>
     </div>
 
     <div class="user-works">
@@ -132,7 +134,8 @@
         <div class="works-list">
             {% for artwork in user.artworks %}
             <div class="work-item">
-                <img src="{{ url_for('static', filename=artwork.url) }}" alt="{{ artwork.title }}">
+              <script>console.log({{ user.artworks[0][4] }});</script>
+                <img src="{{ user.artworks[0][4] }}" alt="{{ artwork.title }}">
                 <span class="like-icon">❤️</span>
                 <p>{{ artwork.title }}</p>
             </div>

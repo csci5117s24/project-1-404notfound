@@ -60,18 +60,22 @@ def user_profile():
         return redirect(url_for('login'))
 
     # Assuming the user_info contains all the necessary data
+    user_id = user_info['userinfo']['user_id']
+    print("user_id:",user_id, flush=True)
+    
     user_data = {
-        'name': user_info.get('name'),  
-        'email': user_info.get('email'),  
+        'name': user_info['userinfo']['name'],  
+        'email': user_info['userinfo']['email'],  
         'description': 'Description start here',  # Store this in the session or database as well
-        'subscriptions': 0,  
-        'fans': 0,  
-        'likes': 0,  # This should come from the database or session
-        'artworks': [
-        {'title': 'Artwork 1', 'url': 'images/sample.png'},
-        {'title': 'Artwork 2', 'url': 'images/art.png'},
-        {'title': 'Artwork 3', 'url': 'images/sample.png'},
-    ]
+        'subscriptions': get_user_subscriptions(user_id),  
+        'fans': get_user_fans(user_id),  
+        'likes': get_user_likes(user_id),  # This should come from the database or session
+    #     'artworks': [
+    #     {'title': 'Artwork 1', 'url': 'images/sample.png'},
+    #     {'title': 'Artwork 2', 'url': 'images/art.png'},
+    #     {'title': 'Artwork 3', 'url': 'images/sample.png'},
+    # ]
+        'artworks': get_user_artworks(user_id)
     }
     return render_template('user_profile.html', user=user_data)
 def get_user_likes(user_id):
@@ -93,7 +97,9 @@ def get_user_artworks(user_id):
     artworks = db.query_db(
         "SELECT * FROM images WHERE user_id = %s", (user_id,)
     )
+    print("artworks:",artworks, flush=True)
     return artworks
+
 def get_trending_artworks():
     # get the top 10 artworks based on the number of likes and time of upload
     artworks = db.query_db(
@@ -110,7 +116,6 @@ def some_route_function():
 
 @app.route("/login")
 def login():
-    print("here")
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
@@ -118,7 +123,6 @@ def login():
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
-    print(token,flush=True)
     session["user"] = token
 
     user_info = token['userinfo']
@@ -126,19 +130,22 @@ def callback():
     return redirect("/")
 
 def store_new_user(user_info):
-    user = db.query_db(
-        "SELECT * FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
+    userID = db.query_db(
+        "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
     )
-    if user is None:
+    if userID is None:
         db.modify_db(
             "INSERT INTO users (auth0_user_id, email) VALUES (%s, %s)",
             (user_info["sub"], user_info["email"]),
         )
+        userID = db.query_db(
+            "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
+        )
+
     #get user id from db and store in session
-    user = db.query_db(
-        "SELECT * FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
-    )
-    session["user"]["user_id"] = user["user_id"]
+    # print("userID:",userID[0], flush=True)
+    
+    session['user']['userinfo']['user_id'] = userID[0]
         
     return
 
@@ -183,7 +190,6 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            print(image_url, flush=True)
             return 'Image uploaded successfully!', 200
     return render_template("upload.html")
 
