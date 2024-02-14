@@ -25,11 +25,13 @@
     margin-bottom: 4rem;
   }
 
-  .user-info img {
-    border-radius: 50%;
-    width: 100px; 
-    height: 100px; /* Adjust as needed */
-  }
+
+  .profile-picture {
+  border-radius: 50%; /* Makes the image round */
+  width: 100px; /* Adjust size as needed */
+  height: 100px; /* Adjust size as needed */
+  margin-right: 1rem; /* Adds some space between the image and the name */
+}
 
   .user-details {
     text-align: center;
@@ -58,32 +60,58 @@
   }
 
   .user-works {
-    text-align: center;
-  }
+    max-width: 800px; /* Adjust as needed */
+    margin: 0 auto; /* Center the works container */
+    padding: 1rem;
+}
+.works-list {
+    display: flex;
+    justify-content: center; /* Adjust this as needed */
+    flex-wrap: wrap;
+    gap: 1rem;
+}
 
-  .work-item {
-    display: inline-block;
-    margin: 0.5rem;
-    width: 150px; /* Adjust size as needed */
-    height: 150px; /* Adjust size as needed */
-    background-color: #f0f0f0;
-    border: 5px solid #ffc0cb; /* Pink border */
+.work-item {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    width: 180px; /* Adjust as needed */
+    margin: 0.5rem; /* Adjust as needed */
+    border: 2px solid blue; /* Adjust as needed */
     border-radius: 10px;
     position: relative;
-  }
+    background-color: #f0f0f0;
+}
 
-  .like-icon {
+.work-item img {
+    max-width: 100%; /* Make sure the image is responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-top-left-radius: 8px; /* Match the border-radius of .work-item */
+    border-top-right-radius: 8px;
+}
+
+.artwork-title {
+    padding-top: 2rem;
+    font-size: 0.9rem; /* Adjust as needed */
+    text-align: left;
+    color: #333;
+    margin-top: 0.5rem; /* Adjust as needed */
+}
+
+.like-icon {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 10px; /* Adjust as needed */
+    color: #e74c3c; /* Adjust as needed */
+    font-size: 24px; /* Adjust as needed */
     cursor: pointer;
-  }
+}
 </style>
 <div class="profile-container">
     <div class="user-info">
       <!-- Check if the session has a user and a profile picture -->
       {% if session.user and session.user.profile_picture %}
-        <img src="{{ session.user.profile_picture }}" alt="{{ session.user.name }}">
+      <!-- Profile picture -->
+    <img class="profile-picture" src="{{ url_for('static', filename=session.user.profile_picture if session.user and session.user.profile_picture else 'images/sample.png') }}" alt="{{ session.user.name if session.user and session.user.name else 'Default User Name' }}'s Profile Picture">
       {% endif %}
       <div class="user-details">
         <!-- Use session data for user details -->
@@ -97,23 +125,18 @@
       <div>Fans: {{ session.user.fans if session.user.fans else '0' }}</div>
       <div>Likes: {{ session.user.likes if session.user.likes else '0' }}</div>
     </div>
-    <div class="user-works">
-      <h2>My Works</h2>
-      <div class="works-list">
-        {% if session.user and session.user.artworks %}
-          {% for artwork in session.user.artworks %}
-            <div class="work-item">
-              <!-- Use the URL for the artwork if available -->
-              {% if artwork.url %}
-                <img src="{{ artwork.url }}" alt="{{ artwork.title if artwork.title else 'Artwork' }}">
-              {% endif %}
-              <span class="like-icon">❤️</span>
-              <p>{{ artwork.title if artwork.title else 'Template' }}</p>
-            </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
-  </div>  
 
-{% endblock %}
+    <div class="user-works">
+        <h2>My Works</h2>
+        <div class="works-list">
+            {% for artwork in user.artworks %}
+            <div class="work-item">
+                <img src="{{ url_for('static', filename=artwork.url) }}" alt="{{ artwork.title }}">
+                <span class="like-icon">❤️</span>
+                <p>{{ artwork.title }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>   
+</div>
+    {% endblock %} 

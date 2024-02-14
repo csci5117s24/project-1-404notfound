@@ -67,9 +67,19 @@ def user_profile():
         'subscriptions': 0,  
         'fans': 0,  
         'likes': 0,  # This should come from the database or session
-        'artworks': ['Template 1', 'Template 2', 'Template 3', 'Template 4']  # This list should come from the session
+        'artworks': [
+        {'title': 'Artwork 1', 'url': 'images/sample.png'},
+        {'title': 'Artwork 2', 'url': 'images/art.png'},
+        {'title': 'Artwork 3', 'url': 'images/sample.png'},
+    ]
     }
     return render_template('user_profile.html', user=user_data)
+
+def some_route_function():
+    image_path_art = url_for('static', filename='images/art.png')
+    image_path_sample = url_for('static', filename='images/sample.png')
+    # Now you can pass these paths to your template
+    return render_template('your_template.html', art_image=image_path_art, sample_image=image_path_sample)
 
 @app.route("/login")
 def login():
