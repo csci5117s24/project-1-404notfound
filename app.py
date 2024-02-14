@@ -70,6 +70,33 @@ def user_profile():
         'artworks': ['Template 1', 'Template 2', 'Template 3', 'Template 4']  # This list should come from the session
     }
     return render_template('user_profile.html', user=user_data)
+def get_user_likes(user_id):
+    likes = db.query_db(
+        "SELECT COUNT(*) FROM image_interactions WHERE user_id = %s AND liked = TRUE", (user_id,),one=True
+    )
+    return likes[0] if likes else 0
+def get_user_fans(user_id):
+    fans = db.query_db(
+        "SELECT COUNT(*) FROM follows WHERE following_id = %s", (user_id,),one=True
+    )
+    return fans[0] if fans else 0
+def get_user_subscriptions(user_id):
+    subscriptions = db.query_db(
+        "SELECT COUNT(*) FROM follows WHERE follower_id = %s", (user_id,),one=True
+    )
+    return subscriptions[0] if subscriptions else 0
+def get_user_artworks(user_id):
+    artworks = db.query_db(
+        "SELECT * FROM images WHERE user_id = %s", (user_id,)
+    )
+    return artworks
+def get_trending_artworks():
+    # get the top 10 artworks based on the number of likes and time of upload
+    artworks = db.query_db(
+        "SELECT * FROM images ORDER BY created_at DESC LIMIT 10"
+    )
+    
+
 
 @app.route("/login")
 def login():
