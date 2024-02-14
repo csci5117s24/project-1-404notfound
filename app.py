@@ -37,6 +37,10 @@ def home():
         pretty=json.dumps(session.get("user"), indent=4),
     )
 
+@app.route('/art/<id>')
+def art(id):
+    return render_template('art_page.html', art_id=id)
+
 @app.route("/user_profile")
 def user_profile():
     # Check if user data is in the session

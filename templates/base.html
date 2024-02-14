@@ -92,6 +92,47 @@
         .search-history a:hover {
             background-color: #666; /* Slightly darker shade for hover effect */
         }
+        .art-container {
+            flex-direction: column;
+            justify-content: center; /* Vertically centers the content */
+            align-items: center; /* Horizontally centers the content */
+            min-height: 50vh; /* Ensures the container takes at least the full height of the viewport */
+            width: 80%; /* Adjust the width as needed */
+            margin: auto; /* Centers the container in the viewport */
+            background-color: #f0f0f0; /* Your desired background color */
+            border-radius: 50px; /* Adjust this value to control the roundness of the corners */
+            padding: 20px; /* Adds some padding inside the container */
+            box-sizing: border-box; /* Ensures padding and border are included in the width and height */
+        }
+        .art-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the title and description within the info box */
+            justify-content: center; /* Optionally centers content vertically */
+            padding: 15px;
+            text-align: center; /* Ensures text within the info box is centered */
+            flex: 1; /* Takes up the remaining space in the .art-item container */
+        }
+        .art-item {
+            display: flex; /* Enables flexbox for direct children, i.e., image and title */
+            align-items: center;
+            width: 100%; /* Use the full width of the container */
+            margin-bottom: 20px; /* Adds some space between art items if you have more than one */
+            border-radius: 25px;
+        }
+
+        .art-image {
+            flex: 1; /* Allows the image to grow and take up space */
+            max-width: 50%; /* Limits image width to half of the .art-item container */
+            height: auto; /* Maintains aspect ratio */
+            border-radius: 25px; /* Optional: Adds rounded corners to the image */
+        }
+
+        .art-title {
+            flex: 1; /* Allows the title to take up the remaining space */
+            margin-left: 20px; /* Adds some space between the image and the title */
+            font-size: 24px; /* Adjusts the title size */
+        }
     </style>
     <head>
         <meta charset="UTF-8">
