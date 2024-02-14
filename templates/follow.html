@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid-container" id="gridContainer">
+    {% for user in following %}
+    <div class="grid-item">
+        <img src="{{ user.avatar_url }}" alt="{{ user.name }}" class="art-image-in-grid">
+        <div class="image-name">{{ user.name }}</div>
+        <div class="art-info">
+            <p>{{ user.bio }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
