@@ -139,12 +139,7 @@ def upload_image():
             )
             return 'Image uploaded successfully!', 200
     return render_template("upload.html")
-@app.route("/profile")
-def profile():
-    if "user" not in session:
-        return redirect(url_for("login"))
-    else:
-        return render_template("profile.html")
+
 
 def upload_image_to_s3(image):
     s3_client.upload_fileobj(
