@@ -32,9 +32,7 @@ s3_client = boto3.client(
     "s3",
     aws_access_key_id=env.get("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=env.get("AWS_SECRET_ACCESS_KEY"),
-    region_name=env.get("S3_REGION"),
-    bucket_name=env.get("S3_BUCKET"),
-
+    region_name=env.get("S3_REGION")
 )
 
 
