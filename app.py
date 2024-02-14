@@ -100,6 +100,18 @@ def get_trending_artworks():
         "SELECT * FROM images ORDER BY created_at DESC LIMIT 10"
     )
     
+@app.route('/update_description', methods=['POST'])
+def update_description():
+    # Make sure the user is logged in
+    if 'user' in session and session['user']:
+        new_description = request.form.get('description')
+        # Update
+        session['user']['description'] = new_description
+        
+        # Redirect back to the profile page
+        return redirect(url_for('user_profile'))
+    else:
+        return redirect(url_for('login'))
 
 
 def some_route_function():
