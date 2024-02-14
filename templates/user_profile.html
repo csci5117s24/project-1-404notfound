@@ -112,19 +112,19 @@
       <!-- Check if the session has a user and a profile picture -->
       {% if session.user and session.user.profile_picture %}
       <!-- Profile picture -->
-    <img class="profile-picture" src="{{ url_for('static', filename=session.user.profile_picture if session.user and session.user.profile_picture else 'images/sample.png') }}" alt="{{ session.user.name if session.user and session.user.name else 'Default User Name' }}'s Profile Picture">
+    <img class="profile-picture" src="{{ url_for('static', filename=session.user.userinfo.profile_picture if session.user and session.user.userinfo.profile_picture else 'images/sample.png') }}" alt="{{ session.user.userinfo.name if session.user and session.user.userinfo.name else 'Default User Name' }}'s Profile Picture">
       {% endif %}
       <div class="user-details">
         <!-- Use session data for user details -->
-        <h1>{{ session.user.name if session.user.name else 'Default User Name' }}</h1>
-        <p>{{ session.user.email if session.user.email else 'defaultemail@example.com' }}</p>
-        <p>{{ session.user.description if session.user.description else 'Default description here...' }}</p>
+        <h1>{{ session.user.userinfo.name if session.user.userinfo.name else 'Default User Name' }}</h1>
+        <p>{{ session.user.userinfo.name if session.user.userinfo.name else 'defaultemail@example.com' }}</p>
+        <p>{{ session.user.userinfo.name if session.user.userinfo.name else 'Default description here...' }}</p>
       </div>
     </div>
     <div class="stats">
-      <div>Subscriptions: {{ session.user.subscriptions if session.user.subscriptions else '0' }}</div>
-      <div>Fans: {{ session.user.fans if session.user.fans else '0' }}</div>
-      <div>Likes: {{ session.user.likes if session.user.likes else '0' }}</div>
+      <div>Subscriptions: {{ session.user.userinfo.subscriptions if session.user.userinfo.subscriptions else '0' }}</div>
+      <div>Fans: {{ session.user.userinfo.fans if session.user.userinfo.fans else '0' }}</div>
+      <div>Likes: {{ session.user.userinfo.likes if session.user.userinfo.likes else '0' }}</div>
     </div>
 
     <div class="user-works">
