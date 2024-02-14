@@ -242,6 +242,7 @@ def update_description():
     if search_result:
         db.modify_db(
             "UPDATE descriptions SET description = %s WHERE user_id = %s",
+            (new_description, user_id),
         )
     else:
         db.modify_db(
