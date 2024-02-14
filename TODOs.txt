@@ -1,0 +1,10 @@
+#backend:
+func calculate_similarity
+func get_most_similar
+
+#frontend:
+change description of the of profile page
+like button
+home with different recommendations(logged in/not logged in)
+search function integration
+art_page refine and integration

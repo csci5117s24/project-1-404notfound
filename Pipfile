@@ -12,6 +12,7 @@ authlib = "*"
 requests = "*"
 postgres = "*"
 boto3 = "*"
+flask-apscheduler = "*"
 
 [dev-packages]
 

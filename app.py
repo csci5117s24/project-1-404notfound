@@ -7,6 +7,7 @@ from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request
 import db_helper as db
 import boto3
+from flask_apscheduler import APScheduler
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -35,6 +36,11 @@ s3_client = boto3.client(
     region_name=env.get("S3_REGION")
 )
 
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+
 
 
 
@@ -48,6 +54,12 @@ def home():
 
 @app.route('/art/<id>')
 def art(id):
+    #put into interaction db for viewed/
+    user_id = session['user']['userinfo']['user_id']
+    db.modify_db(
+        "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
+        (user_id, id),
+    )
     return render_template('art_page.html', session=session.get("user"), art_id=id)
 
 @app.route("/user_profile")
@@ -93,6 +105,7 @@ def get_user_subscriptions(user_id):
         "SELECT COUNT(*) FROM follows WHERE follower_id = %s", (user_id,),one=True
     )
     return subscriptions[0] if subscriptions else 0
+
 def get_user_artworks(user_id):
     artworks = db.query_db(
         "SELECT * FROM images WHERE user_id = %s", (user_id,)
@@ -101,24 +114,134 @@ def get_user_artworks(user_id):
     return artworks
 
 def get_trending_artworks():
-    # get the top 10 artworks based on the number of likes and time of upload
-    artworks = db.query_db(
-        "SELECT * FROM images ORDER BY created_at DESC LIMIT 10"
+
+    sql = """
+    SELECT i.*,
+           (COUNT(ii.user_id) FILTER (WHERE ii.liked) + 1) / 
+           POWER(EXTRACT(EPOCH FROM NOW() - i.created_at) / 3600 + 1, 1.8) AS score
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id
+    GROUP BY i.image_id
+    ORDER BY score DESC
+    LIMIT 10;
+    """
+    artworks = db.query_db(sql)
+    return artworks
+def get_most_liked():
+    sql = """
+    SELECT i.*,
+           COUNT(ii.user_id) FILTER (WHERE ii.liked) AS likes
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id
+    GROUP BY i.image_id
+    ORDER BY likes DESC
+    LIMIT 10;
+    """
+    artworks = db.query_db(sql)
+    return artworks
+def get_most_viewed():
+    sql = """
+    SELECT i.*,
+           COUNT(ii.user_id) FILTER (WHERE ii.viewed) AS views
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id
+    GROUP BY i.image_id
+    ORDER BY views DESC
+    LIMIT 10;
+    """
+    artworks = db.query_db(sql)
+    return artworks
+@scheduler.task('cron', id='calcular_similarity', hour=3, minute=0, misfire_grace_time=900)
+def calcular_similarity():
+    #TODO
+    pass
+def get_recent_artworks():
+    #TODO
+    pass
+
+
+def get_friends_work(user_id):
+
+    sql = """
+    SELECT images.*
+    FROM images
+    JOIN follows ON follows.following_id = images.user_id
+    LEFT JOIN image_interactions ON image_interactions.image_id = images.image_id AND image_interactions.user_id = follows.follower_id
+    WHERE follows.follower_id = %s
+    AND image_interactions.viewed = FALSE
+    ORDER BY images.created_at DESC;
+    """
+    artworks = db.query_db(sql, (session['user']['userinfo']['user_id']))
+    return artworks
+
+
+
+
+
+
+
+@app.route('/comments', methods=['GET','POST'])
+#ajax?
+def comments():
+    if request.method == 'POST':
+        comment = request.form.get('comment')
+        image_id = request.form.get('image_id')
+        user_id = session['user']['userinfo']['user_id']
+        db.modify_db(
+            "INSERT INTO comments (user_id, image_id, comment) VALUES (%s, %s, %s)",
+            (user_id, image_id, comment),
+        )
+        return redirect(url_for('art', id=image_id))
+    else:
+        image_id = request.args.get('image_id')
+        comments = db.query_db(
+            "SELECT * FROM comments WHERE image_id = %s", (image_id,)
+        )
+        return comments
+@app.route('/like', methods=['POST'])   
+def like():
+    image_id = request.form.get('image_id')
+    user_id = session['user']['userinfo']['user_id']
+    #find the interaction and update
+    db.modify_db(
+        "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
+        (user_id, image_id),
     )
+    return "success",200
     
+        
 @app.route('/update_description', methods=['POST'])
 def update_description():
-    # Make sure the user is logged in
-    if 'user' in session and session['user']:
-        new_description = request.form.get('description')
-        # Update
-        session['user']['description'] = new_description
+    # # Make sure the user is logged in
+    # if 'user' in session and session['user']:
+    #     new_description = request.form.get('description')
+    #     # Update
+    #     session['user']['description'] = new_description
         
-        # Redirect back to the profile page
-        return redirect(url_for('user_profile'))
-    else:
-        return redirect(url_for('login'))
+    #     # Redirect back to the profile page
+    #     return redirect(url_for('user_profile'))
+    # else:
+    #     return redirect(url_for('login'))
+    new_description = request.form.get('description')
+    user_id = session['user']['userinfo']['user_id']
+    db.modify_db(
+        "INSERT INTO descriptions (user_id, description) VALUES (%s, %s)",
+        (user_id, new_description),
+    )
+    return redirect(url_for('user_profile'))
 
+#fuzzy search
+@app.route('/search')
+def search():
+    search_query = request.args.get('query', '')  # Get the search query from the URL parameters
+    results = db.query_db("""
+        SELECT image_id, title, description, image_url
+        FROM images
+        WHERE to_tsvector('english', title || ' ' || description || ' ' || prompt) @@ plainto_tsquery('english', %s)
+        ORDER BY ts_rank(to_tsvector('english', title || ' ' || description || ' ' || prompt), plainto_tsquery('english', %s)) DESC
+        LIMIT 10;
+    """, (search_query, search_query))
+    return render_template('search_results.html', results=results)
 
 def some_route_function():
     image_path_art = url_for('static', filename='images/art.png')
