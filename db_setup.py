@@ -78,7 +78,7 @@ TABLES_SETUP_SQL = [
         description_id SERIAL PRIMARY KEY,
         user_id INT NOT NULL,
         description TEXT NOT NULL,
-        foreign_key (user_id) references users(user_id) on delete cascade
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
     """
 ]

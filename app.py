@@ -4,8 +4,9 @@ from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request
 import db_helper as db
+import boto3
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -27,6 +28,16 @@ oauth.register(
     },
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration',
 )
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=env.get("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=env.get("AWS_SECRET_ACCESS_KEY"),
+    region_name=env.get("S3_REGION"),
+    bucket_name=env.get("S3_BUCKET"),
+
+)
+
+
 
 
 @app.route("/")
@@ -109,6 +120,36 @@ def logout():
             quote_via=quote_plus,
         )
     )
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload_image():
+    if "user" not in session:
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        if 'image' not in request.files:
+            return "No file part", 400
+        image = request.files['image']
+        if image.filename == '':
+            return "No selected file",  400
+        if image:
+            image_url = upload_image_to_s3(image)
+            db.modify_db(
+                "INSERT INTO images (user_id, title, image_url) VALUES (%s, %s, %s)",
+                (session["user"]["sub"], request.form["title"], image_url),
+            )
+            return 'Image uploaded successfully!', 200
+    return render_template("upload.html")
+
+
+def upload_image_to_s3(image):
+    s3_client.upload_fileobj(
+        image,
+        env.get("S3_BUCKET"),
+        image.filename,
+        ExtraArgs={"ACL": "public-read", "ContentType": image.content_type},
+    )
+    return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{image.filename}"
+
 
 
 if __name__ == "__main__":
