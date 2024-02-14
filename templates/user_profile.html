@@ -115,8 +115,8 @@
       {% endif %}
       <div class="user-details">
         <!-- Use session data for user details -->
-        <h1>{{ session.user.name if session.user.name else 'Default User Name' }}</h1>
-        <p>{{ session.user.email if session.user.email else 'defaultemail@example.com' }}</p>
+        <h1>{{ session.user.userinfo.name if session.user.userinfo.name else 'Default Name'}}</h1>
+        <p>{{ session.user.userinfo.email if session.user.userinfo.email else 'defaultemail@example.com' }}</p>
         <p>{{ session.user.description if session.user.description else 'Default description here...' }}</p>
       </div>
     </div>
