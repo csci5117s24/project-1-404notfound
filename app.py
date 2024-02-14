@@ -236,10 +236,18 @@ def update_description():
     #     return redirect(url_for('login'))
     new_description = request.form.get('description')
     user_id = session['user']['userinfo']['user_id']
-    db.modify_db(
-        "INSERT INTO descriptions (user_id, description) VALUES (%s, %s)",
-        (user_id, new_description),
+    search_result = db.query_db(
+        "SELECT description FROM descriptions WHERE user_id = %s", (user_id,),one=True
     )
+    if search_result:
+        db.modify_db(
+            "UPDATE descriptions SET description = %s WHERE user_id = %s",
+        )
+    else:
+        db.modify_db(
+            "INSERT INTO descriptions (user_id, description) VALUES (%s, %s)",
+            (user_id, new_description),
+        )
     return redirect(url_for('user_profile'))
 
 #fuzzy search
