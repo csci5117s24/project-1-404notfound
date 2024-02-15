@@ -1,7 +1,13 @@
 #backend:
 func calculate_similarity
 func get_most_similar
+<<<<<<< HEAD
 func add_profile_picture
+=======
+func add_friend
+func remove_friend
+
+>>>>>>> 1c558aca9661133f8c10d489f23cf8be6ca306d7
 
 #frontend:
 change description of the of profile page

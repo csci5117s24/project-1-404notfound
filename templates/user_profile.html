@@ -122,7 +122,7 @@
     </div>
     <div class="user-details">
         <!-- Other user details -->
-        <p id="userDescription">{{ session.user.description if session.user.description else 'Default description here...' }}</p>
+        <p id="userDescription">{{ user.description if user.description else 'Default description here...' }}</p>
         <button onclick="editDescription()">Edit</button>
       </div>
 
