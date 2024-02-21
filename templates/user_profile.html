@@ -98,14 +98,6 @@
     margin-top: 0.5rem; /* Adjust as needed */
 }
 
-.like-icon {
-    position: absolute;
-    padding-left: 7rem;
-    bottom: 10px; /* Adjust as needed */
-    color: #e74c3c; /* Adjust as needed */
-    font-size: 24px; /* Adjust as needed */
-    cursor: pointer;
-}
 </style>
 <div class="profile-container">
     <div class="user-info">
@@ -164,7 +156,7 @@
             <div class="work-item">
               <script>console.log({{ user.artworks[0][4] }});</script>
                 <img src="{{ user.artworks[0][4] }}" alt="{{ artwork.title }}">
-                <span class="like-icon">❤️</span>
+                <!-- <span class="like-icon">❤️</span> -->
                 <p>{{ artwork.title }}</p>
             </div>
             {% endfor %}

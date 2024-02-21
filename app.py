@@ -16,7 +16,8 @@ if ENV_FILE:
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
 
-
+with app.app_context():
+        db.init_db_pool()
 
 oauth = OAuth(app)
 
@@ -380,7 +381,5 @@ def show_following():
 ##############
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.init_db_pool()
     app.run(debug=True)
     # app.run(host="0.0.0.0", port=env.get("PORT", 3000))
