@@ -361,6 +361,10 @@ def upload_image_to_s3(image):
     return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{image.filename}"
 
 ###############
+
+
+
+
 # 模拟的用户数据
 users = {
     "following": [
@@ -372,11 +376,38 @@ users = {
         {"id": 4, "name": "Dana", "bio": "Adventure lover and book reader", "avatar_url": "https://example.com/avatar/dana.jpg"},
     ]
 }
+
 @app.route('/user/following')
 def show_following():
-    # 直接从定义好的字典中获取关注的人列表
-    following = users['following']
-    return render_template('follow.html', following=following)
+    user_info = session.get('user')
+    if not user_info or 'userinfo' not in user_info or 'user_id' not in user_info['userinfo']:
+        # 如果用户未登录或session中不存在用户信息，重定向到登录页面
+        return redirect(url_for('login'))
+
+    user_id = user_info['userinfo']['user_id']
+
+    # 查询当前用户关注的人
+    following_sql = """
+    SELECT u.user_id, u.email, f.created_at
+    FROM follows f
+    JOIN users u ON f.following_id = u.user_id
+    WHERE f.follower_id = %s;
+    """
+    following = db.query_db(following_sql, (user_id,))
+
+    # 查询关注当前用户的人
+    followers_sql = """
+    SELECT u.user_id, u.email, f.created_at
+    FROM follows f
+    JOIN users u ON f.follower_id = u.user_id
+    WHERE f.following_id = %s;
+    """
+    followers = db.query_db(followers_sql, (user_id,))
+    print("xxxxxx")
+    print(following)  # 这将在服务器的控制台上打印following列表
+
+
+    return render_template('follows.html', following=following, followers=followers)
 
 ##############
 

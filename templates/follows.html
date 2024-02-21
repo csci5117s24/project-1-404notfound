@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="art-container">
+    <h2>Following</h2>
+    <div class="grid-container" id="followingContainer">
+        <!-- The following user data will be appended here by the script below -->
+    </div>
+
+    <h2>Followers</h2>
+    <div class="grid-container" id="followersContainer">
+        <!-- The followers user data will be appended here by the script below -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(event) {
+        // Function to create user elements
+        function createUserElements(container, userData) {
+            userData.forEach(function(user) {
+                let userId = user[0];
+                let userEmail = user[1];
+                let userFollowedDate = user[2];
+                
+                let userDiv = document.createElement('div');
+                userDiv.classList.add('grid-item');
+                userDiv.innerHTML = `
+                    <div class="user-info">
+                        <p>User ID: ${userId}</p>
+                        <p>Email: ${userEmail}</p>
+                        <p>Followed Date: ${userFollowedDate}</p>
+                    </div>
+                `;
+                
+                container.appendChild(userDiv);
+            });
+        }
+
+        // Handle following data
+        let followingContainer = document.getElementById('followingContainer');
+        if (followingContainer) {
+            let followingData = {{ following | tojson | safe }};
+            console.log('Following Data:', followingData);
+            createUserElements(followingContainer, followingData);
+        } else {
+            console.error('Following container not found');
+        }
+
+        // Handle followers data
+        let followersContainer = document.getElementById('followersContainer');
+        if (followersContainer) {
+            let followersData = {{ followers | tojson | safe }};
+            console.log('Followers Data:', followersData);
+            createUserElements(followersContainer, followersData);
+        } else {
+            console.error('Followers container not found');
+        }
+    });
+</script>
+
+{% endblock %}
