@@ -55,19 +55,24 @@ def home():
 
 @app.route('/art/<id>')
 def art(id):
+    print("in route art")
     #put into interaction db for viewed/
     if 'user' in session and 'userinfo' in session['user']:
         user_id = session['user']['userinfo'].get('user_id')
         viewd = db.query_db(
             "SELECT * FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, id),one=True
         )
-
+        print(viewd)
         if user_id and not viewd:
             db.modify_db(
                 "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
                 (user_id, id),
             )
-    return render_template('art_page.html', session=session.get("user"), art_id=id)
+    image_details = db.query_db(
+        "SELECT image_id, title, description, image_url FROM images WHERE image_id = %s", (id,), one=True
+    )
+    print(image_details)
+    return render_template('art_page.html', session=session.get("user"), image_details=image_details)
 
 @app.route("/user_profile")
 def user_profile():

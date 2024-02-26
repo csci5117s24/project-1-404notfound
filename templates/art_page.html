@@ -3,10 +3,10 @@
 {%block content%}
 <div class="art-container" id="gridContainer">
     <div class="art-item">
-        <img src="{{ url_for('static', filename='images/sample.png') }}" alt="Art Description" class="art-image">
+        <img src="{{ image_details[3] }}" alt="{{ image_details[1] }}" class="art-image">
         <div class="art-info">
-            <div class="art-title">Art Piece {{ art_id }}</div>
-            <p class="art-description">This is a short description of the art piece, providing more context or background information.</p>
+            <div class="art-title">{{ image_details[1] }}</div>
+            <p class="art-description">{{ image_details[2] }}</p>
         </div>
     </div>
     <!-- You can add more .art-item blocks if needed -->
