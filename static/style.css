@@ -371,18 +371,18 @@ button {
     cursor: pointer;
 }
 
-
+/* below is css of user_profile.html */
 :root {
     --background-color: #f7f7f7;
     --text-color: #333;
     --light-grey: #eee;
     --box-shadow-color: rgba(0, 0, 0, 0.1);
     --border-radius: 10px;
-    --primary-font: 'Arial', sans-serif;
+    --primary-font: 'Helvetica Neue', Arial, sans-serif; /* Modern font */
 }
 
 body {
-    padding-top: 100px;
+    padding-top: 50px;
     background: var(--background-color);
     margin: 0;
     font-family: var(--primary-font);
@@ -392,10 +392,11 @@ body {
 .profile-container {
     max-width: 800px;
     margin: 3rem auto;
+    align-items: center;
     padding: 1rem;
     background-color: #fff;
     border-radius: var(--border-radius);
-    box-shadow: 0 4px 8px var(--box-shadow-color);
+    box-shadow: 0 2px 10px var(--box-shadow-color);
 }
 
 .user-info {
@@ -410,30 +411,46 @@ body {
 
 .profile-picture {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    margin-right: 1rem;
+    width: 120px;
+    height: 120px;
+    object-fit: cover; /* To ensure the image covers the area properly */
+    border: 2px solid #eee;
 }
 
 .user-details {
     text-align: center;
     position: relative;
-    margin-left: 1rem;
+    margin-right: 20px;
 }
 
-.user-details h1, .user-details p {
-    margin: 1rem 1rem;
-    color: var(--text-color);
+.user-details h1{
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.user-details p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+#userDescription {
+    margin-top: 20px;
 }
 
 .stats {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #333;
     background: var(--light-grey);
     padding: 0.5rem;
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     margin-top: 2rem;
+    margin-right: 2rem;
+    margin-left: 2rem;
 }
 
 .stats div {
@@ -468,7 +485,8 @@ body {
 }
 
 .edit-button {
-    position: absolute;
+    margin-top: 30px;
+    position: relative;
     right: 10px; /* Adjusted for closer placement */
     top: 50%; /* Center vertically relative to the parent */
     transform: translateY(-50%); /* Keep button vertically centered */
