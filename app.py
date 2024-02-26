@@ -47,13 +47,23 @@ scheduler.start()
 
 @app.route("/")
 def home():
-    trending_artworks = get_most_viewed()
-    print(trending_artworks)
+    most_viewed = get_most_viewed()
+    trending = get_trending_artworks()
+    most_liked = get_most_liked()
+    print("trending")
+    print(trending)
+    print("most_viewed")
+    print(most_viewed)
+    print("most_liked")
+    print(most_liked)
     return render_template(
         "home.html",
         session=session.get("user"),
         pretty=json.dumps(session.get("user"), indent=4),
-        artwork=trending_artworks
+        trending_artwork=trending,
+        most_viewed_artwork = most_viewed,
+        most_liked_artwork = most_liked
+        
     )
 
 @app.route('/art/<id>')

@@ -3,6 +3,9 @@
     overflow-x: auto;
     white-space: nowrap;
 }
+.scrollable-row:first-of-type {
+    margin-top: 70px; /* Adjust based on actual header height plus desired spacing */
+}
 .floating-button {
     position: fixed;
     bottom: 20px;

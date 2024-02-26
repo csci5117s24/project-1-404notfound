@@ -3,11 +3,26 @@
 {% block content %}
 <script type="text/javascript">
   // Initialize the trendingart variable with data passed from Flask
-  var trendingart = {{ artwork|tojson|safe }};
+  var trending = {{ trending_artwork|tojson|safe }};
+  var most_liked = {{ most_liked_artwork|tojson|safe }};
+  var most_view =  {{ most_viewed_artwork|tojson|safe }};
 </script>
 
 <div class="scrollable-row">
-  <div class="grid-container" id="gridContainer"></div>
+  <h2>Trending Artworks</h2>
+  <div class="grid-container" id="trendingContainer"></div>
+</div>
+
+<!-- Most Liked Artworks Row -->
+<div class="scrollable-row">
+  <h2>Most Liked Artworks</h2>
+  <div class="grid-container" id="mostLikedContainer"></div>
+</div>
+
+<!-- Most Viewed Artworks Row -->
+<div class="scrollable-row">
+  <h2>Most Viewed Artworks</h2>
+  <div class="grid-container" id="mostViewedContainer"></div>
 </div>
 
 <script>
@@ -43,14 +58,18 @@
     return link;
   }
 
-  // Get the container element
-  const container = document.getElementById('gridContainer');
+  function appendItemsToContainer(containerId, artworks) {
+    const container = document.getElementById(containerId);
+    artworks.forEach(artwork => {
+      const gridItem = createGridItem(artwork);
+      container.appendChild(gridItem);
+    });
+  }
 
-  // Loop through the trendingart array and create grid items
-  trendingart.forEach(artwork => {
-    const gridItem = createGridItem(artwork);
-    container.appendChild(gridItem); // Add the grid item to the container
-  });
+  // Call the function for each category
+  appendItemsToContainer('trendingContainer', trending);
+  appendItemsToContainer('mostLikedContainer', most_liked);
+  appendItemsToContainer('mostViewedContainer', most_view);
 </script>
 {% endblock %}
 
