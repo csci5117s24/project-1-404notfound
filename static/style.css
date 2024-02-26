@@ -370,3 +370,155 @@ button {
     color: white;
     cursor: pointer;
 }
+
+
+:root {
+    --background-color: #f7f7f7;
+    --text-color: #333;
+    --light-grey: #eee;
+    --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 10px;
+    --primary-font: 'Arial', sans-serif;
+}
+
+body {
+    padding-top: 100px;
+    background: var(--background-color);
+    margin: 0;
+    font-family: var(--primary-font);
+    color: var(--text-color);
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px var(--box-shadow-color);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 4rem;
+    margin-top: 2rem;
+    margin-left: 4rem;
+    flex-wrap: wrap;
+}
+
+.profile-picture {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    margin-right: 1rem;
+}
+
+.user-details {
+    text-align: center;
+    position: relative;
+    margin-left: 1rem;
+}
+
+.user-details h1, .user-details p {
+    margin: 1rem 1rem;
+    color: var(--text-color);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    background: var(--light-grey);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stats div {
+    margin: 0 1rem;
+}
+
+.user-works {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.works-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.work-item {
+    background-color: #ddd;
+    position: relative;
+    width: 180px;
+    flex-direction: column;
+    border-radius: 10px; /* Adds rounded corners */
+    display: flex;
+}
+
+.work-item img {
+    width: 100%;
+    height: auto;
+}
+
+.edit-button {
+    position: absolute;
+    right: 10px; /* Adjusted for closer placement */
+    top: 50%; /* Center vertically relative to the parent */
+    transform: translateY(-50%); /* Keep button vertically centered */
+    padding: 5px 10px;
+    background-color: grey;
+    color: white;
+    border: none;
+    border-radius: 5px; /* Adjusted for a smaller button */
+    cursor: pointer;
+    outline: none;
+}
+
+.fans-counter {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Hover and Focus Styles */
+.fans-counter:hover, .fans-counter:focus, button:hover, button:focus {
+    outline: none;
+    background-color: #ddd;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-picture {
+        margin: 0 auto 1rem;
+    }
+
+    .stats, .user-works {
+        padding: 0.5rem;
+    }
+
+    .works-list {
+        justify-content: space-between;
+    }
+}
+
+/* Accessibility Enhancements */
+a:focus, button:focus {
+    outline: 3px solid #333;
+    outline-offset: 2px;
+}
