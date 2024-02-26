@@ -211,8 +211,8 @@ a:focus, button:focus {
             {% for artwork in user.artworks %}
             <div class="work-item">
               <script>console.log({{ user.artworks[0][4] }});</script>
-                <img src="{{ user.artworks[0][4] }}" alt="{{ artwork.title }}">  
-                <div class="image-name">{{ artwork.title }}</div>              
+              <img src="{{ user.artworks[0][4] }}" alt="{{ artwork.title }}">
+              <div class="image-name">{{ artwork.title }}</div>              
             </div>
             {% endfor %}
         </div>
