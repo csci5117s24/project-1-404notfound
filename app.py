@@ -65,7 +65,6 @@ def home():
         {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
     ]
     
-    print("all art", all_arts)
     
     return render_template(
         "home.html",
@@ -87,12 +86,21 @@ def art(id):
                 "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
                 (user_id, id),
             )
+
     image_details = db.query_db(
-        "SELECT image_id, title, description, image_url, prompt FROM images WHERE image_id = %s", (id,), one=True
+        "SELECT image_id, title, description, image_url, prompt, user_id FROM images WHERE image_id = %s", (id,), one=True
     )
     comments = db.query_db(
         "SELECT comment_id, image_id, user_id, comment FROM comments WHERE image_id = %s", (id,)
     )
+
+    if 'user' in session and 'userinfo' in session['user']:
+        following = db.query_db(
+            "SELECT EXISTs (SELECT following_id FROM follows WHERE follower_id = %s AND following_id = %s)",(user_id,image_details[5])
+        )
+        print("follow id ",user_id,"following :",image_details[5])
+        print("result: ",following)
+
     comments_obj = []
     for row in comments:
         comments_obj.append({
@@ -227,8 +235,6 @@ def get_friends_work(user_id):
 def comments():
     if request.method == 'POST':
         comment = request.form.get('comment','')
-        print("comment")
-        print(comment)
         image_id = request.form.get('image_id')
         user_id = session['user']['userinfo'].get('user_id')
         db.modify_db(
