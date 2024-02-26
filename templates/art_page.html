@@ -19,7 +19,7 @@
                     <input type="text" id="comment" name="comment" placeholder="Add a comment..." class="comment-input">
                     <button type="submit" class="comment-submit">Post</button>
                 </form>
-                <div class="comments-list-container"> <!-- Container for the comments list -->
+                <div class="comments-list-container">
                     <ul class="comments-list">
                         {% for comment in comments %}
                             <li class="comment">User{{ comment.user_id }}: {{ comment.comment }}</li>
@@ -29,7 +29,6 @@
             </div>
         </div>
     </div>
-    <!-- You can add more .art-item blocks if needed -->
 </div>
 <script>
     function toggleHeart(element) {
