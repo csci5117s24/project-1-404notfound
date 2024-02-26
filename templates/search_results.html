@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid-container" id="gridContainer"></div>
+
+<script>
+  // Function to create a grid item
+  function createGridItem(name, id, imagePath) {
+    const link = document.createElement('a');
+    link.href = `/art/${id}`; // Construct the URL with the unique id
+    link.className = 'image-link';
+    // Create the outer div
+    const gridItem = document.createElement('div');
+    gridItem.className = 'grid-item';
+    // Create the img element for the art image
+    const image = document.createElement('img');
+    image.src = imagePath; // Set the image source to the provided imagePath
+    image.alt = name; // Use the art name as the alt text for accessibility
+    image.className = 'art-image-in-grid'; // Optional: add a class for styling the image
+    // Create the inner div for the image name
+    const imageName = document.createElement('div');
+    imageName.className = 'image-name';
+    imageName.textContent = name;
+    // Append the image and image name div to the grid item div
+    gridItem.appendChild(image);
+    gridItem.appendChild(imageName);
+    link.appendChild(gridItem);
+    // Return the complete grid item
+    return link;
+}
+
+  // Get the container element
+  const container = document.getElementById('gridContainer');
+
+  // Loop through the search results and create grid items
+  {% for result in results %}
+    const gridItem{{ loop.index }} = createGridItem('{{ result[1] }}', '{{ result[0] }}', '{{ result[3] }}');
+    container.appendChild(gridItem{{ loop.index }}); // Add the grid item to the container
+  {% endfor %}
+</script>
+{% endblock %}

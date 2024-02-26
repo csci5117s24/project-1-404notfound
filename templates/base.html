@@ -166,7 +166,9 @@
     </head>
     <body>
         <div id="header" class="header">
-            <h1>AI Art Museum</h1>
+            <a href="/" >
+                <button class="museum-link">AI Art Museum</button>
+            </a>
             <div class="search-container" id="searchContainer">
                 <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
                 <div class="search-history" id="searchHistory"></div>
@@ -228,6 +230,20 @@
         
             // Adjust on window resize
             window.onresize = adjustContentMargin;
+
+            function handleSearch(event) {
+                if (event.key === 'Enter') {
+                    var searchQuery = document.getElementById('searchBar').value.trim();
+                    if (searchQuery !== '') {
+                        window.location.href = '/search?query=' + encodeURIComponent(searchQuery);
+                    }
+                }
+            }
+        
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add event listener to search input field
+                document.getElementById('searchBar').addEventListener('keypress', handleSearch);
+            });
         </script>
         {% if session %}
             <div id="floatingActionButton" class="floating-button" onclick="toggleModal();">

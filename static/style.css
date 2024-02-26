@@ -57,3 +57,17 @@
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+.museum-link {
+    border: #808080;
+
+    background: none;
+    padding: 0;
+    font-size: 2em; /* Adjust font size as needed */
+    font-weight: bold; /* Adjust font weight as needed */
+    color: #000000; /* Inherit text color */
+    text-align: left; /* Adjust text alignment as needed */
+}
+.museum-link button:hover {
+    background-color: #525151; /* Change background color on hover */
+}
