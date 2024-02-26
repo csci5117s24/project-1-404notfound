@@ -47,20 +47,31 @@ scheduler.start()
 
 @app.route("/")
 def home():
+    # Fetch the artwork data
     most_viewed = get_most_viewed()
     trending = get_trending_artworks()
     most_liked = get_most_liked()
+
+    # Convert each list of tuples to a list of dictionaries
+    def convert_to_dicts(artworks):
+        return [
+            {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
+            for art in artworks
+        ]
+
     all_arts = [
-        {"name": "Trending Artworks", "artworks": trending},
-        {"name": "Most Liked Artworks", "artworks": most_liked},
-        {"name": "Most Viewed Artworks", "artworks": most_viewed},
+        {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+        {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+        {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
     ]
+    
+    print("all art", all_arts)
+    
     return render_template(
         "home.html",
         session=session.get("user"),
         pretty=json.dumps(session.get("user"), indent=4),
-        artworks = all_arts
-        
+        artworks=all_arts
     )
 
 @app.route('/art/<id>')
@@ -270,13 +281,24 @@ def update_description():
 def search():
     search_query = request.args.get('query', '')  # Get the search query from the URL parameters
     results = db.query_db("""
-        SELECT image_id, title, description, image_url
+        SELECT image_id, title, description,image_url
         FROM images
         WHERE to_tsvector('english', title || ' ' || description || ' ' || prompt) @@ plainto_tsquery('english', %s)
         ORDER BY ts_rank(to_tsvector('english', title || ' ' || description || ' ' || prompt), plainto_tsquery('english', %s)) DESC
         LIMIT 10;
     """, (search_query, search_query))
-    return render_template('search_results.html', results=results)
+
+    results_art = []
+    for row in results:
+        results_art.append({
+            "image_id": row[0],
+            "title": row[1],
+            "description": row[2],
+            "image_url": row[3]
+        })
+
+    result = [{"name": "Search Result", "artworks": results_art}]
+    return render_template('home.html', artworks=result)
 
 def some_route_function():
     image_path_art = url_for('static', filename='images/art.png')

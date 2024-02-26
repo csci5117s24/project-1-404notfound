@@ -7,10 +7,10 @@
     <h2>{{ category.name }}</h2>
     <div class="grid-container">
       {% for artwork in category.artworks %}
-      <a href="/art/{{ artwork[0] }}" class="image-link">
+      <a href="/art/{{ artwork.image_id }}" class="image-link">
         <div class="grid-item">
-          <img src="{{ artwork[4] }}" alt="{{ artwork[2] }}" class="art-image-in-grid">
-          <div class="image-name">{{ artwork[2] }}</div>
+          <img src="{{ artwork.image_url }}" alt="{{ artwork.title }}" class="art-image-in-grid">
+          <div class="image-name">{{ artwork.title }}</div>
         </div>
       </a>
       {% endfor %}
@@ -19,6 +19,7 @@
   {% endif %}
 {% endfor %}
 {% endblock %}
+
 
 <!-- <html>
   <head>
