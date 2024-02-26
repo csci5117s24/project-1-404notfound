@@ -268,16 +268,27 @@ def comments():
             "SELECT * FROM comments WHERE image_id = %s", (image_id,)
         )
         return comments
-@app.route('/like', methods=['POST'])   
+@app.route('/like', methods=['GET','POST'])   
 def like():
-    image_id = request.form.get('image_id')
-    user_id = session['user']['userinfo']['user_id']
-    #find the interaction and update
-    db.modify_db(
-        "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
-        (user_id, image_id),
-    )
-    return "success",200
+    if request.method == 'POST':
+        image_id = request.form.get('image_id')
+        user_id = session['user']['userinfo']['user_id']
+        #find the interaction and update
+        db.modify_db(
+            "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
+            (user_id, image_id),
+        )
+        return "success",200
+    else:
+        image_id = request.args.get('image_id')
+        user_id = session['user']['userinfo']['user_id']
+        #find the interaction and update
+        liek = db.query_db(
+            "SELECT liked FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, image_id)
+        )
+        return like[0]
+
+
     
         
 @app.route('/update_description', methods=['POST'])
@@ -351,12 +362,12 @@ def store_new_user(user_info):
     print(userID[0],flush=True)
     if userID:
         db.modify_db(
-            "UPDATE users SET profile_pic_url = %s WHERE user_id = %s;", (user_info["picture"], userID[0])
+            "UPDATE users SET profile_pic_url = %s , user_name = %s WHERE user_id = %s;", (user_info["picture"],user_info["name"], userID[0])
         )
     if userID is None:
         db.modify_db(
-            "INSERT INTO users (auth0_user_id, email,profile_pic_url) VALUES (%s, %s, %s)",
-            (user_info["sub"], user_info["email"],user_info["picture"]),
+            "INSERT INTO users (auth0_user_id, email,profile_pic_url,user_name) VALUES (%s, %s, %s,%s)",
+            (user_info["sub"], user_info["email"],user_info["picture"],user_info["name"]),
         )
         userID = db.query_db(
             "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
