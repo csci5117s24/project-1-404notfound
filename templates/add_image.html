@@ -2,27 +2,42 @@
 <!-- Modal -->
 <div id="myModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="toggleModal();">&times;</span>
         <form action="{{ url_for('upload_image')}}" method="POST" enctype="multipart/form-data">
             <div class = "left-side">
-                <label for="title">Title:</label><br>
-                <input type="text" id="title" name="title"><br>
-        
-                <label for="prompt">Prompt:</label><br>
-                <input type="text" id="prompt" name="prompt"><br>
-        
-                <label for="fileUpload">File Upload:</label><br>
-                <input type="file" id="fileUpload" name="image"><br><br>
-
+                <div class="upload-box">
+                    <label for="fileUpload" >Click to upload image</label><br>
+                    <input type="file" id="fileUpload" style="display: none;" name="image" onchange="displayImage(this)">
+                    <img id="imageDisplay" style="display:none; width: 100%; height: auto; border-radius: 15px;">
+                </div>
                 <input type="submit" value="Upload">
                 <input type="button" value="Cancel" onclick="toggleModal();">
             </div> 
             <div class = "right-side">
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title"><br>
                 <label for="description">description:</label><br>
                 <textarea id="description" name="description" rows="7" wrap="soft"></textarea>
+                <label for="prompt">Prompt:</label><br>
+                <textarea id="prompt" name="prompt" rows="7" wrap="soft"></textarea>
             </div>
         </form>
     </div>
+    <!-- <div class="modal-content">
+        <div class="upload-left-side">
+            <div class="upload-box" onclick="document.getElementById('fileUpload').click();">
+                Click to upload image
+                <input type="file" id="fileUpload" name="image" style="display: none;">
+            </div>
+        </div>
+        <div class="upload-right-side">
+            <input type="text" id="title" name="title" placeholder="Title">
+            <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
+            <input type="text" id="prompt" name="prompt" placeholder="Prompt">
+        </div>
+        <div class="upload-bottom">
+            <button type="button">Publish</button>
+        </div>
+    </div> -->
 </div>
 
 <script>
@@ -33,6 +48,23 @@ function toggleModal() {
         modal.style.display = 'block';
     } else {
         modal.style.display = 'none';
+    }
+}
+
+
+function displayImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var uploadBox = document.querySelector('.upload-box');
+            uploadBox.style.backgroundImage = `url(${e.target.result})`; // Set background image
+            uploadBox.style.backgroundSize = 'cover';
+            uploadBox.style.backgroundPosition = 'center';
+            document.querySelector('label[for="fileUpload"]').style.display = 'none'; // Hide the label
+        };
+
+        reader.readAsDataURL(input.files[0]); // Read the selected file
     }
 }
 
