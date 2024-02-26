@@ -327,10 +327,15 @@ def store_new_user(user_info):
     userID = db.query_db(
         "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
     )
+    print(userID[0],flush=True)
+    if userID:
+        db.modify_db(
+            "UPDATE users SET profile_pic_url = %s WHERE user_id = %s;", (user_info["picture"], userID[0])
+        )
     if userID is None:
         db.modify_db(
-            "INSERT INTO users (auth0_user_id, email) VALUES (%s, %s)",
-            (user_info["sub"], user_info["email"]),
+            "INSERT INTO users (auth0_user_id, email,profile_pic_url) VALUES (%s, %s, %s)",
+            (user_info["sub"], user_info["email"],user_info["picture"]),
         )
         userID = db.query_db(
             "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
