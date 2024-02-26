@@ -1,76 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<script type="text/javascript">
-  // Initialize the trendingart variable with data passed from Flask
-  var trending = {{ trending_artwork|tojson|safe }};
-  var most_liked = {{ most_liked_artwork|tojson|safe }};
-  var most_view =  {{ most_viewed_artwork|tojson|safe }};
-</script>
-
-<div class="scrollable-row">
-  <h2>Trending Artworks</h2>
-  <div class="grid-container" id="trendingContainer"></div>
-</div>
-
-<!-- Most Liked Artworks Row -->
-<div class="scrollable-row">
-  <h2>Most Liked Artworks</h2>
-  <div class="grid-container" id="mostLikedContainer"></div>
-</div>
-
-<!-- Most Viewed Artworks Row -->
-<div class="scrollable-row">
-  <h2>Most Viewed Artworks</h2>
-  <div class="grid-container" id="mostViewedContainer"></div>
-</div>
-
-<script>
-  // Function to create a grid item
-  function createGridItem(artwork) {
-    const link = document.createElement('a');
-    link.href = `/art/${artwork[0]}`; // Construct the URL with the unique id
-    link.className = 'image-link';
-
-    // Create the outer div
-    const gridItem = document.createElement('div');
-    gridItem.className = 'grid-item';
-
-    // Create the img element for the art image
-    const image = document.createElement('img');
-    image.src = artwork[4]; // Set the image source
-    image.alt = artwork[2]; // Use the artwork name as the alt text for accessibility
-    image.className = 'art-image-in-grid';
-
-    // Create the inner div for the image name
-    const imageName = document.createElement('div');
-    imageName.className = 'image-name';
-    imageName.textContent = artwork[2];
-
-    // Append the image and image name div to the grid item div
-    gridItem.appendChild(image);
-    gridItem.appendChild(imageName);
-    
-    // Append the grid item to the link
-    link.appendChild(gridItem);
-
-    // Return the complete grid item
-    return link;
-  }
-
-  function appendItemsToContainer(containerId, artworks) {
-    const container = document.getElementById(containerId);
-    artworks.forEach(artwork => {
-      const gridItem = createGridItem(artwork);
-      container.appendChild(gridItem);
-    });
-  }
-
-  // Call the function for each category
-  appendItemsToContainer('trendingContainer', trending);
-  appendItemsToContainer('mostLikedContainer', most_liked);
-  appendItemsToContainer('mostViewedContainer', most_view);
-</script>
+{% for category in artworks %}
+  {% if category.artworks %}
+  <div class="scrollable-row">
+    <h2>{{ category.name }}</h2>
+    <div class="grid-container">
+      {% for artwork in category.artworks %}
+      <a href="/art/{{ artwork[0] }}" class="image-link">
+        <div class="grid-item">
+          <img src="{{ artwork[4] }}" alt="{{ artwork[2] }}" class="art-image-in-grid">
+          <div class="image-name">{{ artwork[2] }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+{% endfor %}
 {% endblock %}
 
 <!-- <html>

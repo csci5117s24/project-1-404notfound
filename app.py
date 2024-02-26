@@ -50,25 +50,21 @@ def home():
     most_viewed = get_most_viewed()
     trending = get_trending_artworks()
     most_liked = get_most_liked()
-    print("trending")
-    print(trending)
-    print("most_viewed")
-    print(most_viewed)
-    print("most_liked")
-    print(most_liked)
+    all_arts = [
+        {"name": "Trending Artworks", "artworks": trending},
+        {"name": "Most Liked Artworks", "artworks": most_liked},
+        {"name": "Most Viewed Artworks", "artworks": most_viewed},
+    ]
     return render_template(
         "home.html",
         session=session.get("user"),
         pretty=json.dumps(session.get("user"), indent=4),
-        trending_artwork=trending,
-        most_viewed_artwork = most_viewed,
-        most_liked_artwork = most_liked
+        artworks = all_arts
         
     )
 
 @app.route('/art/<id>')
 def art(id):
-    print("in route art")
     #put into interaction db for viewed/
     if 'user' in session and 'userinfo' in session['user']:
         user_id = session['user']['userinfo'].get('user_id')
@@ -84,7 +80,6 @@ def art(id):
     image_details = db.query_db(
         "SELECT image_id, title, description, image_url FROM images WHERE image_id = %s", (id,), one=True
     )
-    print(image_details)
     return render_template('art_page.html', session=session.get("user"), image_details=image_details)
 
 @app.route("/user_profile")
@@ -366,7 +361,6 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            print("uploaded image");
             return 'Image uploaded successfully!', 200
     return render_template("upload.html")
 
