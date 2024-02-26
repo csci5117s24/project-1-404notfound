@@ -111,6 +111,20 @@ def art(id):
         })
     return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj)
 
+@app.route("/users/<id>")
+def other_user_profile(id):
+    user_id = id
+    user_data = {
+        'name': "temp",  
+        'email': get_user_email(user_id),  
+        'description': get_user_description(user_id),  # Store this in the session or database as well
+        'subscriptions': get_user_subscriptions(user_id),  
+        'fans': get_user_fans(user_id),  
+        'likes': get_user_likes(user_id),  # This should come from the database or session
+        'artworks': get_user_artworks(user_id)
+    }
+    return render_template('user_profile.html', user=user_data)
+
 @app.route("/user_profile")
 def user_profile():
     # Check if user data is in the session
@@ -134,6 +148,12 @@ def user_profile():
         'artworks': get_user_artworks(user_id)
     }
     return render_template('user_profile.html', user=user_data)
+
+def get_user_email(user_id):
+    email = db.query_db(
+        "SELECT email FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return email[0] if email else "No email"
 
 def get_user_description(user_id):
     description = db.query_db(
