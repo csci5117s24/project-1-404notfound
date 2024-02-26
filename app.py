@@ -123,11 +123,6 @@ def user_profile():
         'subscriptions': get_user_subscriptions(user_id),  
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
-    #     'artworks': [
-    #     {'title': 'Artwork 1', 'url': 'images/sample.png'},
-    #     {'title': 'Artwork 2', 'url': 'images/art.png'},
-    #     {'title': 'Artwork 3', 'url': 'images/sample.png'},
-    # ]
         'artworks': get_user_artworks(user_id)
     }
     return render_template('user_profile.html', user=user_data)
