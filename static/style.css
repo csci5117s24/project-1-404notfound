@@ -183,6 +183,61 @@
 .search-history a:hover {
     background-color: #666; /* Slightly darker shade for hover effect */
 }
+
+
+
+.art-item {
+    display: flex; /* Aligns the image container and art info side by side */
+}
+
+.image-container {
+    position: relative; /* For the absolute positioning of the heart icon */
+    flex-basis: 50%; /* Adjust based on your design preferences */
+    padding-right: 20px; /* Adds space to the right of the image */
+}
+
+
+.heart-box {
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid #ccc; /* Box border */
+    border-radius: 5px; /* Optional: for rounded corners */
+    cursor: pointer;
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 10; /* Ensures the icon is above the image */
+    user-select: none; /* Disables text selection */
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+}
+
+.heart-icon {
+    font-size: 24px; /* Adjust based on your design preferences */
+    user-select: none; /* Disables text selection */
+}
+
+.unliked {
+    color: #ccc; /* Light color for unliked state */
+}
+
+.liked {
+    color: #ff0000; /* Red color for liked state */
+}
+
+.art-image {
+    width: 100%; /* Makes the image responsive */
+    height: auto; /* Maintains the aspect ratio of the image */
+    border-radius: 15px; /* If you want rounded corners for the image */
+}
+
+.art-info {
+    flex-basis: 50%; /* Adjust based on your design preferences */
+    /* Add padding or margins as needed for spacing */
+}
+
+
+
 .art-container {
     flex-direction: column;
     justify-content: center; /* Vertically centers the content */
@@ -195,29 +250,8 @@
     padding: 20px; /* Adds some padding inside the container */
     box-sizing: border-box; /* Ensures padding and border are included in the width and height */
 }
-.art-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centers the title and description within the info box */
-    justify-content: center; /* Optionally centers content vertically */
-    padding: 15px;
-    text-align: center; /* Ensures text within the info box is centered */
-    flex: 1; /* Takes up the remaining space in the .art-item container */
-}
-.art-item {
-    display: flex; /* Enables flexbox for direct children, i.e., image and title */
-    align-items: center;
-    width: 100%; /* Use the full width of the container */
-    margin-bottom: 20px; /* Adds some space between art items if you have more than one */
-    border-radius: 25px;
-}
 
-.art-image {
-    flex: 1; /* Allows the image to grow and take up space */
-    max-width: 50%; /* Limits image width to half of the .art-item container */
-    height: auto; /* Maintains aspect ratio */
-    border-radius: 25px; /* Optional: Adds rounded corners to the image */
-}
+
 .art-image-in-grid {
     width: 100%; /* Makes the image take the full width of its container */
     height: auto; /* Maintains the aspect ratio of the image */

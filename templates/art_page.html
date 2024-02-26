@@ -3,7 +3,12 @@
 {%block content%}
 <div class="art-container" id="gridContainer">
     <div class="art-item">
-        <img src="{{ image_details[3] }}" alt="{{ image_details[1] }}" class="art-image">
+        <div class="image-container">
+            <div class="heart-box">
+                <div class="heart-icon unliked" onclick="toggleHeart(this)">♥</div>
+            </div>
+            <img src="{{ image_details[3] }}" alt="{{ image_details[1] }}" class="art-image">
+        </div>
         <div class="art-info">
             <div class="art-title">{{ image_details[1] }}</div>
             <p class="art-description">{{ image_details[2] }}</p>
@@ -26,4 +31,12 @@
     </div>
     <!-- You can add more .art-item blocks if needed -->
 </div>
+<script>
+    function toggleHeart(element) {
+        element.classList.toggle('liked');
+        element.classList.toggle('unliked');
+    }
+</script>
+
+
 {%endblock%}
