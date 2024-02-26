@@ -88,6 +88,18 @@
                 // Add event listener to search input field
                 document.getElementById('searchBar').addEventListener('keypress', handleSearch);
             });
+            document.addEventListener("DOMContentLoaded", function() {
+                var titleElements = document.querySelectorAll('.image-title');
+                titleElements.forEach(function(title) {
+                    var containerWidth = title.parentElement.offsetWidth;
+                    var titleWidth = title.offsetWidth;
+
+                    // If the title width is greater than the container, add the sliding effect
+                    if (titleWidth > containerWidth) {
+                        title.classList.add('sliding-text');
+                    }
+                });
+            });
         </script>
         {% if session %}
             <div id="floatingActionButton" class="floating-button" onclick="toggleModal();">

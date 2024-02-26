@@ -14,12 +14,14 @@
             <p class="art-description">{{ image_details[2] }}</p>
             <p class="art-description">{{ image_details[4] }}</p>
             <div class="comments-section">
+                {% if session %}
                 <form action = "{{url_for('comments')}}" method="POST" id="commentForm" enctype="multipart/form-data">
                     <input type="hidden" name="image_id" value="{{ image_details[0] }}">
                     <input type="text" id="comment" name="comment" placeholder="Add a comment..." class="comment-input">
                     <button type="submit" class="comment-submit">Post</button>
                 </form>
-                <div class="comments-list-container">
+                {% endif %}
+                <div class="comments-list-container"> <!-- Container for the comments list -->
                     <ul class="comments-list">
                         {% for comment in comments %}
                             <li class="comment">User{{ comment.user_id }}: {{ comment.comment }}</li>

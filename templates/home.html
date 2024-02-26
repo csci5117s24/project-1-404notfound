@@ -9,8 +9,12 @@
       {% for artwork in category.artworks %}
       <a href="/art/{{ artwork.image_id }}" class="image-link">
         <div class="grid-item">
-          <img src="{{ artwork.image_url }}" alt="{{ artwork.title }}" class="art-image-in-grid">
-          <div class="image-name">{{ artwork.title }}</div>
+          <div class="art-image-in-grid">
+            <img src="{{ artwork.image_url }}" alt="{{ artwork.title }}">
+          </div>
+          <div class="image-name">
+            <span class="image-title">{{ artwork.title }}</span>
+          </div>
         </div>
       </a>
       {% endfor %}
