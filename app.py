@@ -88,7 +88,7 @@ def art(id):
                 (user_id, id),
             )
     image_details = db.query_db(
-        "SELECT image_id, title, description, image_url FROM images WHERE image_id = %s", (id,), one=True
+        "SELECT image_id, title, description, image_url, prompt FROM images WHERE image_id = %s", (id,), one=True
     )
     comments = db.query_db(
         "SELECT comment_id, image_id, user_id, comment FROM comments WHERE image_id = %s", (id,)
