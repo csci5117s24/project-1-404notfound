@@ -7,7 +7,7 @@
         <div class="art-info">
             <div class="art-title">{{ image_details[1] }}</div>
             <p class="art-description">{{ image_details[2] }}</p>
-            <p class="art-description">This is the prompt used to generated the art</p>
+            <p class="art-description">{{ image_details[4] }}</p>
             <div class="comments-section">
                 <form action = "{{url_for('comments')}}" method="POST" id="commentForm" enctype="multipart/form-data">
                     <input type="hidden" name="image_id" value="{{ image_details[0] }}">
