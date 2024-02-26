@@ -82,7 +82,6 @@ def art(id):
         viewd = db.query_db(
             "SELECT * FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, id),one=True
         )
-        print(viewd)
         if user_id and not viewd:
             db.modify_db(
                 "INSERT INTO image_interactions (user_id, image_id, viewed) VALUES (%s, %s, TRUE)",
@@ -91,7 +90,18 @@ def art(id):
     image_details = db.query_db(
         "SELECT image_id, title, description, image_url FROM images WHERE image_id = %s", (id,), one=True
     )
-    return render_template('art_page.html', session=session.get("user"), image_details=image_details)
+    comments = db.query_db(
+        "SELECT comment_id, image_id, user_id, comment FROM comments WHERE image_id = %s", (id,)
+    )
+    comments_obj = []
+    for row in comments:
+        comments_obj.append({
+            "comment_id": row[0],
+            "image_id": row[1],
+            "user_id": row[2],
+            "comment": row[3]
+        })
+    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj)
 
 @app.route("/user_profile")
 def user_profile():
@@ -221,9 +231,11 @@ def get_friends_work(user_id):
 #ajax?
 def comments():
     if request.method == 'POST':
-        comment = request.form.get('comment')
+        comment = request.form.get('comment','')
+        print("comment")
+        print(comment)
         image_id = request.form.get('image_id')
-        user_id = session['user']['userinfo']['user_id']
+        user_id = session['user']['userinfo'].get('user_id')
         db.modify_db(
             "INSERT INTO comments (user_id, image_id, comment) VALUES (%s, %s, %s)",
             (user_id, image_id, comment),

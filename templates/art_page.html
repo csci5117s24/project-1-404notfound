@@ -9,28 +9,16 @@
             <p class="art-description">{{ image_details[2] }}</p>
             <p class="art-description">This is the prompt used to generated the art</p>
             <div class="comments-section">
-                <form id="commentForm">
-                    <input type="text" id="commentInput" placeholder="Add a comment..." class="comment-input">
+                <form action = "{{url_for('comments')}}" method="POST" id="commentForm" enctype="multipart/form-data">
+                    <input type="hidden" name="image_id" value="{{ image_details[0] }}">
+                    <input type="text" id="comment" name="comment" placeholder="Add a comment..." class="comment-input">
                     <button type="submit" class="comment-submit">Post</button>
                 </form>
                 <div class="comments-list-container"> <!-- Container for the comments list -->
                     <ul class="comments-list">
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
-                        <li class="comment">User1: This is amazing!</li>
-                        <li class="comment">User2: Love the colors in this piece.</li>
+                        {% for comment in comments %}
+                            <li class="comment">User{{ comment.user_id }}: {{ comment.comment }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
