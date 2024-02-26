@@ -328,6 +328,7 @@ def logout():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload_image():
+    
     if "user" not in session:
         return redirect(url_for("login"))
     if request.method == "POST":
@@ -341,12 +342,13 @@ def upload_image():
             title = request.form.get("title", "")
             description = request.form.get("description", "")
             prompt = request.form.get("prompt", "")
-            user_id = session["user"]["user_id"] 
+            user_id = session['user']['userinfo'].get('user_id')
             # user_id = 1
             db.modify_db(
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
+            print("uploaded image");
             return 'Image uploaded successfully!', 200
     return render_template("upload.html")
 

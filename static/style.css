@@ -38,7 +38,22 @@
     background-color: #fefefe;
     margin: 10% auto; /* 10% from the top and centered */
     padding: 20px;
+    width: 25%; /* Full width */
+    height: 20%; /* Full height */
     border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+}
+
+.left-side, .right-side {
+    width: 50%;
+    float: left;
+}
+
+#description {
+    height: 100px;
+    width: 100%; /* Full width of its container */
+    box-sizing: border-box; /* Include padding and border in the width */
+    white-space: pre-wrap;
+    word-break: break-all;
 }

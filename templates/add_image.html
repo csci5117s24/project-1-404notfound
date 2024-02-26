@@ -3,18 +3,24 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="toggleModal();">&times;</span>
-        <form>
-            <label for="title">Title:</label><br>
-            <input type="text" id="title" name="title"><br>
-    
-            <label for="prompt">Prompt:</label><br>
-            <input type="text" id="prompt" name="prompt"><br>
-    
-            <label for="fileUpload">File Upload:</label><br>
-            <input type="file" id="fileUpload" name="fileUpload"><br><br>
-    
-            <input type="button" value="Upload">
-            <input type="button" value="Cancel" onclick="toggleModal();">
+        <form action="{{ url_for('upload_image')}}" method="POST" enctype="multipart/form-data">
+            <div class = "left-side">
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title"><br>
+        
+                <label for="prompt">Prompt:</label><br>
+                <input type="text" id="prompt" name="prompt"><br>
+        
+                <label for="fileUpload">File Upload:</label><br>
+                <input type="file" id="fileUpload" name="image"><br><br>
+
+                <input type="submit" value="Upload">
+                <input type="button" value="Cancel" onclick="toggleModal();">
+            </div> 
+            <div class = "right-side">
+                <label for="description">description:</label><br>
+                <textarea id="description" name="description" rows="7" wrap="soft"></textarea>
+            </div>
         </form>
     </div>
 </div>
