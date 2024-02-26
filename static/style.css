@@ -1,3 +1,8 @@
+
+.scrollable-row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
 .floating-button {
     position: fixed;
     bottom: 20px;

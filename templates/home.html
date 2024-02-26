@@ -1,50 +1,58 @@
-{%extends 'base.html' %}
+{% extends 'base.html' %}
 
-{%block content%}
-<div class="grid-container" id="gridContainer"></div>
+{% block content %}
+<script type="text/javascript">
+  // Initialize the trendingart variable with data passed from Flask
+  var trendingart = {{ artwork|tojson|safe }};
+</script>
+
+<div class="scrollable-row">
+  <div class="grid-container" id="gridContainer"></div>
+</div>
 
 <script>
-
-  const imageData = [
-    { id: '1', name: 'Artwork 1'},
-    { id: '2', name: 'Artwork 2'},
-    // Add more images as needed
-  ];
   // Function to create a grid item
-  function createGridItem(name, id, imagePath) {
+  function createGridItem(artwork) {
     const link = document.createElement('a');
-    link.href = `/art/${id}`; // Construct the URL with the unique id
+    link.href = `/art/${artwork[0]}`; // Construct the URL with the unique id
     link.className = 'image-link';
+
     // Create the outer div
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
+
     // Create the img element for the art image
     const image = document.createElement('img');
-    image.src = "{{ url_for('static', filename='images/sample.png') }}"; // Set the image source to the provided imagePath
-    image.alt = name; // Use the art name as the alt text for accessibility
-    image.className = 'art-image-in-grid'; // Optional: add a class for styling the image
+    image.src = artwork[4]; // Set the image source
+    image.alt = artwork[2]; // Use the artwork name as the alt text for accessibility
+    image.className = 'art-image-in-grid';
+
     // Create the inner div for the image name
     const imageName = document.createElement('div');
     imageName.className = 'image-name';
-    imageName.textContent = name;
+    imageName.textContent = artwork[2];
+
     // Append the image and image name div to the grid item div
     gridItem.appendChild(image);
     gridItem.appendChild(imageName);
+    
+    // Append the grid item to the link
     link.appendChild(gridItem);
+
     // Return the complete grid item
     return link;
-}
+  }
 
   // Get the container element
   const container = document.getElementById('gridContainer');
 
-  // Loop through the image data array and create grid items
-  imageData.forEach(data => {
-    const gridItem = createGridItem(data.name, data.id);
+  // Loop through the trendingart array and create grid items
+  trendingart.forEach(artwork => {
+    const gridItem = createGridItem(artwork);
     container.appendChild(gridItem); // Add the grid item to the container
   });
 </script>
-{%endblock%}
+{% endblock %}
 
 <!-- <html>
   <head>
