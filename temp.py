@@ -9,15 +9,9 @@ DATABASE_URL = os.getenv('EXTERNAL_DATABASE_URL')
 
 TABLES_SETUP_SQL = [
     """
-    DELETE FROM descriptions;
-    """,
-     """
-    CREATE TABLE IF NOT EXISTS descriptions (
-        description_id SERIAL PRIMARY KEY,
-        user_id INT NOT NULL,
-        description TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-    );
+    ALTER TABLE users
+    ADD COLUMN profile_pic_url VARCHAR(255);
+
     """
 ]
 
