@@ -12,12 +12,14 @@
         <!-- Use session data for user details -->
         <h1>{{ user.name if user.name else 'Default Name'}}</h1>
         <p>{{ user.email if user.email else 'defaultemail@example.com' }}</p>
-      </div>
-    </div>
-    <div class="user-details">
         <p id="userDescription">{{ user.description if user.description else 'Default description here...' }}</p>
         <button class="edit-button" onclick="editDescription()">Edit</button>
       </div>
+  </div>
+  <!---- <div class="user-details">
+        <p id="userDescription">{{ user.description if user.description else 'Default description here...' }}</p>
+        <button class="edit-button" onclick="editDescription()">Edit</button>
+      </div>-->
 
       <script>
         function editDescription() {
