@@ -102,8 +102,6 @@ def art(id):
         following = db.query_db(
             "SELECT EXISTs (SELECT following_id FROM follows WHERE follower_id = %s AND following_id = %s)",(user_id,image_details[5])
         )
-        print("follow id ",user_id,"following :",image_details[5])
-        print("result: ",following)
 
     comments_obj = []
     for row in comments:
@@ -129,16 +127,7 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-
-    try:
-        is_following = check_follow(session.get('user')['userinfo']['user_id'], id)
-        follower_id = session.get('user')['userinfo']['user_id']
-    except:
-        is_following = False
-        follower_id = -1
-    print("is_following: ", is_following)
-    
-    return render_template('user_profile.html', follower_id=follower_id, user=user_data, is_following=is_following)
+    return render_template('user_profile.html', user=user_data)
 
 @app.route("/user_profile")
 def user_profile():
@@ -151,7 +140,6 @@ def user_profile():
 
     # Assuming the user_info contains all the necessary data
     user_id = user_info['userinfo']['user_id']
-    print("user_id:",user_id, flush=True)
     
     user_data = {
         'name': get_user_name(user_id),  
@@ -202,7 +190,6 @@ def get_user_artworks(user_id):
     artworks = db.query_db(
         "SELECT * FROM images WHERE user_id = %s", (user_id,)
     )
-    print("artworks:",artworks, flush=True)
     return artworks
 def get_user_profile_pic(user_id):
     profile_pic = db.query_db(
@@ -363,9 +350,32 @@ def like():
         )
         return like[0]
 
+@app.route('/delete-artwork/<artwork_id>', methods=['DELETE'])
+def delete_artwork(artwork_id):
+    # Logic to delete the artwork from the database
+    success = delete_artwork_from_db(artwork_id)
 
-    
-        
+    if success:
+        return 'Artwork deleted successfully', 200
+    else:
+        # This could mean the artwork did not exist or there was a problem with the deletion
+        return 'Artwork not found or could not be deleted', 404
+
+def delete_artwork_from_db(artwork_id):
+    try:
+        cursor = db.query_db(
+            "DELETE FROM images WHERE image_id = %s", (artwork_id,),return_data=False
+        )
+        # Assuming db.query_db gives you a cursor or similar object from which you can get affected rows
+        affected_rows = cursor
+        if affected_rows > 0:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error deleting artwork: {e}")
+        return False
+ 
 @app.route('/update_description', methods=['POST'])
 def update_description():
     new_description = request.form.get('description')
@@ -434,7 +444,6 @@ def store_new_user(user_info):
     userID = db.query_db(
         "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
     )
-    print(userID[0],flush=True)
     if userID:
         db.modify_db(
             "UPDATE users SET profile_pic_url = %s , user_name = %s WHERE user_id = %s;", (user_info["picture"],user_info["name"], userID[0])
@@ -497,7 +506,7 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            return 'Image uploaded successfully!', 200
+            return redirect(url_for("user_profile"))
     return render_template("upload.html")
 
 

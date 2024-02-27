@@ -20,14 +20,19 @@ def put_db_connection(conn):
 def close_db_connections():
     db_pool.closeall()
 
-def query_db(query, args=(), one=False):
+def query_db(query, args=(), one=False, return_data=True):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(query, args)
-    result = cur.fetchall()
+    if return_data:
+        result = cur.fetchall()
+        return_value = (result[0] if result else None) if one else result
+    else:
+        conn.commit()  # Make sure to commit changes for non-returning queries
+        return_value = cur.rowcount
     cur.close()
     put_db_connection(conn)
-    return (result[0] if result else None) if one else result
+    return return_value
 
 def modify_db(query, args=()):
     conn = get_db_connection()

@@ -28,6 +28,22 @@
   </div>
 
       <script>
+        function deleteArtwork(artworkId) {
+          if (!confirm('Are you sure you want to delete this artwork?')) {
+            return; // Stop if the user cancels the action.
+          }
+        
+          // Example request, adjust according to your server setup
+          fetch(`/delete-artwork/${artworkId}`, { method: 'DELETE' })
+            .then(response => {
+              if (response.ok) {
+                window.location.reload(); // Reload the page to reflect the deletion
+              } else {
+                alert('Failed to delete artwork.');
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        }
         function editDescription() {
           var currentDescription = document.getElementById('userDescription').innerText;
           var newDescription = prompt("Edit your description:", currentDescription);
@@ -104,27 +120,16 @@
       <div>Likes: {{user.likes  }}</div>
     </div>
 
-    <!-- <div class="user-works">
-        <h2>My Works</h2>
-        <div class="works-list">
-            {% for artwork in user.artworks %}
-            <div class="work-item">
-              <script>console.log({{ user.artworks[0][4] }});</script>
-              <img src="{{ artwork[4] }}" alt="{{ artwork.title }}">
-              <div class="image-name">{{ artwork.title }}</div>              
-            </div>
-            {% endfor %}
-        </div>
-    </div>    -->
-
     <div class="user-works">
       <h2>My Works</h2>
       <div class="grid-container">
-        {% for artwork in user.artworks %}
+      {% for artwork in user.artworks %}
         <a href="/art/{{ artwork[0] }}" class="image-link">
           <div class="grid-item">
             <div class="art-image-in-grid">
-              <img src="{{ artwork[4] }}" alt="{{ artwork.title }}">
+              <img src="{{ artwork[4] }}" alt="{{ artwork[1] }}">
+              <!-- Delete button, initially hidden -->
+              <button class="delete-btn" onclick="deleteArtwork('{{ artwork[0] }}')">X</button>
             </div>
             <div class="image-name">
               <span class="image-title">{{ artwork[2] }}</span>
