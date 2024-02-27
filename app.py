@@ -347,9 +347,21 @@ def comments():
     else:
         image_id = request.args.get('image_id')
         comments = db.query_db(
-            "SELECT * FROM comments WHERE image_id = %s", (image_id,)
+            "SELECT * FROM comments WHERE image_id = %s", (image_id,)           
         )
+
+        '''user_id = session['user']['userinfo'].get('user_id')
+        user_profile_pic = db.query_db(
+            "SELECT profile_pic_url FROM users WHERE user_id = %s", (user_id,), one=True
+        )
+        # Assuming you need to get other data as well for the 'art_page.html'
+        art_details = db.query_db(
+            "SELECT * FROM images WHERE image_id = %s", (image_id,), one=True
+        )
+        #return comments
+        return render_template('art_page.html', comments=comments, art=art_details, user_profile_pic=user_profile_pic)'''
         return comments
+
 @app.route('/like', methods=['GET','POST'])   
 def like():
     if request.method == 'POST':
