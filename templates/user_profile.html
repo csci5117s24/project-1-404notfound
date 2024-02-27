@@ -112,8 +112,11 @@
     
     <div class="stats">
       <!-- var rawData = {{ user | tojson | safe }};
-      <script>console.log(rawData);</script> -->
-      <div>Subscriptions: {{ user.subscriptions }}</div>
+      <script>console.log(rawData);</script> 
+      <div>Subscriptions: {{ user.subscriptions }}</div> -->
+      <div class="clickable-text" onclick="location.href='/user/following';">
+        Subscriptions: <span class="subscriptions-number">{{ user.subscriptions }}</span>
+      </div>
       <div class="clickable-text" onclick="location.href='/user/fans';">
         Fans: <span class="fans-number">{{ user.fans }}</span>
       </div>
