@@ -129,6 +129,8 @@
     gap: 20px; /* Space between grid items */
     padding: 20px; /* Padding around the grid */
     padding-top: 50px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 400px; /* Adjust based on your preference */
 }
 .grid-item {
     background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
