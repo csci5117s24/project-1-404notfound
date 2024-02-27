@@ -1,0 +1,51 @@
+/* 基础布局样式 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+}
+
+.art-container h2 {
+    color: #333;
+    text-align: center;
+}
+
+/* 关注用户列表容器样式 */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* 单个用户展示块样式 */
+.grid-item {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+}
+
+/* 用户信息样式 */
+.user-info {
+    padding: 15px;
+    color: #555;
+    font-size: 14px;
+}
+
+.user-info p {
+    margin: 10px 0;
+}
+
+/* 最后一个段落（Followed Date）的样式略有不同，以引起注意 */
+.user-info p:last-child {
+    color: #333;
+    font-weight: bold;
+}

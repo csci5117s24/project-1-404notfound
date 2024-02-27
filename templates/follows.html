@@ -23,14 +23,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
 function createUserElements(container, userData) {
     userData.forEach(function(user) {
         let userDiv = document.createElement('div');
+        let userProfileUrl = `/users/${encodeURIComponent(user[0])}`;
         userDiv.classList.add('grid-item');
         userDiv.innerHTML = `
             <div class="user-info">
-                <p>User ID: ${user[0]}</p>
+                <p>User ID: <a href="${userProfileUrl}">${user[0]}</a></p>
                 <p>Email: ${user[1]}</p>
                 <p>Followed Date: ${user[2]}</p>
             </div>
         `;
+
+
         
         container.appendChild(userDiv);
     });
