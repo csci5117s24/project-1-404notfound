@@ -1,6 +1,11 @@
 .scrollable-row {
     overflow-x: auto;
     white-space: nowrap;
+    scrollbar-width: thin; /* Makes the scrollbar thin */
+    scrollbar-color: #888 #fff; /* Styling the scrollbar with a darker thumb and lighter track */
+    margin-bottom: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 .scrollable-row:first-of-type {
     margin-top: 70px; /* Adjust based on actual header height plus desired spacing */
@@ -112,6 +117,7 @@
     position: relative; /* Ensures footer is at the bottom */
     bottom: 0;
     left: 0;
+    margin-top: 50px;
 }
 .login {
     cursor: pointer;
@@ -140,16 +146,29 @@
     display: flex;
     width: 100%; 
     height: auto;
+    max-width: 300px; /* Maximum width */
+    margin: 20px auto;
+    align-items: center; /* Centers items horizontally (since it's column direction) */
+    justify-content: center;
+}
+@media (max-width: 768px) {
+    .grid-item {
+        margin-left: 10px; /* Smaller margins for smaller screens */
+        margin-right: 10px;
+    }
 }
 
 .image-name {
+    margin-left: 30px;
     position: absolute;
     bottom: 0;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
     text-align: center;
-    padding: 5px 0; /* Padding above and below the text */
+    padding: 5px 5px; /* Padding above and below the text */
     overflow: hidden; /* Ensures that the text doesn't spill out of the container */
+    text-overflow: ellipsis; /* Adds an ellipsis to overflowing text */
+    white-space: nowrap;
 }
 
 .sliding-text {
@@ -418,6 +437,7 @@
     padding-top: 50px;
     overflow-x: auto;
     max-height: 200px;
+    flex: 0 0 auto;
 }
 
 .user-icon {
