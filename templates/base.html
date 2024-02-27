@@ -19,7 +19,11 @@
             </div>
             {% if session %}
                 <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
-                <a href="/user_profile" class="user-icon"></a> 
+                {%if 'userinfo' in session%}
+                <a href="/user_profile" title="View Profile">
+                    <img src="{{ session['userinfo'].get('picture', 'default_picture_url') }}" class="user-profile-pic">
+                </a>
+                {%endif%}
             {% else %}
                 <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
             {% endif %}

@@ -147,12 +147,12 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-    return render_template('user_profile.html', session=session.get("user"), user=user_data)
+    return render_template('user_profile.html', user=user_data,session=session.get("user"))
 
 @app.route("/user_profile")
 def user_profile():
     # Check if user data is in the session
-    user_info = session.get('user')
+    user_info = session.get("user")
     
     if not user_info:
         # Redirect to login page or handle the case where there is no user info
@@ -172,7 +172,7 @@ def user_profile():
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': user_id
     }
-    return render_template('user_profile.html', session=session.get("user"), user=user_data)
+    return render_template('user_profile.html', user=user_data,session=session.get('user'))
 
 def get_user_email(user_id):
     email = db.query_db(
@@ -343,7 +343,7 @@ def comments():
             "INSERT INTO comments (user_id, image_id, comment) VALUES (%s, %s, %s)",
             (user_id, image_id, comment),
         )
-        return redirect(url_for('art', id=image_id))
+        return redirect(url_for('art', id=image_id,))
     else:
         image_id = request.args.get('image_id')
         comments = db.query_db(
@@ -437,7 +437,7 @@ def search():
         })
 
     result = [{"name": "Search Result", "artworks": results_art}]
-    return render_template('home.html', artworks=result)
+    return render_template('home.html', session=session.get("user"), artworks=result)
 
 def some_route_function():
     image_path_art = url_for('static', filename='images/art.png')
@@ -526,8 +526,8 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            return redirect(url_for("user_profile"))
-    return render_template("upload.html")
+            return redirect(url_for("user_profile",session=session.get("user")))
+    return render_template("upload.html",session=session.get("user"))
 
 
 def upload_image_to_s3(image):
@@ -571,7 +571,7 @@ def show_fans():
     print(following)  # 这将在服务器的控制台上打印following列表
 
 
-    return render_template('follows.html', following=following, followers=followers)
+    return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
 @app.route('/user/subs')
 def show_subscribtion():
     user_info = session.get('user')
@@ -602,7 +602,7 @@ def show_subscribtion():
     print(following)  # 这将在服务器的控制台上打印following列表
 
 
-    return render_template('subs.html', following=following, followers=followers)
+    return render_template('subs.html', following=following, followers=followers,session=session.get("user"),)
 ##############
 
 if __name__ == "__main__":
