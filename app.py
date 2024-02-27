@@ -569,6 +569,21 @@ def logout():
         )
     )
 
+@app.route('/api/generate-image/', methods=['POST'])
+def generate_image():
+    data = request.get_json()  # Access the JSON data sent by the client
+    prompt = data['promptText']
+    client = OpenAI()
+    response = client.images.generate(
+        model="dall-e-2",
+        prompt=prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+    )
+    image_url = response.data[0].url
+    return jsonify({"image_url": image_url})
+
 @app.route("/upload", methods=["GET", "POST"])
 def upload_image():
     
@@ -578,21 +593,34 @@ def upload_image():
         if 'image' not in request.files:
             return "No file part", 400
         image = request.files['image']
+        image_url = request.form.get("imageUrl", "")
+        print("image_url", image_url)
+        print("image", image)
         if image.filename == '':
-            return "No selected file",  400
-        if image:
-            image_url = upload_image_to_s3(image)
+            if image_url == '':
+                return "No selected file",  400
+        
+        if image or image_url:
+            if image.filename == '':
+                image_url = image_url
+            else:
+                image_url = upload_image_to_s3(image)
             title = request.form.get("title", "")
             description = request.form.get("description", "")
             prompt = request.form.get("prompt", "")
             user_id = session['user']['userinfo'].get('user_id')
-            # user_id = 1
+            print(title)
+            print(description)
+            print(prompt)
+            print(user_id)
+            print(image_url)
             db.modify_db(
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
+
             return redirect(url_for("user_profile",session=session.get("user")))
-    return render_template("upload.html",session=session.get("user"))
+    return redirect(url_for("user_profile",session=session.get("user")))
 
 
 def upload_image_to_s3(image):

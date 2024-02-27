@@ -144,8 +144,10 @@
             <div class="art-image-in-grid">
               <img src="{{ artwork[4] }}" alt="{{ artwork[1] }}">
               <!-- Delete button, initially hidden -->
-              {% if session['userinfo']['user_id'] == user.user_id %}
-              <button class="delete-btn" onclick="deleteArtwork('{{ artwork[0] }}')">X</button>
+              {% if session['userinfo'] %}
+                {% if session['userinfo']['user_id'] == user.user_id %}
+                  <button class="delete-btn" onclick="deleteArtwork('{{ artwork[0] }}')">X</button>
+                {%endif%}
               {%endif%}
             </div>
             <div class="image-name">

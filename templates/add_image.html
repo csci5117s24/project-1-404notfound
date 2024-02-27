@@ -18,26 +18,12 @@
                 <label for="description">description:</label><br>
                 <textarea id="description" name="description" rows="7" wrap="soft"></textarea>
                 <label for="prompt">Prompt:</label><br>
-                <textarea id="prompt" name="prompt" rows="7" wrap="soft"></textarea>
+                <textarea id="prompt" name="prompt" rows="7" wrap="soft"></textarea> 
+                <button type="button" id = 'generateButton' onclick="generateImage(event)">Generate</button>
+                <input type="hidden" id = "imageUrl" name="imageUrl" placeholder="">
             </div>
         </form>
     </div>
-    <!-- <div class="modal-content">
-        <div class="upload-left-side">
-            <div class="upload-box" onclick="document.getElementById('fileUpload').click();">
-                Click to upload image
-                <input type="file" id="fileUpload" name="image" style="display: none;">
-            </div>
-        </div>
-        <div class="upload-right-side">
-            <input type="text" id="title" name="title" placeholder="Title">
-            <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
-            <input type="text" id="prompt" name="prompt" placeholder="Prompt">
-        </div>
-        <div class="upload-bottom">
-            <button type="button">Publish</button>
-        </div>
-    </div> -->
 </div>
 
 <script>
@@ -74,5 +60,35 @@ window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
     }
+}
+function generateImage(event){
+    //event.preventDefault(); // Prevent form submission
+    var promptText = document.getElementById('prompt').value;
+    
+    var url = '/api/generate-image/';
+    const data = {
+        promptText: promptText
+    };
+    console.log(data);
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // Include other necessary headers, such as authorization tokens
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => {
+        // // Assuming you have an img element with id 'generatedImage'
+        // var imageElement = document.getElementById('generatedImage');
+        console.log(data.image_url); // Set the src attribute to the image URL
+        var uploadBox = document.querySelector('.upload-box');
+        uploadBox.style.backgroundImage = `url(${data.image_url})`; // Set background image from the URL
+        uploadBox.style.backgroundSize = 'cover';
+        uploadBox.style.backgroundPosition = 'center';
+        document.querySelector('label[for="fileUpload"]').style.display = 'none'; // Hide the label if needed
+        document.getElementById('imageUrl').value = data.image_url;
+    })
 }
 </script>
