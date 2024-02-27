@@ -121,8 +121,11 @@ def other_user_profile(id):
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
         'artworks': get_user_artworks(user_id),
-        'profile_pic_url': get_user_profile_pic(user_id)
+        'profile_pic_url': get_user_profile_pic(user_id),
+        'user_id': int(id)
     }
+    print("session id: ", type(session.get('user')['userinfo']['user_id']))
+    print("id: ", type(id))
     return render_template('user_profile.html', user=user_data)
 
 @app.route("/user_profile")
@@ -146,8 +149,8 @@ def user_profile():
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
         'artworks': get_user_artworks(user_id),
-        'profile_pic_url': get_user_profile_pic(user_id)
-
+        'profile_pic_url': get_user_profile_pic(user_id),
+        'user_id': user_id
     }
     return render_template('user_profile.html', user=user_data)
 
