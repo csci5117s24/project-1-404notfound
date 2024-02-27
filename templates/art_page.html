@@ -4,9 +4,11 @@
 <div class="art-container" id="gridContainer">
     <div class="art-item">
         <div class="image-container">
-            <div class="heart-box">
-                <div class="heart-icon {{ 'liked' if is_liked else 'unliked' }}" data-liked="{{ 'true' if is_liked else 'false' }}" onclick="toggleHeart(this, '{{ image_details.image_id }}', '{{ user_id }}')">♥</div>
-            </div>
+            {% if session['userinfo'] %}
+                <div class="heart-box">
+                    <div class="heart-icon {{ 'liked' if is_liked else 'unliked' }}" data-liked="{{ 'true' if is_liked else 'false' }}" onclick="toggleHeart(this, '{{ image_details.image_id }}', '{{ user_id }}')">♥</div>
+                </div>
+            {% endif %}
             <img src="{{ image_details.image_url }}" alt="{{ image_details.title }}" class="art-image">
         </div>
         <div class="art-info">
