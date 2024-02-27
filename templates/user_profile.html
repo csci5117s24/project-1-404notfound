@@ -6,7 +6,7 @@
       <!-- Check if the session has a user and a profile picture -->
       {% if session.user and session.user.userinfo.picture %}
       <!-- Profile picture -->
-      <img class="profile-picture" src="{{ session['user']['userinfo']['picture'] if session.get('user') and session.get('user').get('userinfo') and session.get('user').get('userinfo').get('picture') else url_for('static', filename='images/sample.png') }}" alt="{{ session.get('user').get('name', 'Default User Name') }}'s Profile Picture">
+      <img class="profile-picture" src={{ user.profile_pic_url}} alt="{{ session.get('user').get('name', 'Default User Name') }}'s Profile Picture">
       {% endif %}
       <div class="user-details">
         <!-- Use session data for user details -->

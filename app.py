@@ -75,7 +75,6 @@ def home():
 
 @app.route('/art/<id>')
 def art(id):
-    #put into interaction db for viewed/
     if 'user' in session and 'userinfo' in session['user']:
         user_id = session['user']['userinfo'].get('user_id')
         viewd = db.query_db(
@@ -115,13 +114,14 @@ def art(id):
 def other_user_profile(id):
     user_id = id
     user_data = {
-        'name': "temp",  
+        'name': get_user_name(user_id),  
         'email': get_user_email(user_id),  
         'description': get_user_description(user_id),  # Store this in the session or database as well
         'subscriptions': get_user_subscriptions(user_id),  
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
-        'artworks': get_user_artworks(user_id)
+        'artworks': get_user_artworks(user_id),
+        'profile_pic_url': get_user_profile_pic(user_id)
     }
     return render_template('user_profile.html', user=user_data)
 
@@ -139,13 +139,15 @@ def user_profile():
     print("user_id:",user_id, flush=True)
     
     user_data = {
-        'name': user_info['userinfo']['name'],  
-        'email': user_info['userinfo']['email'],  
+        'name': get_user_name(user_id),  
+        'email': get_user_email(user_id),  
         'description': get_user_description(user_id),  # Store this in the session or database as well
         'subscriptions': get_user_subscriptions(user_id),  
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
-        'artworks': get_user_artworks(user_id)
+        'artworks': get_user_artworks(user_id),
+        'profile_pic_url': get_user_profile_pic(user_id)
+
     }
     return render_template('user_profile.html', user=user_data)
 
@@ -154,6 +156,11 @@ def get_user_email(user_id):
         "SELECT email FROM users WHERE user_id = %s", (user_id,),one=True
     )
     return email[0] if email else "No email"
+def get_user_name(user_id):
+    name = db.query_db(
+        "SELECT user_name FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return name[0] if name else "No name"
 
 def get_user_description(user_id):
     description = db.query_db(
@@ -182,6 +189,12 @@ def get_user_artworks(user_id):
     )
     print("artworks:",artworks, flush=True)
     return artworks
+def get_user_profile_pic(user_id):
+    profile_pic = db.query_db(
+        "SELECT profile_pic_url FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return profile_pic[0] if profile_pic else "No profile pic"
+
 
 def get_trending_artworks():
 
