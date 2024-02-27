@@ -33,7 +33,9 @@
     <div class="clickable-text" id="gotoFans">
       Fans: <span class="fans-number">{{ user.fans }}</span>
     </div>
-    <div>Likes: {{user.likes}}</div>
+    <div class="clickable-text" id="gotoLikes">
+      Likes: <span class="likes-number">{{ user.likes }}</span>
+    </div>
   </div>
 
     <script>
@@ -126,6 +128,9 @@
       
       document.getElementById('gotoFans').onclick = function() {
         location.href = '/user/fans?user_id=' + userId;
+      };
+      document.getElementById('gotoLikes').onclick = function() {
+        location.href = '/user/likes?user_id=' + userId;
       };
       </script>
     <div class="user-works">
