@@ -147,6 +147,8 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
+    print(id)
+    print(user_data['profile_pic_url'])
     return render_template('user_profile.html', user=user_data,session=session.get("user"))
 
 @app.route("/user_profile")
@@ -343,7 +345,7 @@ def comments():
             "INSERT INTO comments (user_id, image_id, comment) VALUES (%s, %s, %s)",
             (user_id, image_id, comment),
         )
-        return redirect(url_for('art', id=image_id,))
+        return redirect(url_for('art', id=image_id))
     else:
         image_id = request.args.get('image_id')
         comments = db.query_db(
