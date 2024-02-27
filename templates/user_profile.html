@@ -114,14 +114,26 @@
       <!-- var rawData = {{ user | tojson | safe }};
       <script>console.log(rawData);</script> 
       <div>Subscriptions: {{ user.subscriptions }}</div> -->
-      <div class="clickable-text" onclick="location.href='/user/subs';">
+      <div class="clickable-text" id="gotoSubs">
         Subscriptions: <span class="subscriptions-number">{{ user.subscriptions }}</span>
       </div>
-      <div class="clickable-text" onclick="location.href='/user/fans';">
+      <div class="clickable-text" id="gotoFans">
         Fans: <span class="fans-number">{{ user.fans }}</span>
       </div>
-      <div>Likes: {{user.likes  }}</div>
-    </div>
+      <div>Likes: {{user.likes}}</div>
+      <script>
+        // 假设 userId 已经是可用的变量，存有当前用户的ID
+        var userId = '{{  user.user_id }}'; // 这里使用模板语法获取 user_id，具体语法取决于你的后端框架
+        
+        document.getElementById('gotoSubs').onclick = function() {
+          location.href = '/user/subs?user_id=' + userId;
+        };
+        
+        document.getElementById('gotoFans').onclick = function() {
+          location.href = '/user/fans?user_id=' + userId;
+        };
+        </script>
+        
 
     <div class="user-works">
       <h2>My Works</h2>
