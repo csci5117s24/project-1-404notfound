@@ -507,8 +507,8 @@ body {
 }
 
 .work-item img {
-    width: 100%;
-    height: auto;
+    width: 120%;
+    height: 120%;
 }
 
 .edit-button {
