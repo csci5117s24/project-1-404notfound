@@ -89,6 +89,11 @@ def art(id):
     image_details = db.query_db(
         "SELECT image_id, title, description, image_url, prompt, user_id FROM images WHERE image_id = %s", (id,), one=True
     )
+    author_details = db.query_db(
+        "SELECT user_name, profile_pic_url FROM users WHERE user_id = %s", (image_details[5],), one=True
+    )
+    print("author_details:",author_details, flush=True)
+
     comments = db.query_db(
         "SELECT comment_id, image_id, user_id, comment FROM comments WHERE image_id = %s", (id,)
     )
@@ -108,7 +113,7 @@ def art(id):
             "user_id": row[2],
             "comment": row[3]
         })
-    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj)
+    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj,author_details=author_details)
 
 @app.route("/users/<id>")
 def other_user_profile(id):
