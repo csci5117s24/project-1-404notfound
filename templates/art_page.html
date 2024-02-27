@@ -13,6 +13,9 @@
             <div class="art-title">{{ image_details[1] }}</div>
             <p class="art-description">{{ image_details[2] }}</p>
             <p class="art-description">{{ image_details[4] }}</p>
+            <a href="/users/{{image_details[5]}}">
+                <p class="art-description">Author: {{ author_details[0] }}</p>
+            </a>
             <div class="comments-section">
                 {% if session %}
                 <form action = "{{url_for('comments')}}" method="POST" id="commentForm" enctype="multipart/form-data">

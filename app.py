@@ -75,7 +75,6 @@ def home():
 
 @app.route('/art/<id>')
 def art(id):
-    #put into interaction db for viewed/
     if 'user' in session and 'userinfo' in session['user']:
         user_id = session['user']['userinfo'].get('user_id')
         viewd = db.query_db(
@@ -90,6 +89,11 @@ def art(id):
     image_details = db.query_db(
         "SELECT image_id, title, description, image_url, prompt, user_id FROM images WHERE image_id = %s", (id,), one=True
     )
+    author_details = db.query_db(
+        "SELECT user_name, profile_pic_url FROM users WHERE user_id = %s", (image_details[5],), one=True
+    )
+    print("author_details:",author_details, flush=True)
+
     comments = db.query_db(
         "SELECT comment_id, image_id, user_id, comment FROM comments WHERE image_id = %s", (id,)
     )
@@ -98,8 +102,6 @@ def art(id):
         following = db.query_db(
             "SELECT EXISTs (SELECT following_id FROM follows WHERE follower_id = %s AND following_id = %s)",(user_id,image_details[5])
         )
-        print("follow id ",user_id,"following :",image_details[5])
-        print("result: ",following)
 
     comments_obj = []
     for row in comments:
@@ -109,7 +111,23 @@ def art(id):
             "user_id": row[2],
             "comment": row[3]
         })
-    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj)
+    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj,author_details=author_details)
+
+@app.route("/users/<id>")
+def other_user_profile(id):
+    user_id = id
+    user_data = {
+        'name': get_user_name(user_id),  
+        'email': get_user_email(user_id),  
+        'description': get_user_description(user_id),  # Store this in the session or database as well
+        'subscriptions': get_user_subscriptions(user_id),  
+        'fans': get_user_fans(user_id),  
+        'likes': get_user_likes(user_id),  # This should come from the database or session
+        'artworks': get_user_artworks(user_id),
+        'profile_pic_url': get_user_profile_pic(user_id),
+        'user_id': int(id)
+    }
+    return render_template('user_profile.html', user=user_data)
 
 @app.route("/user_profile")
 def user_profile():
@@ -122,18 +140,30 @@ def user_profile():
 
     # Assuming the user_info contains all the necessary data
     user_id = user_info['userinfo']['user_id']
-    print("user_id:",user_id, flush=True)
     
     user_data = {
-        'name': user_info['userinfo']['name'],  
-        'email': user_info['userinfo']['email'],  
+        'name': get_user_name(user_id),  
+        'email': get_user_email(user_id),  
         'description': get_user_description(user_id),  # Store this in the session or database as well
         'subscriptions': get_user_subscriptions(user_id),  
         'fans': get_user_fans(user_id),  
         'likes': get_user_likes(user_id),  # This should come from the database or session
-        'artworks': get_user_artworks(user_id)
+        'artworks': get_user_artworks(user_id),
+        'profile_pic_url': get_user_profile_pic(user_id),
+        'user_id': user_id
     }
     return render_template('user_profile.html', user=user_data)
+
+def get_user_email(user_id):
+    email = db.query_db(
+        "SELECT email FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return email[0] if email else "No email"
+def get_user_name(user_id):
+    name = db.query_db(
+        "SELECT user_name FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return name[0] if name else "No name"
 
 def get_user_description(user_id):
     description = db.query_db(
@@ -160,8 +190,13 @@ def get_user_artworks(user_id):
     artworks = db.query_db(
         "SELECT * FROM images WHERE user_id = %s", (user_id,)
     )
-    print("artworks:",artworks, flush=True)
     return artworks
+def get_user_profile_pic(user_id):
+    profile_pic = db.query_db(
+        "SELECT profile_pic_url FROM users WHERE user_id = %s", (user_id,),one=True
+    )
+    return profile_pic[0] if profile_pic else "No profile pic"
+
 
 def get_trending_artworks():
 
@@ -224,10 +259,57 @@ def get_friends_work(user_id):
     artworks = db.query_db(sql, (session['user']['userinfo']['user_id']))
     return artworks
 
+def check_follow(follower_id, following_id):
+    result = db.query_db(
+        "SELECT * FROM follows WHERE follower_id = %s AND following_id = %s", (follower_id, following_id)
+    )
+    is_following = len(result) > 0
+    if (is_following):
+        print("Following")
+    else:
+        print("Not following")
+    return is_following
 
+@app.route('/api/follow/', methods=['POST'])
+def follow_user():
+    data = request.get_json()  # Parse the JSON data sent in the request body
 
+    follower_id = data.get('follower_id')
+    following_id = data.get('following_id')
+    print("api follow")
+    print("follower_id", follower_id)
+    print("following_id", following_id)
+    if check_follow(follower_id, following_id):
+        return {"success": False, "following": True,"message": "You are following the user already"}
+    try:
+        db.modify_db(
+            "INSERT INTO follows (follower_id, following_id) VALUES (%s, %s)",
+            (follower_id, following_id)
+        )
+        return {"success": True, "following": True, "message": "Follow successful."}
+    except Exception as e:
+        # Handle any database errors or exceptions
+        return {"success": False, "following": False, "message": f"An error occurred: {str(e)}"}
 
+@app.route('/api/unfollow/', methods=['POST'])
+def unfollow_user():
+    data = request.get_json()  # Parse the JSON data sent in the request body
 
+    follower_id = data.get('follower_id')
+    following_id = data.get('following_id')
+    print("api unfollow")
+    print("follower_id", follower_id)
+    print("following_id", following_id)
+    if check_follow(follower_id, following_id) != True:
+        return {"success": False, "following": False,"message": "You didn't follow the user"}
+    try:
+        db.modify_db(
+            "DELETE FROM follows WHERE follower_id = %s AND following_id = %s",
+            (follower_id, following_id)
+        )
+        return {"success": True, "following": False, "message": "Unfollow successful."}
+    except Exception as e:
+        return {"success": False, "following": True, "message": f"An error occurred: {str(e)}"}
 
 
 @app.route('/comments', methods=['GET','POST'])
@@ -248,18 +330,52 @@ def comments():
             "SELECT * FROM comments WHERE image_id = %s", (image_id,)
         )
         return comments
-@app.route('/like', methods=['POST'])   
+@app.route('/like', methods=['GET','POST'])   
 def like():
-    image_id = request.form.get('image_id')
-    user_id = session['user']['userinfo']['user_id']
-    #find the interaction and update
-    db.modify_db(
-        "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
-        (user_id, image_id),
-    )
-    return "success",200
-    
-        
+    if request.method == 'POST':
+        image_id = request.form.get('image_id')
+        user_id = session['user']['userinfo']['user_id']
+        #find the interaction and update
+        db.modify_db(
+            "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
+            (user_id, image_id),
+        )
+        return "success",200
+    else:
+        image_id = request.args.get('image_id')
+        user_id = session['user']['userinfo']['user_id']
+        #find the interaction and update
+        liek = db.query_db(
+            "SELECT liked FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, image_id)
+        )
+        return like[0]
+
+@app.route('/delete-artwork/<artwork_id>', methods=['DELETE'])
+def delete_artwork(artwork_id):
+    # Logic to delete the artwork from the database
+    success = delete_artwork_from_db(artwork_id)
+
+    if success:
+        return 'Artwork deleted successfully', 200
+    else:
+        # This could mean the artwork did not exist or there was a problem with the deletion
+        return 'Artwork not found or could not be deleted', 404
+
+def delete_artwork_from_db(artwork_id):
+    try:
+        cursor = db.modify_db(
+            "DELETE FROM images WHERE image_id = %s", (artwork_id,)
+        )
+        # Assuming db.query_db gives you a cursor or similar object from which you can get affected rows
+        affected_rows = cursor
+        if affected_rows > 0:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error deleting artwork: {e}")
+        return False
+ 
 @app.route('/update_description', methods=['POST'])
 def update_description():
     new_description = request.form.get('description')
@@ -328,15 +444,14 @@ def store_new_user(user_info):
     userID = db.query_db(
         "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
     )
-    print(userID[0],flush=True)
     if userID:
         db.modify_db(
-            "UPDATE users SET profile_pic_url = %s WHERE user_id = %s;", (user_info["picture"], userID[0])
+            "UPDATE users SET profile_pic_url = %s , user_name = %s WHERE user_id = %s;", (user_info["picture"],user_info["name"], userID[0])
         )
     if userID is None:
         db.modify_db(
-            "INSERT INTO users (auth0_user_id, email,profile_pic_url) VALUES (%s, %s, %s)",
-            (user_info["sub"], user_info["email"],user_info["picture"]),
+            "INSERT INTO users (auth0_user_id, email,profile_pic_url,user_name) VALUES (%s, %s, %s,%s)",
+            (user_info["sub"], user_info["email"],user_info["picture"],user_info["name"]),
         )
         userID = db.query_db(
             "SELECT user_id FROM users WHERE auth0_user_id = %s", (user_info["sub"],), one=True
@@ -391,7 +506,7 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            return 'Image uploaded successfully!', 200
+            return redirect(url_for("user_profile"))
     return render_template("upload.html")
 
 

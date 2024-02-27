@@ -25,9 +25,10 @@ def query_db(query, args=(), one=False):
     cur = conn.cursor()
     cur.execute(query, args)
     result = cur.fetchall()
+    return_value = (result[0] if result else None) if one else result
     cur.close()
     put_db_connection(conn)
-    return (result[0] if result else None) if one else result
+    return return_value
 
 def modify_db(query, args=()):
     conn = get_db_connection()
@@ -35,4 +36,6 @@ def modify_db(query, args=()):
     cur.execute(query, args)
     conn.commit()
     cur.close()
+    return_value = cur.rowcount
     put_db_connection(conn)
+    return return_value

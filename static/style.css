@@ -129,6 +129,8 @@
     gap: 20px; /* Space between grid items */
     padding: 20px; /* Padding around the grid */
     padding-top: 50px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 400px; /* Adjust based on your preference */
 }
 .grid-item {
     background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
@@ -566,4 +568,20 @@ body {
 a:focus, button:focus {
     outline: 3px solid #333;
     outline-offset: 2px;
+}
+
+.delete-btn {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red; /* Example color, adjust as needed */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Show the delete button on hover */
+.art-image-in-grid:hover .delete-btn {
+    display: block;
 }

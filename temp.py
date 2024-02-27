@@ -10,7 +10,7 @@ DATABASE_URL = os.getenv('EXTERNAL_DATABASE_URL')
 TABLES_SETUP_SQL = [
     """
     ALTER TABLE users
-    ADD COLUMN profile_pic_url VARCHAR(255);
+    ADD COLUMN user_name VARCHAR(255);
 
     """
 ]
