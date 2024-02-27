@@ -129,9 +129,16 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-    print("session id: ", type(session.get('user')['userinfo']['user_id']))
-    print("id: ", type(id))
-    return render_template('user_profile.html', user=user_data)
+
+    try:
+        is_following = check_follow(session.get('user')['userinfo']['user_id'], id)
+        follower_id = session.get('user')['userinfo']['user_id']
+    except:
+        is_following = False
+        follower_id = -1
+    print("is_following: ", is_following)
+    
+    return render_template('user_profile.html', follower_id=follower_id, user=user_data, is_following=is_following)
 
 @app.route("/user_profile")
 def user_profile():
@@ -265,10 +272,57 @@ def get_friends_work(user_id):
     artworks = db.query_db(sql, (session['user']['userinfo']['user_id']))
     return artworks
 
+def check_follow(follower_id, following_id):
+    result = db.query_db(
+        "SELECT * FROM follows WHERE follower_id = %s AND following_id = %s", (follower_id, following_id)
+    )
+    is_following = len(result) > 0
+    if (is_following):
+        print("Following")
+    else:
+        print("Not following")
+    return is_following
 
+@app.route('/api/follow/', methods=['POST'])
+def follow_user():
+    data = request.get_json()  # Parse the JSON data sent in the request body
 
+    follower_id = data.get('follower_id')
+    following_id = data.get('following_id')
+    print("api follow")
+    print("follower_id", follower_id)
+    print("following_id", following_id)
+    if check_follow(follower_id, following_id):
+        return {"success": False, "following": True,"message": "You are following the user already"}
+    try:
+        db.modify_db(
+            "INSERT INTO follows (follower_id, following_id) VALUES (%s, %s)",
+            (follower_id, following_id)
+        )
+        return {"success": True, "following": True, "message": "Follow successful."}
+    except Exception as e:
+        # Handle any database errors or exceptions
+        return {"success": False, "following": False, "message": f"An error occurred: {str(e)}"}
 
+@app.route('/api/unfollow/', methods=['POST'])
+def unfollow_user():
+    data = request.get_json()  # Parse the JSON data sent in the request body
 
+    follower_id = data.get('follower_id')
+    following_id = data.get('following_id')
+    print("api unfollow")
+    print("follower_id", follower_id)
+    print("following_id", following_id)
+    if check_follow(follower_id, following_id) != True:
+        return {"success": False, "following": False,"message": "You didn't follow the user"}
+    try:
+        db.modify_db(
+            "DELETE FROM follows WHERE follower_id = %s AND following_id = %s",
+            (follower_id, following_id)
+        )
+        return {"success": True, "following": False, "message": "Unfollow successful."}
+    except Exception as e:
+        return {"success": False, "following": True, "message": f"An error occurred: {str(e)}"}
 
 
 @app.route('/comments', methods=['GET','POST'])

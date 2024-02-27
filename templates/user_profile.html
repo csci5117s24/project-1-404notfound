@@ -17,10 +17,12 @@
             {% if session['user']['userinfo']['user_id'] == user.user_id %}
                 <button class="edit-button" onclick="editDescription()">Edit</button>
             {% else %}
-                <button class="edit-button" onclick="followUser()">Follow</button>
+              {% if is_following %}
+                <button id = 'followButton' data-is-following="{{ is_following }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Unfollow</button>
+              {% else %}
+                <button id = 'followButton' data-is-following="{{ is_following }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Follow</button>
+              {% endif %}
             {% endif %}
-        {% else %}
-            <button class="edit-button" onclick="followUser()">Follow</button>
         {% endif %}
       </div>
   </div>
@@ -50,8 +52,49 @@
             form.submit();
           }
         }
-        function followUser() {
-          
+        function followUser(followerId, followingId, is_following) {
+          const button = event.currentTarget;
+
+          // Get the current following state from the button's data attribute
+          var is_following = button.getAttribute('data-is-following') === 'true';
+          if (is_following){
+            var url = '/api/unfollow/';
+          } else {
+            var url = '/api/follow/';
+          }
+          console.log(url);
+          console.log(is_following);
+          const data = {
+              follower_id: followerId,
+              following_id: followingId
+          };
+          fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  // Include other necessary headers, such as authorization tokens
+              },
+              body: JSON.stringify(data),
+          })
+          .then(response => response.json()) // Convert the response to JSON
+          .then(data => {
+              if (data.success) {
+                  // Check the 'following' status and update the button text accordingly
+                  const followButton = document.getElementById('followButton'); // Make sure you have this ID on your button
+                  if (data.following) {
+                      followButton.textContent = 'Unfollow';
+                      const newFollowState = !is_following;
+                      followButton.setAttribute('data-is-following', newFollowState.toString());
+                  } else {
+                      followButton.textContent = 'Follow';
+                      const newFollowState = !is_following;
+                      followButton.setAttribute('data-is-following', newFollowState.toString());
+                  }
+              } else {
+                  // Handle the case where the API indicates failure
+                  console.error(data.message);
+              }
+          })
         }
         </script>
     
