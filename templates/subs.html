@@ -2,21 +2,21 @@
 
 {% block content %}
 <div class="art-container">
-    <h2>Followers</h2>
-    <div class="grid-container" id="followersContainer">
-        <!-- The followers user data will be appended here by the script below -->
+    <h2>Following</h2>
+    <div class="grid-container" id="followingContainer">
+        <!-- The following user data will be appended here by the script below -->
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(event) {
-    let followersContainer = document.getElementById('followersContainer');
-    if (followersContainer) {
-        let followersData = {{ followers | tojson | safe }};
-        console.log('Followers Data:', followersData);
-        createUserElements(followersContainer, followersData);
+    let followingContainer = document.getElementById('followingContainer');
+    if (followingContainer) {
+        let followingData = {{ following | tojson | safe }};
+        console.log('Following Data:', followingData);
+        createUserElements(followingContainer, followingData);
     } else {
-        console.error('Followers container not found');
+        console.error('Following container not found');
     }
 });
 
