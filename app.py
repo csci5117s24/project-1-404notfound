@@ -103,6 +103,26 @@ def art(id):
             "SELECT EXISTs (SELECT following_id FROM follows WHERE follower_id = %s AND following_id = %s)",(user_id,image_details[5])
         )
 
+    if image_details:
+        image_obj = {
+            "image_id": image_details[0],
+            "title": image_details[1],
+            "description": image_details[2],
+            "image_url": image_details[3],
+            "prompt": image_details[4],
+            "user_id": image_details[5]
+        }
+    else:
+        image_obj = None  # or an appropriate error handling/response
+
+    if author_details:
+        author_obj = {
+            "user_name": author_details[0],
+            "profile_pic_url": author_details[1]
+        }
+    else:
+        image_obj = None  # or an appropriate error handling/response
+
     comments_obj = []
     for row in comments:
         comments_obj.append({
@@ -111,7 +131,7 @@ def art(id):
             "user_id": row[2],
             "comment": row[3]
         })
-    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj,author_details=author_details)
+    return render_template('art_page.html', session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj)
 
 @app.route("/users/<id>")
 def other_user_profile(id):
