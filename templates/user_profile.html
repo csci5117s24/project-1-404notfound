@@ -26,115 +26,113 @@
         {% endif %}
       </div>
   </div>
+  <div class="stats">
+    <div class="clickable-text" id="gotoSubs">
+      Subscriptions: <span class="subscriptions-number">{{ user.subscriptions }}</span>
+    </div>
+    <div class="clickable-text" id="gotoFans">
+      Fans: <span class="fans-number">{{ user.fans }}</span>
+    </div>
+    <div class="clickable-text" id="gotoLikes">
+      Likes: <span class="likes-number">{{ user.likes }}</span>
+    </div>
+  </div>
 
-      <script>
-        function deleteArtwork(artworkId) {
-          if (!confirm('Are you sure you want to delete this artwork?')) {
-            return; // Stop if the user cancels the action.
-          }
-        
-          // Example request, adjust according to your server setup
-          fetch(`/delete-artwork/${artworkId}`, { method: 'DELETE' })
-            .then(response => {
-              if (response.ok) {
-                window.location.reload(); // Reload the page to reflect the deletion
-              } else {
-                alert('Failed to delete artwork.');
-              }
-            })
-            .catch(error => console.error('Error:', error));
+    <script>
+      function deleteArtwork(artworkId) {
+        if (!confirm('Are you sure you want to delete this artwork?')) {
+          return; // Stop if the user cancels the action.
         }
-        function editDescription() {
-          var currentDescription = document.getElementById('userDescription').innerText;
-          var newDescription = prompt("Edit your description:", currentDescription);
-          if (newDescription !== null && newDescription !== currentDescription) {
-            // Submit the new description to the server without AJAX
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = "{{ url_for('update_description') }}";
-            
-            var hiddenField = document.createElement('input');
-            hiddenField.type = 'hidden';
-            hiddenField.name = 'description';
-            hiddenField.value = newDescription;
-            
-            form.appendChild(hiddenField);
-            
-            document.body.appendChild(form);
-            form.submit();
-          }
-        }
-        function followUser(followerId, followingId, is_following) {
-          const button = event.currentTarget;
-
-          // Get the current following state from the button's data attribute
-          var is_following = button.getAttribute('data-is-following') === 'true';
-          if (is_following){
-            var url = '/api/unfollow/';
-          } else {
-            var url = '/api/follow/';
-          }
-          console.log(url);
-          console.log(is_following);
-          const data = {
-              follower_id: followerId,
-              following_id: followingId
-          };
-          fetch(url, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  // Include other necessary headers, such as authorization tokens
-              },
-              body: JSON.stringify(data),
+      
+        // Example request, adjust according to your server setup
+        fetch(`/delete-artwork/${artworkId}`, { method: 'DELETE' })
+          .then(response => {
+            if (response.ok) {
+              window.location.reload(); // Reload the page to reflect the deletion
+            } else {
+              alert('Failed to delete artwork.');
+            }
           })
-          .then(response => response.json()) // Convert the response to JSON
-          .then(data => {
-              if (data.success) {
-                  // Check the 'following' status and update the button text accordingly
-                  const followButton = document.getElementById('followButton'); // Make sure you have this ID on your button
-                  if (data.following) {
-                      followButton.textContent = 'Unfollow';
-                      const newFollowState = !is_following;
-                      followButton.setAttribute('data-is-following', newFollowState.toString());
-                  } else {
-                      followButton.textContent = 'Follow';
-                      const newFollowState = !is_following;
-                      followButton.setAttribute('data-is-following', newFollowState.toString());
-                  }
-              } else {
-                  // Handle the case where the API indicates failure
-                  console.error(data.message);
-              }
-          })
+          .catch(error => console.error('Error:', error));
+      }
+      function editDescription() {
+        var currentDescription = document.getElementById('userDescription').innerText;
+        var newDescription = prompt("Edit your description:", currentDescription);
+        if (newDescription !== null && newDescription !== currentDescription) {
+          // Submit the new description to the server without AJAX
+          var form = document.createElement('form');
+          form.method = 'POST';
+          form.action = "{{ url_for('update_description') }}";
+          
+          var hiddenField = document.createElement('input');
+          hiddenField.type = 'hidden';
+          hiddenField.name = 'description';
+          hiddenField.value = newDescription;
+          
+          form.appendChild(hiddenField);
+          
+          document.body.appendChild(form);
+          form.submit();
         }
-        </script>
-    
-    <div class="stats">
-      <!-- var rawData = {{ user | tojson | safe }};
-      <script>console.log(rawData);</script> 
-      <div>Subscriptions: {{ user.subscriptions }}</div> -->
-      <div class="clickable-text" id="gotoSubs">
-        Subscriptions: <span class="subscriptions-number">{{ user.subscriptions }}</span>
-      </div>
-      <div class="clickable-text" id="gotoFans">
-        Fans: <span class="fans-number">{{ user.fans }}</span>
-      </div>
-      <div>Likes: {{user.likes}}</div>
-      <script>
-        // 假设 userId 已经是可用的变量，存有当前用户的ID
-        var userId = '{{  user.user_id }}'; // 这里使用模板语法获取 user_id，具体语法取决于你的后端框架
-        
-        document.getElementById('gotoSubs').onclick = function() {
-          location.href = '/user/subs?user_id=' + userId;
-        };
-        
-        document.getElementById('gotoFans').onclick = function() {
-          location.href = '/user/fans?user_id=' + userId;
-        };
-        </script>
-        
+      }
+      function followUser(followerId, followingId, is_following) {
+        const button = event.currentTarget;
 
+        // Get the current following state from the button's data attribute
+        var is_following = button.getAttribute('data-is-following') === 'true';
+        if (is_following){
+          var url = '/api/unfollow/';
+        } else {
+          var url = '/api/follow/';
+        }
+        console.log(url);
+        console.log(is_following);
+        const data = {
+            follower_id: followerId,
+            following_id: followingId
+        };
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include other necessary headers, such as authorization tokens
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json()) // Convert the response to JSON
+        .then(data => {
+            if (data.success) {
+                // Check the 'following' status and update the button text accordingly
+                const followButton = document.getElementById('followButton'); // Make sure you have this ID on your button
+                if (data.following) {
+                    followButton.textContent = 'Unfollow';
+                    const newFollowState = !is_following;
+                    followButton.setAttribute('data-is-following', newFollowState.toString());
+                } else {
+                    followButton.textContent = 'Follow';
+                    const newFollowState = !is_following;
+                    followButton.setAttribute('data-is-following', newFollowState.toString());
+                }
+            } else {
+                // Handle the case where the API indicates failure
+                console.error(data.message);
+            }
+        })
+      }
+      // 假设 userId 已经是可用的变量，存有当前用户的ID
+      var userId = '{{  user.user_id }}'; // 这里使用模板语法获取 user_id，具体语法取决于你的后端框架
+      
+      document.getElementById('gotoSubs').onclick = function() {
+        location.href = '/user/subs?user_id=' + userId;
+      };
+      
+      document.getElementById('gotoFans').onclick = function() {
+        location.href = '/user/fans?user_id=' + userId;
+      };
+      document.getElementById('gotoLikes').onclick = function() {
+        location.href = '/user/likes?user_id=' + userId;
+      };
+      </script>
     <div class="user-works">
       <h2>My Works</h2>
       <div class="grid-container">
