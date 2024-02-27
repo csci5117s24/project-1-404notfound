@@ -16,7 +16,11 @@
         {% if session['user'] %}
             {% if session['user']['userinfo']['user_id'] == user.user_id %}
                 <button class="edit-button" onclick="editDescription()">Edit</button>
+            {% else %}
+                <button class="edit-button" onclick="followUser()">Follow</button>
             {% endif %}
+        {% else %}
+            <button class="edit-button" onclick="followUser()">Follow</button>
         {% endif %}
       </div>
   </div>
@@ -45,6 +49,9 @@
             document.body.appendChild(form);
             form.submit();
           }
+        }
+        function followUser() {
+          
         }
         </script>
     
