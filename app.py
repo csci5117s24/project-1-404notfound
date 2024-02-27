@@ -608,12 +608,12 @@ def upload_image_to_s3(image):
 
 @app.route('/user/fans')
 def show_fans():
-    user_info = session.get('user')
-    if not user_info or 'userinfo' not in user_info or 'user_id' not in user_info['userinfo']:
-        # 如果用户未登录或session中不存在用户信息，重定向到登录页面
-        return redirect(url_for('login'))
+    # 直接从请求的查询参数中获取 user_id
+    user_id = request.args.get('user_id')
 
-    user_id = user_info['userinfo']['user_id']
+    if not user_id:
+        # 如果 URL 中没有 user_id 参数，重定向到登录页面
+        return redirect(url_for('login'))
 
     # 查询当前用户关注的人
     following_sql = """
