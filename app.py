@@ -147,7 +147,7 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-    return render_template('user_profile.html', user=user_data)
+    return render_template('user_profile.html', session=session.get("user"), user=user_data)
 
 @app.route("/user_profile")
 def user_profile():
@@ -172,7 +172,7 @@ def user_profile():
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': user_id
     }
-    return render_template('user_profile.html', user=user_data)
+    return render_template('user_profile.html', session=session.get("user"), user=user_data)
 
 def get_user_email(user_id):
     email = db.query_db(
@@ -365,7 +365,7 @@ def like():
         image_id = request.args.get('image_id')
         user_id = session['user']['userinfo']['user_id']
         #find the interaction and update
-        liek = db.query_db(
+        like = db.query_db(
             "SELECT liked FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, image_id)
         )
         return like[0]
