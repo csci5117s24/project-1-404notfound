@@ -7,19 +7,20 @@
             <div class="heart-box">
                 <div class="heart-icon unliked" onclick="toggleHeart(this)">♥</div>
             </div>
-            <img src="{{ image_details[3] }}" alt="{{ image_details[1] }}" class="art-image">
+            <img src="{{ image_details.image_url }}" alt="{{ image_details.title }}" class="art-image">
         </div>
         <div class="art-info">
-            <div class="art-title">{{ image_details[1] }}</div>
-            <p class="art-description">{{ image_details[2] }}</p>
-            <p class="art-description">{{ image_details[4] }}</p>
-            <a href="/users/{{image_details[5]}}">
-                <p class="art-description">Author: {{ author_details[0] }}</p>
+            <div class="art-title">{{ image_details.title }}</div>
+            <p class="art-description">{{ image_details.description }}</p>
+            <p class="art-description">{{ image_details.prompt }}</p>
+            <a href="/users/{{image_details.user_id}}", class = "profile_link">
+                <img src="{{ author_details.profile_pic_url }}" alt="{{ author_details.user_name }}" class="art-user">
+                <p class="art-description">Author: {{ author_details.user_name }}</p>
             </a>
             <div class="comments-section">
                 {% if session %}
                 <form action = "{{url_for('comments')}}" method="POST" id="commentForm" enctype="multipart/form-data">
-                    <input type="hidden" name="image_id" value="{{ image_details[0] }}">
+                    <input type="hidden" name="image_id" value="{{ image_details.image_id }}">
                     <input type="text" id="comment" name="comment" placeholder="Add a comment..." class="comment-input">
                     <button type="submit" class="comment-submit">Post</button>
                 </form>
