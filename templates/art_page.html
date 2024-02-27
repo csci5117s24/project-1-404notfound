@@ -5,7 +5,7 @@
     <div class="art-item">
         <div class="image-container">
             <div class="heart-box">
-                <div class="heart-icon unliked" onclick="toggleHeart(this)">♥</div>
+                <div class="heart-icon {{ 'liked' if is_liked else 'unliked' }}" data-liked="{{ 'true' if is_liked else 'false' }}" onclick="toggleHeart(this, '{{ image_details.image_id }}', '{{ user_id }}')">♥</div>
             </div>
             <img src="{{ image_details.image_url }}" alt="{{ image_details.title }}" class="art-image">
         </div>
@@ -37,9 +37,44 @@
     </div>
 </div>
 <script>
-    function toggleHeart(element) {
-        element.classList.toggle('liked');
-        element.classList.toggle('unliked');
+    function toggleHeart(element, image_id, user_id) {
+        const isLiked = element.getAttribute('data-liked') === 'true';
+        if (isLiked){
+            var url = '/api/unlike/';
+        } else {
+            var url = '/api/like/';
+        }
+
+        const data = {
+            user_id: user_id,
+            image_id: image_id
+        };
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include other necessary headers, such as authorization tokens
+            },
+            body: JSON.stringify(data),
+        }).then(response => response.json()) // Convert the response to JSON
+          .then(data => {
+              if (data.success) {
+                const newLikedStatus = !isLiked;
+                // Update the heart icon's appearance based on the new liked status
+                element.classList.toggle('liked', newLikedStatus);
+                element.classList.toggle('unliked', !newLikedStatus);
+
+                // Update the data-liked attribute to reflect the new status
+                element.setAttribute('data-liked', newLikedStatus.toString());
+                console.log(newLikedStatus.toString());
+                console.log(url);
+              } else {
+                  // Handle the case where the API indicates failure
+                  console.error(data.message);
+              }
+            }
+          )
+
     }
 </script>
 

@@ -131,7 +131,15 @@ def art(id):
             "user_id": row[2],
             "comment": row[3]
         })
-    return render_template('art_page.html', session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj)
+    try:
+        is_liked = check_like(image_details[0], session['user']['userinfo'].get('user_id'))[0]
+        user_id = session['user']['userinfo'].get('user_id')
+    except:
+        is_liked = False
+        user_id = -1
+    print("is_liked", is_liked)
+    return render_template('art_page.html', is_liked = is_liked, session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj, user_id = user_id)
+    
 
 @app.route("/users/<id>")
 def other_user_profile(id):
@@ -333,6 +341,49 @@ def unfollow_user():
     except Exception as e:
         return {"success": False, "following": True, "message": f"An error occurred: {str(e)}"}
 
+def check_like(image_id, user_id):
+    like = db.query_db(
+        "SELECT liked FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, image_id)
+    )
+    print("Check like", like[0])
+    return like[0]
+
+@app.route('/api/like/', methods=['POST'])
+def like_image():
+    data = request.get_json()
+    image_id = data.get('image_id')
+    user_id = data.get('user_id')
+    print("image_id", image_id)
+    print("user_id", user_id )
+    if check_like(image_id, user_id)[0]:
+        return {"success": False, "like": True,"message": "You are liking the image already"}
+    try:
+        db.modify_db(
+            "update image_interactions set liked = TRUE where user_id = %s and image_id = %s",
+            (user_id, image_id),
+        )
+        return {"success": True, "like": True, "message": "Like successful."}
+    except Exception as e:
+        # Handle any database errors or exceptions
+        return {"success": False, "like": False, "message": f"An error occurred: {str(e)}"}
+
+@app.route('/api/unlike/', methods=['POST'])
+def unlike_image():
+    data = request.get_json()
+    image_id = data.get('image_id')
+    user_id = data.get('user_id')
+    if check_like(image_id, user_id)[0] == False:
+        return {"success": False, "like": False,"message": "You are not liking the image yet"}
+    try:
+        db.modify_db(
+            "update image_interactions set liked = FALSE where user_id = %s and image_id = %s",
+            (user_id, image_id),
+        )
+        return {"success": True, "like": False, "message": "Unlike successful."}
+    except Exception as e:
+        # Handle any database errors or exceptions
+        return {"success": False, "like": True, "message": f"An error occurred: {str(e)}"}
+    
 
 @app.route('/comments', methods=['GET','POST'])
 #ajax?
