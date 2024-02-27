@@ -170,7 +170,7 @@
     position: relative;
 }
 .search-bar {
-    width: 100%;
+    width: 75%;
     padding: 10px;
     border: 1px solid #ccc; 
     border-radius: 20px; 
@@ -470,7 +470,7 @@ body {
 
 .stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* align items to the start and control the gap manually */
     font-size: 0.9rem;
     color: #333;
     background: var(--light-grey);
@@ -478,9 +478,15 @@ body {
     border-radius: var(--border-radius);
     margin-bottom: 1.5rem;
     margin-top: 2rem;
-    margin-right: 2rem;
-    margin-left: 2rem;
+    /* Reduce the margin to decrease the space around the .stats container */
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
+
+.stats > *:not(:last-child) {
+    margin-right: 1rem; /* Adjust the space between child elements */
+}
+
 
 .stats div {
     margin: 0 1rem;
