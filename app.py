@@ -4,10 +4,15 @@ from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for, request
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 import db_helper as db
 import boto3
 from flask_apscheduler import APScheduler
+import requests
+from openai import OpenAI
+import uuid
+
+
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -594,17 +599,12 @@ def upload_image():
             return "No file part", 400
         image = request.files['image']
         image_url = request.form.get("imageUrl", "")
-        print("image_url", image_url)
         print("image", image)
         if image.filename == '':
             if image_url == '':
                 return "No selected file",  400
         
         if image or image_url:
-            if image.filename == '':
-                image_url = image_url
-            else:
-                image_url = upload_image_to_s3(image)
             title = request.form.get("title", "")
             description = request.form.get("description", "")
             prompt = request.form.get("prompt", "")
@@ -614,6 +614,11 @@ def upload_image():
             print(prompt)
             print(user_id)
             print(image_url)
+            if image.filename == '':
+                image_url = upload_image_to_s3_from_url(image_url, title + str(uuid.uuid4()) + ".jpg")
+            else:
+                image_url = upload_image_to_s3(image)
+            
             db.modify_db(
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
@@ -631,6 +636,20 @@ def upload_image_to_s3(image):
         ExtraArgs={"ContentType": image.content_type},
     )
     return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{image.filename}"
+
+def upload_image_to_s3_from_url(image_url, file_name, content_type='image/jpeg'):
+    response = requests.get(image_url, stream=True)
+    if response.status_code == 200:
+        response.raw.decode_content = True
+        s3_client.upload_fileobj(
+            response.raw,
+            env.get("S3_BUCKET"),
+            file_name,
+            ExtraArgs={"ContentType": content_type},
+        )
+        return f"https://{env.get('S3_BUCKET')}.s3.amazonaws.com/{file_name}"
+    else:
+        raise Exception(f"Failed to download image from {image_url}")
 
 ###############
 
