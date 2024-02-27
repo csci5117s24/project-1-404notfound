@@ -363,8 +363,8 @@ def delete_artwork(artwork_id):
 
 def delete_artwork_from_db(artwork_id):
     try:
-        cursor = db.query_db(
-            "DELETE FROM images WHERE image_id = %s", (artwork_id,),return_data=False
+        cursor = db.modify_db(
+            "DELETE FROM images WHERE image_id = %s", (artwork_id,)
         )
         # Assuming db.query_db gives you a cursor or similar object from which you can get affected rows
         affected_rows = cursor
