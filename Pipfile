@@ -13,8 +13,10 @@ requests = "*"
 postgres = "*"
 boto3 = "*"
 flask-apscheduler = "*"
+urllib3 = "==1.26.6"
+openai = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.9"
