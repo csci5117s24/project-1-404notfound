@@ -5,7 +5,7 @@
   {% if category.artworks %}
   <div class="scrollable-row">
     <h2>{{ category.name }}</h2>
-    <div class="grid-container">
+    <div class="grid-container-home">
       {% for artwork in category.artworks %}
       <a href="/art/{{ artwork.image_id }}" class="image-link">
         <div class="grid-item">

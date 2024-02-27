@@ -103,6 +103,26 @@ def art(id):
             "SELECT EXISTs (SELECT following_id FROM follows WHERE follower_id = %s AND following_id = %s)",(user_id,image_details[5])
         )
 
+    if image_details:
+        image_obj = {
+            "image_id": image_details[0],
+            "title": image_details[1],
+            "description": image_details[2],
+            "image_url": image_details[3],
+            "prompt": image_details[4],
+            "user_id": image_details[5]
+        }
+    else:
+        image_obj = None  # or an appropriate error handling/response
+
+    if author_details:
+        author_obj = {
+            "user_name": author_details[0],
+            "profile_pic_url": author_details[1]
+        }
+    else:
+        image_obj = None  # or an appropriate error handling/response
+
     comments_obj = []
     for row in comments:
         comments_obj.append({
@@ -111,7 +131,7 @@ def art(id):
             "user_id": row[2],
             "comment": row[3]
         })
-    return render_template('art_page.html', session=session.get("user"), image_details=image_details, comments=comments_obj,author_details=author_details)
+    return render_template('art_page.html', session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj)
 
 @app.route("/users/<id>")
 def other_user_profile(id):
@@ -127,12 +147,12 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-    return render_template('user_profile.html', user=user_data)
+    return render_template('user_profile.html', user=user_data,session=session.get("user"))
 
 @app.route("/user_profile")
 def user_profile():
     # Check if user data is in the session
-    user_info = session.get('user')
+    user_info = session.get("user")
     
     if not user_info:
         # Redirect to login page or handle the case where there is no user info
@@ -152,7 +172,7 @@ def user_profile():
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': user_id
     }
-    return render_template('user_profile.html', user=user_data)
+    return render_template('user_profile.html', user=user_data,session=session.get('user'))
 
 def get_user_email(user_id):
     email = db.query_db(
@@ -323,7 +343,7 @@ def comments():
             "INSERT INTO comments (user_id, image_id, comment) VALUES (%s, %s, %s)",
             (user_id, image_id, comment),
         )
-        return redirect(url_for('art', id=image_id))
+        return redirect(url_for('art', id=image_id,))
     else:
         image_id = request.args.get('image_id')
         comments = db.query_db(
@@ -345,7 +365,7 @@ def like():
         image_id = request.args.get('image_id')
         user_id = session['user']['userinfo']['user_id']
         #find the interaction and update
-        liek = db.query_db(
+        like = db.query_db(
             "SELECT liked FROM image_interactions WHERE user_id = %s AND image_id = %s", (user_id, image_id)
         )
         return like[0]
@@ -417,7 +437,7 @@ def search():
         })
 
     result = [{"name": "Search Result", "artworks": results_art}]
-    return render_template('home.html', artworks=result)
+    return render_template('home.html', session=session.get("user"), artworks=result)
 
 def some_route_function():
     image_path_art = url_for('static', filename='images/art.png')
@@ -506,8 +526,8 @@ def upload_image():
                 "INSERT INTO images (user_id, title, description, image_url, prompt) VALUES (%s, %s, %s, %s, %s)",
                 (user_id, title, description, image_url, prompt),
             )
-            return redirect(url_for("user_profile"))
-    return render_template("upload.html")
+            return redirect(url_for("user_profile",session=session.get("user")))
+    return render_template("upload.html",session=session.get("user"))
 
 
 def upload_image_to_s3(image):
@@ -551,7 +571,7 @@ def show_fans():
     print(following)  # 这将在服务器的控制台上打印following列表
 
 
-    return render_template('follows.html', following=following, followers=followers)
+    return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
 @app.route('/user/subs')
 def show_subscribtion():
     user_info = session.get('user')
@@ -582,7 +602,7 @@ def show_subscribtion():
     print(following)  # 这将在服务器的控制台上打印following列表
 
 
-    return render_template('subs.html', following=following, followers=followers)
+    return render_template('subs.html', following=following, followers=followers,session=session.get("user"),)
 ##############
 
 if __name__ == "__main__":
