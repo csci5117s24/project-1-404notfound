@@ -242,76 +242,48 @@
     color: #ff0000; /* Red color for liked state */
 }
 
-.art-image {
-    width: 100%; /* Makes the image responsive */
-    height: auto; /* Maintains the aspect ratio of the image */
-
-}
-
-.art-user {
-    width: 30%; /* Makes the image responsive */
-    height: auto; /* Maintains the aspect ratio of the image */
-    border-radius: 50%; /* If you want rounded corners for the image */
-    object-fit: cover;
-}
-
 .art-info {
-    flex-basis: 50%; /* Adjust based on your design preferences */
-    /* Add padding or margins as needed for spacing */
-}
-
-
-
-.art-container {
-    flex-direction: column;
-    justify-content: center; /* Vertically centers the content */
-    align-items: center; /* Horizontally centers the content */
-    min-height: 50vh; /* Ensures the container takes at least the full height of the viewport */
-    width: 80%; /* Adjust the width as needed */
-    margin: auto; /* Centers the container in the viewport */
-    background-color: #f0f0f0; /* Your desired background color */
-    border-radius: 50px; /* Adjust this value to control the roundness of the corners */
-    padding: 20px; /* Adds some padding inside the container */
-    box-sizing: border-box; /* Ensures padding and border are included in the width and height */
-}
-
-
-.art-image-in-grid {
-    width: 100%; /* Makes the container take the full width of its parent, maintaining the grid layout */
-    height: 0; /* Initially sets the height to 0 */
-    padding-top: 100%; /* This effectively sets the height equal to the width, creating a square */
-    position: relative; /* Establishes a positioning context for the absolute positioned image inside */
-    border-radius: 10px; /* Adds rounded corners to the container */
-    overflow: hidden; /* Ensures any part of the image outside the square is hidden */
-}
-
-.art-image-in-grid img {
-    position: absolute; /* Takes the image out of the document flow and positions it relative to its parent */
-    top: 0;
-    left: 0;
-    width: 100%; /* Makes the image cover the full width of the container */
-    height: 100%; /* Makes the image cover the full height of the container */
-    object-fit: cover; /* Ensures the image covers the container, maintaining aspect ratio, but might be cropped */
+    flex-basis: 50%;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd; /* Adjust color as needed */
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light grey background, adjust color as needed */
 }
 
 .art-title {
-    flex: 1; /* Allows the title to take up the remaining space */
-    margin-left: 20px; /* Adds some space between the image and the title */
-    font-size: 24px; /* Adjusts the title size */
-}
-.user-icon {
-    display: inline-block;
-    width: 30px; /* Circle size */
-    height: 30px; /* Circle size */
-    border-radius: 50%; /* Makes the div a circle */
-    background-color: #444; /* Circle color, change as needed */
-    margin-left: 10px; /* Space between the login text and the circle */
-    vertical-align: middle; /* Aligns with the text if necessary */
-    cursor: pointer; /* Changes the cursor to indicate it's clickable */
+    font-size: 24px; /* Adjusted the title size */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark grey color for the text */
+    margin-bottom: 0.6rem;
+    margin-top: 1rem;
+    margin-left: 10px;
 }
 
-.user-icon:hover {
-    background-color: #666; /* Darker shade on hover */
+.art-image {
+    width: 100%; /* Makes the image responsive */
+    height: auto; /* Maintains the aspect ratio of the image */
+}
+
+.art-user {
+    margin-left: 10px;
+    width: 18%; /* Makes the profile image responsive */
+    height: auto; /* Maintains the aspect ratio of the image */
+    border-radius: 50%; /* Rounded profile image */
+    object-fit: cover;
+}
+
+.author-name {
+    margin-left: 10px; 
+}
+
+.profile_link .art-description{
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: #333; /* Color for the author's name */
+    margin-bottom: 1rem; 
+    margin-left: 10px;
 }
 
 .comments-section {
@@ -336,7 +308,6 @@
 
 .comments-list-container {
     max-height: 300px; /* Adjust based on your desired fixed height */
-    min-height: 100px;
     overflow-y: auto; /* Adds a vertical scrollbar when content exceeds max-height */
     margin-top: 20px; /* Space between the comment input form and the list of comments */
     padding-right: 5px; /* Prevents the scrollbar from overlapping content */
@@ -355,6 +326,54 @@
     background-color: #f9f9f9; /* Light background for each comment */
     border-radius: 5px; /* Rounded corners for each comment */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional: Adds subtle shadow for each comment */
+}
+
+/* Here are the additional styles you provided, added to the stylesheet */
+
+.art-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    width: 80%;
+    margin: auto;
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.art-image-in-grid {
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.art-image-in-grid img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-icon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #444;
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.user-icon:hover {
+    background-color: #666;
 }
 
 .upload-container {
