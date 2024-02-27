@@ -361,6 +361,19 @@
     object-fit: cover;
 }
 
+.grid-container-home {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 12.5%;
+    grid-template-columns: repeat(auto-fill); /* Creates a responsive grid */
+    grid-template-rows: 200px;
+    gap: 20px; /* Space between grid items */
+    padding: 20px; /* Padding around the grid */
+    padding-top: 50px;
+    overflow-x: auto;
+    max-height: 200px;
+}
+
 .user-icon {
     display: inline-block;
     width: 15px;
