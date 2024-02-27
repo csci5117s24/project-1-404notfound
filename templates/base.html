@@ -20,9 +20,10 @@
             {% if session %}
                 <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
                 {%if 'userinfo' in session%}
-                <a href="/user_profile" title="View Profile">
+                <a href="/user_profile" title="View Profile" class="profile-link">
                     <img src="{{ session['userinfo'].get('picture', 'default_picture_url') }}" class="user-profile-pic">
                 </a>
+                <p class="user-name">Profile</p>
                 {%endif%}
             {% else %}
                 <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
@@ -40,7 +41,7 @@
                 searchHistory.style.display = 'block';
     
                 // Dummy search history data
-                var searches = ['Search 1', 'Search 2', 'Search 3'];
+                var searches = ['Cat', 'Car'];
                 
                 // Clear previous history
                 searchHistory.innerHTML = '';

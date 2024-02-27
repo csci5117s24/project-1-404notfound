@@ -115,13 +115,13 @@
 }
 .login {
     cursor: pointer;
-    color: #fff; /* White text */
-    background-color: #808080; /* Grey background */
+    color: #333; /* Adjust the color as needed */
+    background-color: #cccaca;
     padding: 10px 15px; /* Adds padding around the text */
     border-radius: 20px; /* Rounded corners */
     text-decoration: none;
     display: inline-block; /* Allows padding and background to be applied */
-    margin-left: 20px; /* Adds space to the left of the login block */
+    margin-right: 60px; /* Adds space to the left of the login block */
 }
 .grid-container {
     display: grid;
@@ -166,7 +166,7 @@
 
 .search-container {
     width: 75%;
-    text-align: center;
+    margin: 0 auto;
     position: relative;
 }
 .search-bar {
@@ -174,33 +174,79 @@
     padding: 10px;
     border: 1px solid #ccc; 
     border-radius: 20px; 
-    background-color: #808080;
-    color: #fff; 
+    background-color: #cccaca;
     font-size: 16px;
+    box-sizing: border-box;
 }
+
+.search-bar::placeholder {
+    color: rgba(0, 0, 0, 0.217);
+    opacity: 1; /* To ensure the placeholder is fully opaque */
+}
+
 .search-history {
-    width: 100%;
+    width: 72%;
     padding: 10px;
-    border-radius: 20px; 
+    border-radius: 10px; 
     display: none; /* Hidden by default */
-    background-color: #808080; /* Matching the search bar's background color */
-    color: #fff; /* Matching the search bar's text color */
+    background-color: #cccaca;
+    color: black; /* Matching the search bar's text color */
     position: absolute;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     overflow: hidden; /* Ensures the rounded corners contain the child elements */
 }
+
 .search-history a {
     padding: 10px 10px; /* Matching the search bar's padding */
     text-decoration: none;
     display: block;
-    color: #fff; /* Ensure the text color matches the search bar */
+    color: black;
 }
 
 .search-history a:hover {
-    background-color: #666; /* Slightly darker shade for hover effect */
+    background-color: #666; 
+}
+   
+.profile-link {
+    text-decoration: none; /* Removes underline from the link */
+    display: inline-block; /* Allows width and height to be set */
+    border: none; /* No border by default, but you can add one if you like */
+    /* Add any other styling you wish for the link here */
 }
 
+.user-profile-pic {
+    border-radius: 50%; /* Circle shape */
+    width: 50px; /* Example width */
+    height: 50px; /* Example height */
+    object-fit: cover; /* Ensures the image covers the area, useful for responsive design */
+    /* Add any other styling you wish for the image here */
+}
+.user-name {
+    text-align: center; /* Center align the "Me" text */
+    margin-top: 10px; /* Remove any default top margin */
+    font-size: 16px; /* Adjust as needed */
+    margin-left: 10px;
+    color: #333; /* Adjust the color as needed */
+  }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .search-container {
+        width: 95%; /* Increase width on smaller screens for better use of space */
+    }
+    .search-bar, .search-history {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+/* Additional responsive adjustments for larger screens, if needed */
+@media (min-width: 601px) {
+    .search-container {
+        width: 50%; /* Decrease width on larger screens */
+    }
+}
 
 
 .art-item {
