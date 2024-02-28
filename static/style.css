@@ -1,6 +1,11 @@
 .scrollable-row {
     overflow-x: auto;
     white-space: nowrap;
+    scrollbar-width: thin; /* Makes the scrollbar thin */
+    scrollbar-color: #888 #fff; /* Styling the scrollbar with a darker thumb and lighter track */
+    margin-bottom: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 .scrollable-row:first-of-type {
     margin-top: 70px; /* Adjust based on actual header height plus desired spacing */
@@ -41,14 +46,25 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+
 .modal-content {
-    background-color: #fefefe;
+    background-color: #f7f7f7;
     margin: 10% auto; /* 10% from the top and centered */
     padding: 10px;
     width: 50%; /* Full width */
     height: 55%; /* Full height */
+    min-height: 600px;
     border: 1px solid #888;
+    border-radius: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    display: flex;
+    flex-direction: column; /* Stack sections vertically */
+}
+
+
+.top-section {
+    display: flex; /* To hold left and right panels side by side */
+    flex-grow: 1; /* Adjust based on content */
 }
 
 .left-side{
@@ -57,14 +73,35 @@
     display: flex;
     flex-direction: column;
     gap: 5px; /* Spacing between inputs */
+    margin-right: 5%;
 }
-
 .right-side {
-    width: 45%;
+    width: 50%;
     float: right;
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center items horizontally in the current column layout */
+    justify-content: center; /* Center items vertically */
     gap: 5px; /* Spacing between inputs */
+}
+
+.middle-section, .bottom-section {
+    flex-grow: 1; /* Adjust based on content */
+    margin-top: 20px; /* Add space below the top section */
+}
+
+.bottom-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Center items horizontally in the current column layout */
+    justify-content: center; /* Center items vertically */
+    gap: 20px; /* Spacing between inputs */
+}
+/* Ensure clearing of floated elements if any */
+.top-section::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 #description {
@@ -112,16 +149,17 @@
     position: relative; /* Ensures footer is at the bottom */
     bottom: 0;
     left: 0;
+    margin-top: 50px;
 }
 .login {
     cursor: pointer;
-    color: #fff; /* White text */
-    background-color: #808080; /* Grey background */
+    color: #333; /* Adjust the color as needed */
+    background-color: #cccaca;
     padding: 10px 15px; /* Adds padding around the text */
     border-radius: 20px; /* Rounded corners */
     text-decoration: none;
     display: inline-block; /* Allows padding and background to be applied */
-    margin-left: 20px; /* Adds space to the left of the login block */
+    margin-right: 60px; /* Adds space to the left of the login block */
 }
 .grid-container {
     display: grid;
@@ -140,16 +178,29 @@
     display: flex;
     width: 100%; 
     height: auto;
+    max-width: 300px; /* Maximum width */
+    margin: 20px auto;
+    align-items: center; /* Centers items horizontally (since it's column direction) */
+    justify-content: center;
+}
+@media (max-width: 768px) {
+    .grid-item {
+        margin-left: 10px; /* Smaller margins for smaller screens */
+        margin-right: 10px;
+    }
 }
 
 .image-name {
+    margin-left: 10px;
     position: absolute;
     bottom: 0;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
     text-align: center;
-    padding: 5px 0; /* Padding above and below the text */
+    padding: 5px 5px; /* Padding above and below the text */
     overflow: hidden; /* Ensures that the text doesn't spill out of the container */
+    text-overflow: ellipsis; /* Adds an ellipsis to overflowing text */
+    white-space: nowrap;
 }
 
 .sliding-text {
@@ -166,7 +217,7 @@
 
 .search-container {
     width: 75%;
-    text-align: center;
+    margin: 0 auto;
     position: relative;
 }
 .search-bar {
@@ -174,33 +225,79 @@
     padding: 10px;
     border: 1px solid #ccc; 
     border-radius: 20px; 
-    background-color: #808080;
-    color: #fff; 
+    background-color: #cccaca;
     font-size: 16px;
+    box-sizing: border-box;
 }
+
+.search-bar::placeholder {
+    color: rgba(0, 0, 0, 0.217);
+    opacity: 1; /* To ensure the placeholder is fully opaque */
+}
+
 .search-history {
-    width: 100%;
+    width: 72%;
     padding: 10px;
-    border-radius: 20px; 
+    border-radius: 10px; 
     display: none; /* Hidden by default */
-    background-color: #808080; /* Matching the search bar's background color */
-    color: #fff; /* Matching the search bar's text color */
+    background-color: #cccaca;
+    color: black; /* Matching the search bar's text color */
     position: absolute;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     overflow: hidden; /* Ensures the rounded corners contain the child elements */
 }
+
 .search-history a {
     padding: 10px 10px; /* Matching the search bar's padding */
     text-decoration: none;
     display: block;
-    color: #fff; /* Ensure the text color matches the search bar */
+    color: black;
 }
 
 .search-history a:hover {
-    background-color: #666; /* Slightly darker shade for hover effect */
+    background-color: #666; 
+}
+   
+.profile-link {
+    text-decoration: none; /* Removes underline from the link */
+    display: inline-block; /* Allows width and height to be set */
+    border: none; /* No border by default, but you can add one if you like */
+    /* Add any other styling you wish for the link here */
 }
 
+.user-profile-pic {
+    border-radius: 50%; /* Circle shape */
+    width: 50px; /* Example width */
+    height: 50px; /* Example height */
+    object-fit: cover; /* Ensures the image covers the area, useful for responsive design */
+    /* Add any other styling you wish for the image here */
+}
+.user-name {
+    text-align: center; /* Center align the "Me" text */
+    margin-top: 10px; /* Remove any default top margin */
+    font-size: 16px; /* Adjust as needed */
+    margin-left: 10px;
+    color: #333; /* Adjust the color as needed */
+  }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .search-container {
+        width: 95%; /* Increase width on smaller screens for better use of space */
+    }
+    .search-bar, .search-history {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+/* Additional responsive adjustments for larger screens, if needed */
+@media (min-width: 601px) {
+    .search-container {
+        width: 50%; /* Decrease width on larger screens */
+    }
+}
 
 
 .art-item {
@@ -208,6 +305,7 @@
 }
 
 .image-container {
+    margin-top: 12px;
     position: relative; /* For the absolute positioning of the heart icon */
     flex-basis: 50%; /* Adjust based on your design preferences */
     padding-right: 20px; /* Adds space to the right of the image */
@@ -215,14 +313,17 @@
 
 
 .heart-box {
+    width: 24px;
+    height: 24px;
     display: inline-block;
     padding: 5px;
     border: 1px solid #ccc; /* Box border */
     border-radius: 5px; /* Optional: for rounded corners */
     cursor: pointer;
     position: absolute;
-    top: 10px; /* Adjust as needed */
-    left: 10px; /* Adjust as needed */
+    right: 40px; 
+    bottom: 10px;
+    margin-top: 20px;
     z-index: 10; /* Ensures the icon is above the image */
     user-select: none; /* Disables text selection */
     background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
@@ -230,7 +331,9 @@
 }
 
 .heart-icon {
-    font-size: 24px; /* Adjust based on your design preferences */
+    bottom: 10px; 
+    right: 40px; 
+    font-size: 32px; /* Adjust based on your design preferences */
     user-select: none; /* Disables text selection */
 }
 
@@ -257,7 +360,7 @@
     color: #333; /* Dark grey color for the text */
     margin-bottom: 0.6rem;
     margin-top: 1rem;
-    margin-left: 10px;
+    margin-left: 28px;
 }
 
 .art-image {
@@ -274,7 +377,7 @@
 }
 
 .author-name {
-    margin-left: 10px; 
+    margin-left: 20px; 
 }
 
 .profile_link .art-description{
@@ -283,7 +386,10 @@
     text-decoration: none; /* Removes underline from the link */
     color: #333; /* Color for the author's name */
     margin-bottom: 1rem; 
-    margin-left: 10px;
+}
+
+.art-description{
+    margin-left: 30px;
 }
 
 .comments-section {
@@ -297,13 +403,16 @@
 }
 
 .comment-input {
-    width: 70%; /* Adjusts the width of the text input */
+    width: 50%; /* Adjusts the width of the text input */
     margin-right: 5px; /* Adds space between the input field and the submit button */
+    margin-left: 20px;
 }
 
 .comment-submit {
     width: 20%; /* Adjusts the width of the submit button */
     cursor: pointer; /* Changes cursor to pointer when hovering over the button */
+    background-color: #cccaca;
+    color: black;
 }
 
 .comments-list-container {
@@ -313,6 +422,7 @@
     padding-right: 5px; /* Prevents the scrollbar from overlapping content */
     border-radius: 10px; /* Optional: Adds rounded corners to the comments container */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds subtle shadow for depth */
+    margin-left: 20px;
 }
 
 .comments-list {
@@ -328,6 +438,17 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional: Adds subtle shadow for each comment */
 }
 
+.comment-text{
+    margin-left: 10px;
+}
+.profile-img {
+    margin-top: 5px;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    object-fit: cover; /* To ensure the image covers the area properly */
+}
+
 /* Here are the additional styles you provided, added to the stylesheet */
 
 .art-container {
@@ -341,6 +462,7 @@
     border-radius: 50px;
     padding: 20px;
     box-sizing: border-box;
+    margin-top: 45px;
 }
 
 .art-image-in-grid {
@@ -372,6 +494,7 @@
     padding-top: 50px;
     overflow-x: auto;
     max-height: 200px;
+    flex: 0 0 auto;
 }
 
 .user-icon {
