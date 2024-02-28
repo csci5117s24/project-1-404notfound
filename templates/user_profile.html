@@ -12,10 +12,10 @@
             {% if session['userinfo']['user_id'] == user.user_id %}
                 <button class="edit-button" onclick="editDescription()">Edit</button>
             {% else %}
-              {% if is_following %}
-                <button id = 'followButton' data-is-following="{{ is_following }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Unfollow</button>
+              {% if is_following == true %}
+                <button id = 'followButton' data-is-following="{{ true }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Unfollow</button>
               {% else %}
-                <button id = 'followButton' data-is-following="{{ is_following }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Follow</button>
+                <button id = 'followButton' data-is-following="{{ false }}" class="edit-button" onclick="followUser('{{ follower_id }}', '{{ user.user_id }}')">Follow</button>
               {% endif %}
             {% endif %}
         {% endif %}
@@ -72,9 +72,9 @@
       }
       function followUser(followerId, followingId) {
         const button = event.currentTarget;
-
         // Get the current following state from the button's data attribute
-        var is_following = button.getAttribute('data-is-following') === 'true';
+        console.log(button.getAttribute('data-is-following'))
+        var is_following = button.getAttribute('data-is-following') === 'True' || button.getAttribute('data-is-following') === 'true';
         if (is_following){
           var url = '/api/unfollow/';
         } else {
