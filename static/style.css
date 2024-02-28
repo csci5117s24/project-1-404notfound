@@ -140,6 +140,30 @@
     border-bottom: 1px solid #ccc;
     z-index: 1000;
 }
+
+.header-section {
+    display: flex;
+    justify-content: center; /* Center the content of each section */
+    align-items: center; /* Align items vertically */
+}
+
+#museum-link-section {
+    width: 25%;
+    /* Additional styling for the museum link section */
+}
+
+#search-container-section {
+    width: 50%;
+    /* Since this is the search container, you might want to align items flex-start to keep the search bar aligned to the left within this section */
+    justify-content: flex-start;
+}
+
+#user-actions-section {
+    width: 25%;
+    /* Align items flex-end to keep the login/logout and profile links aligned to the right within this section */
+    justify-content: flex-end;
+}
+
 .footer {
     width: 100%;
     padding: 10px 0;
@@ -216,15 +240,15 @@
 }
 
 .search-container {
-    width: 75%;
+    flex-grow: 1; /* Allow the search bar to grow and fill available space */
+    width: auto; /* Override any fixed width */
     margin: 0 auto;
     position: relative;
 }
 .search-bar {
-    width: 75%;
+    width: 100%;
     padding: 10px;
-    border: 1px solid #ccc; 
-    border-radius: 20px; 
+    border-radius: 20px;
     background-color: #cccaca;
     font-size: 16px;
     box-sizing: border-box;
@@ -236,7 +260,7 @@
 }
 
 .search-history {
-    width: 72%;
+    width: 100%;
     padding: 10px;
     border-radius: 10px; 
     display: none; /* Hidden by default */
@@ -249,7 +273,8 @@
 }
 
 .search-history a {
-    padding: 10px 10px; /* Matching the search bar's padding */
+    padding: 10px ; /* Matching the search bar's padding */
+    width: 100%;
     text-decoration: none;
     display: block;
     color: black;
@@ -284,7 +309,7 @@
 /* Responsive adjustments for smaller screens */
 @media (max-width: 600px) {
     .search-container {
-        width: 95%; /* Increase width on smaller screens for better use of space */
+        width: 100%; /* Increase width on smaller screens for better use of space */
     }
     .search-bar, .search-history {
         padding: 8px;

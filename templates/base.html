@@ -10,24 +10,30 @@
     </head>
     <body>
         <div id="header" class="header">
-            <a href="/" >
-                <button class="museum-link">AI Art Museum</button>
-            </a>
-            <div class="search-container" id="searchContainer">
-                <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
-                <div class="search-history" id="searchHistory"></div>
-            </div>
-            {% if session %}
-                <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
-                {%if 'userinfo' in session%}
-                <a href="/user_profile" title="View Profile" class="profile-link">
-                    <img src="{{ session['userinfo'].get('picture', 'default_picture_url') }}" class="user-profile-pic">
+            <div class="header-section" id="museum-link-section">
+                <a href="/" >
+                    <button class="museum-link">AI Art Museum</button>
                 </a>
-                <p class="user-name">Profile</p>
-                {%endif%}
-            {% else %}
-                <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
-            {% endif %}
+            </div>
+            <div class="header-section" id="search-container-section">
+                <div class="search-container" id="searchContainer">
+                    <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
+                    <div class="search-history" id="searchHistory"></div>
+                </div>
+            </div>
+            <div class="header-section" id="user-actions-section">
+                {% if session %}
+                    <p><a href="/logout" class="login" id="qsLogoutBtn">Logout</a></p>
+                    {%if 'userinfo' in session%}
+                    <a href="/user_profile" title="View Profile" class="profile-link">
+                        <img src="{{ session['userinfo'].get('picture', 'default_picture_url') }}" class="user-profile-pic">
+                    </a>
+                    <p class="user-name">Profile</p>
+                    {%endif%}
+                {% else %}
+                    <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
+                {% endif %}
+            </div>
         </div>
         <div class="content">
             {%block content%}{%endblock%}
