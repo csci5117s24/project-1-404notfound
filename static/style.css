@@ -273,6 +273,7 @@
 }
 
 .image-container {
+    margin-top: 12px;
     position: relative; /* For the absolute positioning of the heart icon */
     flex-basis: 50%; /* Adjust based on your design preferences */
     padding-right: 20px; /* Adds space to the right of the image */
@@ -280,14 +281,17 @@
 
 
 .heart-box {
+    width: 24px;
+    height: 24px;
     display: inline-block;
     padding: 5px;
     border: 1px solid #ccc; /* Box border */
     border-radius: 5px; /* Optional: for rounded corners */
     cursor: pointer;
     position: absolute;
-    top: 10px; /* Adjust as needed */
-    left: 10px; /* Adjust as needed */
+    right: 40px; 
+    bottom: 10px;
+    margin-top: 20px;
     z-index: 10; /* Ensures the icon is above the image */
     user-select: none; /* Disables text selection */
     background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
@@ -295,7 +299,9 @@
 }
 
 .heart-icon {
-    font-size: 24px; /* Adjust based on your design preferences */
+    bottom: 10px; 
+    right: 40px; 
+    font-size: 32px; /* Adjust based on your design preferences */
     user-select: none; /* Disables text selection */
 }
 
@@ -369,6 +375,8 @@
 .comment-submit {
     width: 20%; /* Adjusts the width of the submit button */
     cursor: pointer; /* Changes cursor to pointer when hovering over the button */
+    background-color: #cccaca;
+    color: black;
 }
 
 .comments-list-container {
