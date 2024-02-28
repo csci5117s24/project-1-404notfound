@@ -1,43 +1,37 @@
 {% extends "base.html" %}
-{% block head %}
-    {{ super() }} <!-- 这会保留 base.html 中 head 部分的内容 -->
-    <link rel="stylesheet" href="/static/subs.css"> <!-- 添加额外的 CSS -->
-{% endblock %}
+
 {% block content %}
-<div class="art-container">
-    <h2>Following</h2>
-    <div class="grid-container" id="followingContainer">
-        <!-- The following user data will be appended here by the script below -->
+<div class="follower-page-container">
+    <div class="follower-page">
+        <h2>Following</h2>
+            <div class="grid-container-follower" id="followersContainer">
+                {% for follower in followers %}
+                    <div class="user-block">
+                        <div class="user-top">
+                            <a href="/users/{{follower[1]}}", class = "profile_link">
+                                <img src="{{ follower[3] }}" alt="User Profile" class="profile-pic">
+                                <p class="user-name">{{ follower[0] }}</p>
+                            </a>
+                            
+                        </div>
+                        <div class="user-description">
+                            <p>{{ follower[5] }}</p>
+                        </div>
+                        <a href="/art/{{ follower[6] }}" class="image-link">
+                            <div class="grid-item">
+                                <div class="art-image-in-grid">
+                                <img src="{{ follower[8] }}" alt="{{ follower[7] }}">
+                                </div>
+                                <div class="image-name">
+                                <span class="image-title">{{ follower[7] }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+        <!-- The followers user data will be appended here by the script below -->
+            </div>
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function(event) {
-    let followingContainer = document.getElementById('followingContainer');
-    if (followingContainer) {
-        let followingData = {{ following | tojson | safe }};
-        console.log('Following Data:', followingData);
-        createUserElements(followingContainer, followingData);
-    } else {
-        console.error('Following container not found');
-    }
-});
-
-function createUserElements(container, userData) {
-    userData.forEach(function(user) {
-        let userDiv = document.createElement('div');
-        userDiv.classList.add('grid-item');
-        let userProfileUrl = `/users/${encodeURIComponent(user[0])}`;
-        userDiv.innerHTML = `
-            <div class="user-info">
-                <p>User ID: <a href="${userProfileUrl}">${user[0]}</a></p>
-                <p>Email: ${user[1]}</p>
-                <p>Followed Date: ${user[2]}</p>
-            </div>
-        `;
-        
-        container.appendChild(userDiv);
-    });
-}
-</script>
 {% endblock %}

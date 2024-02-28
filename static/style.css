@@ -187,12 +187,24 @@
 }
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Creates a responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px; /* Space between grid items */
     padding: 20px; /* Padding around the grid */
     padding-top: 50px;
     overflow-y: auto; /* Enables vertical scrolling */
     max-height: 400px; /* Adjust based on your preference */
+}
+.grid-container-follower {
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px; /* Space between grid items */
+    padding: 20px; /* Padding around the grid */
+    padding-top: 50px;
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 400px; /* Adjust based on your preference */
+    align-items: center; /* Centers items horizontally (since it's column direction) */
+    justify-content: center;
+    flex-wrap: wrap;
 }
 .grid-item {
     background-color: #ddd; /* Placeholder for images, replace or remove with actual images */
@@ -612,6 +624,16 @@ body {
     box-shadow: 0 2px 10px var(--box-shadow-color);
 }
 
+.follower-page-container {
+    width: 80%;
+    margin: 3rem auto;
+    align-items: center;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px var(--box-shadow-color);
+}
+
 .user-info {
     display: flex;
     align-items: center;
@@ -678,6 +700,12 @@ body {
 
 .user-works {
     max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.follower-page {
+    width: 100%;
     margin: 0 auto;
     padding: 1rem;
 }
@@ -797,12 +825,7 @@ a:focus, button:focus {
     
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
+
 
 
 /* 卡片样式 */
@@ -839,4 +862,51 @@ a:focus, button:focus {
 h2 {
     color: #333;
     text-align: center;
+}
+
+
+.user-block {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    width: 20%; /* Adjust width as needed */
+    border: 1px solid #ccc; /* Optional border */
+    border-radius: 10px; /* Optional rounded corners */
+    overflow: hidden; /* Keeps child elements within the rounded corners */
+}
+
+.user-top {
+    display: flex; /* Align profile pic and name side by side */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Horizontally center the content */
+    padding: 10px; /* Add some padding */
+    border-bottom: 1px solid #ccc; /* Add a bottom border to create a line */
+}
+
+.profile-pic {
+    width: 25%; /* Adjust size as needed */
+    height: auto; /* Adjust size as needed */
+    border-radius: 50%; /* Make the profile picture circular */
+    margin-right: 10px; /* Add space between the picture and the name */
+}
+
+.user-name {
+    font-weight: bold; /* Optional styling */
+}
+
+.user-description {
+    padding: 10px; /* Add some padding */
+    /* Additional styling as needed */
+    border-bottom: 1px solid #ccc; /* Add a bottom border to create a line */
+}
+
+.user-art {
+    width: 90%; /* Make the art section take up the full width of the block */
+    display: flex; /* Use flex to center the image if smaller than the container */
+    justify-content: center; /* Center the image horizontally */
+    padding: 10px; /* Add some padding */
+}
+
+.recent-art {
+    max-width: 100%; /* Ensure the image doesn't exceed the container's width */
+    height: auto; /* Maintain aspect ratio */
 }

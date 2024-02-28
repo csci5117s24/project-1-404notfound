@@ -963,65 +963,178 @@ def upload_image_to_s3_from_url(image_url, file_name, content_type='image/jpeg')
 
 @app.route('/user/fans')
 def show_fans():
-    # 直接从请求的查询参数中获取 user_id
     user_id = request.args.get('user_id')
     user_info = session.get('user')
     if not user_info or 'userinfo' not in user_info or 'user_id' not in user_info['userinfo']:
-        # 如果 URL 中没有 user_id 参数，重定向到登录页面
         return redirect(url_for('login'))
-
-    # 查询当前用户关注的人
     following_sql = """
-    SELECT u.user_id, u.email, f.created_at
-    FROM follows f
-    JOIN users u ON f.following_id = u.user_id
-    WHERE f.follower_id = %s;
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.following_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.following_id = %s;
     """
     following = db.query_db(following_sql, (user_id,))
 
     # 查询关注当前用户的人
     followers_sql = """
-    SELECT u.user_id, u.email, f.created_at
-    FROM follows f
-    JOIN users u ON f.follower_id = u.user_id
-    WHERE f.following_id = %s;
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.following_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.follower_id = %s;
     """
     followers = db.query_db(followers_sql, (user_id,))
-    print("xxxxxx")
-    print(following)  # 这将在服务器的控制台上打印following列表
-
-
     return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
+
 @app.route('/user/subs')
 def show_subscribtion():
-    # 直接从请求的查询参数中获取 user_id
     user_id = request.args.get('user_id')
     user_info = session.get('user')
     if not user_info or 'userinfo' not in user_info or 'user_id' not in user_info['userinfo']:
-        # 如果 URL 中没有 user_id 参数，重定向到登录页面
         return redirect(url_for('login'))
-
-    # 查询当前用户关注的人
     following_sql = """
-    SELECT u.user_id, u.email, f.created_at
-    FROM follows f
-    JOIN users u ON f.following_id = u.user_id
-    WHERE f.follower_id = %s;
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.following_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.following_id = %s;
     """
     following = db.query_db(following_sql, (user_id,))
 
     # 查询关注当前用户的人
     followers_sql = """
-    SELECT u.user_id, u.email, f.created_at
-    FROM follows f
-    JOIN users u ON f.follower_id = u.user_id
-    WHERE f.following_id = %s;
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.following_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.follower_id = %s;
     """
     followers = db.query_db(followers_sql, (user_id,))
-    print("xxxxxx")
-    print(following)  # 这将在服务器的控制台上打印following列表
-
-
     return render_template('subs.html', following=following, followers=followers,session=session.get("user"),)
 
 @app.route('/user/likes')
@@ -1049,5 +1162,5 @@ def show_likes():
 ##############
 
 if __name__ == "__main__":
-    # app.run(debug=True)
+    #app.run(debug=True)
     app.run(host="0.0.0.0", port=env.get("PORT", 3000))
