@@ -922,7 +922,7 @@ def upload_image():
             print(user_id)
             print(image_url)
             if image.filename == '':
-                image_url = upload_image_to_s3_from_url(image_url, title + str(uuid.uuid4()) + ".jpg")
+                image_url = upload_image_to_s3_from_url(image_url, str(uuid.uuid4()) + ".jpg")
             else:
                 image_url = upload_image_to_s3(image)
             
