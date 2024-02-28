@@ -495,7 +495,7 @@ def recommand_suprise(user_id):
     image_id_list = [image_id for image_id, _ in top_recommendations]
     image_ids_tuple = tuple(image_id_list)
     no_image = []
-    sql_query = "SELECT * FROM images WHERE image_id IN %s LIMIT 10"
+    sql_query = "SELECT * FROM images WHERE image_id IN %s LIMIT 20"
     if image_ids_tuple:
         top_images = db.query_db(sql_query, (image_ids_tuple,))
         return top_images
