@@ -491,7 +491,7 @@ def recommand_suprise(user_id):
     image_ids = get_all_image_not_viewed(user_id) 
     predictions = [algo.predict(user_id, img_id).est for img_id in image_ids]
     
-    top_recommendations = sorted(zip(image_ids, predictions), key=lambda x: x[1], reverse=True)[:10]
+    top_recommendations = sorted(zip(image_ids, predictions), key=lambda x: x[1], reverse=True)[:20]
     image_id_list = [image_id for image_id, _ in top_recommendations]
     image_ids_tuple = tuple(image_id_list)
     no_image = []
@@ -549,10 +549,10 @@ def calculate_image_similarity():
 def recommend_similarity(user_id):
     #based on user's perference and most recent viewed or liked, recommend similar images,exculde the ones user already liked or viewed
     perference = db.query_db(
-        "SELECT image_id FROM image_preference WHERE user_id = %s ORDER BY score DESC LIMIT 15", (user_id,)
+        "SELECT image_id FROM image_preference WHERE user_id = %s ORDER BY score DESC LIMIT 7", (user_id,)
     )
     get_interactionn = db.query_db(
-        "SELECT image_id FROM image_interactions WHERE user_id = %s ORDER BY created_at DESC LIMIT 15", (user_id,)
+        "SELECT image_id FROM image_interactions WHERE user_id = %s ORDER BY created_at DESC LIMIT 7", (user_id,)
     )
     preference_ids = [row[0] for row in perference]
     interaction_ids = [row[0] for row in get_interactionn]
@@ -561,7 +561,7 @@ def recommend_similarity(user_id):
     for id in preference_ids:
         if id not in combined_recommendations:
             combined_recommendations.append(id)
-        if len(combined_recommendations) >= 20:
+        if len(combined_recommendations) >= 10:
             break
     
     recommended_images = db.query_db(
