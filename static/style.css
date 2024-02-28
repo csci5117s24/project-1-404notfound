@@ -486,14 +486,11 @@
 .grid-container-home {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 12.5%;
-    grid-template-columns: repeat(auto-fill); /* Creates a responsive grid */
-    grid-template-rows: 200px;
+    grid-auto-columns: minmax(200px, 1fr);
+    grid-template-columns: repeat(auto-fill);
     gap: 20px; /* Space between grid items */
     padding: 20px; /* Padding around the grid */
-    padding-top: 50px;
     overflow-x: auto;
-    max-height: 200px;
     flex: 0 0 auto;
 }
 
