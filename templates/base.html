@@ -28,7 +28,9 @@
                     <a href="/user_profile" title="View Profile" class="profile-link">
                         <img src="{{ session['userinfo'].get('picture', 'default_picture_url') }}" class="user-profile-pic">
                     </a>
-                    <p class="user-name">Profile</p>
+                    <a href="/user_profile" title="View Profile" class="profile-link">
+                        <p class="user-name">Profile</p>
+                    </a>
                     {%endif%}
                 {% else %}
                     <p><a href="/login" class="login" id="qsLoginBtn">Login</a></p>
