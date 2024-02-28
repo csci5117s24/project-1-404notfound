@@ -46,14 +46,25 @@
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+
 .modal-content {
-    background-color: #fefefe;
+    background-color: #f7f7f7;
     margin: 10% auto; /* 10% from the top and centered */
     padding: 10px;
     width: 50%; /* Full width */
     height: 55%; /* Full height */
+    min-height: 600px;
     border: 1px solid #888;
+    border-radius: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    display: flex;
+    flex-direction: column; /* Stack sections vertically */
+}
+
+
+.top-section {
+    display: flex; /* To hold left and right panels side by side */
+    flex-grow: 1; /* Adjust based on content */
 }
 
 .left-side{
@@ -62,14 +73,35 @@
     display: flex;
     flex-direction: column;
     gap: 5px; /* Spacing between inputs */
+    margin-right: 5%;
 }
-
 .right-side {
-    width: 45%;
+    width: 50%;
     float: right;
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center items horizontally in the current column layout */
+    justify-content: center; /* Center items vertically */
     gap: 5px; /* Spacing between inputs */
+}
+
+.middle-section, .bottom-section {
+    flex-grow: 1; /* Adjust based on content */
+    margin-top: 20px; /* Add space below the top section */
+}
+
+.bottom-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Center items horizontally in the current column layout */
+    justify-content: center; /* Center items vertically */
+    gap: 20px; /* Spacing between inputs */
+}
+/* Ensure clearing of floated elements if any */
+.top-section::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 #description {
