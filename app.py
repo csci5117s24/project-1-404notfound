@@ -569,10 +569,12 @@ def get_friends_work(user_id):
     SELECT images.*
     FROM images
     JOIN follows ON follows.following_id = images.user_id
-    LEFT JOIN image_interactions ON image_interactions.image_id = images.image_id AND image_interactions.user_id = follows.follower_id
+    LEFT JOIN image_interactions ON image_interactions.image_id = images.image_id 
+        AND image_interactions.user_id = follows.follower_id
     WHERE follows.follower_id = %s
-    AND image_interactions.viewed = FALSE
+        AND (image_interactions.viewed IS NULL OR image_interactions.viewed = FALSE)
     ORDER BY images.created_at DESC;
+
     """
     artworks = db.query_db(sql, (user_id,))
     return artworks
