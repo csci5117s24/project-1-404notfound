@@ -469,11 +469,13 @@ def recommand_suprise(user_id):
     top_recommendations = sorted(zip(image_ids, predictions), key=lambda x: x[1], reverse=True)[:10]
     image_id_list = [image_id for image_id, _ in top_recommendations]
     image_ids_tuple = tuple(image_id_list)
-
+    no_image = []
     sql_query = "SELECT * FROM images WHERE image_id IN %s LIMIT 10"
-
-    top_images = db.query_db(sql_query, (image_ids_tuple,))
-    return top_images
+    if image_ids_tuple:
+        top_images = db.query_db(sql_query, (image_ids_tuple,))
+        return top_images
+    else:
+        return no_image
 
 def extract_features(image_url):
     resnet_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
