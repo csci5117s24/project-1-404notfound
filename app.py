@@ -99,6 +99,10 @@ def home():
         user_id = session['user']['userinfo'].get('user_id')
         suprise_re = recommand_suprise(user_id)
         similarity_re = recommend_similarity(user_id)
+        for art in similarity_re:
+            if art in suprise_re:
+                suprise_re.remove(art)
+
         friend_re = get_friends_work(user_id)
         most_viewed = get_most_viewed_for_user(user_id)
         trending = get_trending_artworks_for_user(user_id)
@@ -544,19 +548,19 @@ def calculate_image_similarity():
 def recommend_similarity(user_id):
     #based on user's perference and most recent viewed or liked, recommend similar images,exculde the ones user already liked or viewed
     perference = db.query_db(
-        "SELECT image_id FROM image_preference WHERE user_id = %s ORDER BY score DESC LIMIT 7", (user_id,)
+        "SELECT image_id FROM image_preference WHERE user_id = %s ORDER BY score DESC LIMIT 15", (user_id,)
     )
     get_interactionn = db.query_db(
-        "SELECT image_id FROM image_interactions WHERE user_id = %s ORDER BY created_at DESC LIMIT 7", (user_id,)
+        "SELECT image_id FROM image_interactions WHERE user_id = %s ORDER BY created_at DESC LIMIT 15", (user_id,)
     )
     preference_ids = [row[0] for row in perference]
     interaction_ids = [row[0] for row in get_interactionn]
     
-    combined_recommendations = preference_ids[:]
-    for id in interaction_ids:
+    combined_recommendations = interaction_ids[:]
+    for id in preference_ids:
         if id not in combined_recommendations:
             combined_recommendations.append(id)
-        if len(combined_recommendations) >= 10:
+        if len(combined_recommendations) >= 20:
             break
     
     recommended_images = db.query_db(
