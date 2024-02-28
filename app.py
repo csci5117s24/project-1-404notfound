@@ -134,8 +134,11 @@ def art(id):
             "comment_id": row[0],
             "image_id": row[1],
             "user_id": row[2],
-            "comment": row[3]
+            "comment": row[3],
+            "user_profile": get_user_profile_pic(row[2])
         })
+
+        
     try:
         is_liked = check_like(image_details[0], session['user']['userinfo'].get('user_id'))[0]
         user_id = session['user']['userinfo'].get('user_id')
