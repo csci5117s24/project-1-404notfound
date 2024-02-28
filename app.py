@@ -352,17 +352,22 @@ def get_most_viewed():
 def get_trending_artworks_for_user(user_id):
     sql = """
     SELECT i.*,
-           (COUNT(ii.user_id) FILTER (WHERE ii.liked) + 1) / 
-           POWER(EXTRACT(EPOCH FROM NOW() - i.created_at) / 3600 + 1, 1.8) AS score
+        (COALESCE(COUNT(ii.user_id) FILTER (WHERE ii.liked), 0) + 1) / 
+        POWER(EXTRACT(EPOCH FROM NOW() - i.created_at) / 3600 + 1, 1.8) AS score
     FROM images i
-    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id
-    WHERE i.user_id = %s AND ii.user_id = %s AND ii.Viewed = FALSE
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id AND ii.liked = TRUE
+    WHERE i.image_id NOT IN (
+        SELECT image_id 
+        FROM image_interactions 
+        WHERE user_id = %s AND viewed = TRUE
+    )
     GROUP BY i.image_id
     ORDER BY score DESC
     LIMIT 10;
+
     """
 
-    artworks = db.query_db(sql, (user_id, user_id))
+    artworks = db.query_db(sql, (user_id,))
     return artworks
 def get_most_liked_for_user(user_id):
     sql = """
