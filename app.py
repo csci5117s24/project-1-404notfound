@@ -257,6 +257,7 @@ def other_user_profile(id):
     except:
         is_following = False
         follower_id = -1
+    print("is_following: ", is_following)
     return render_template('user_profile.html', session=session.get('user'), follower_id=follower_id, user=user_data, is_following=is_following)
 
 @app.route("/user_profile")
