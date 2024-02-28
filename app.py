@@ -965,7 +965,6 @@ def upload_image_to_s3_from_url(image_url, file_name, content_type='image/jpeg')
         raise Exception(f"Failed to download image from {image_url}")
 
 ###############
-
 @app.route('/user/fans')
 def show_fans():
     user_id = request.args.get('user_id')
@@ -986,7 +985,7 @@ def show_fans():
     FROM 
         follows f
     JOIN 
-        users u ON f.following_id = u.user_id
+        users u ON f.follower_id = u.user_id
     LEFT JOIN
         descriptions d ON u.user_id = d.user_id
     LEFT JOIN (
@@ -1052,6 +1051,7 @@ def show_fans():
         f.follower_id = %s;
     """
     followers = db.query_db(followers_sql, (user_id,))
+    print("following: ", following)
     return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
 
 @app.route('/user/subs')
@@ -1074,7 +1074,7 @@ def show_subscribtion():
     FROM 
         follows f
     JOIN 
-        users u ON f.following_id = u.user_id
+        users u ON f.follower_id = u.user_id
     LEFT JOIN
         descriptions d ON u.user_id = d.user_id
     LEFT JOIN (
