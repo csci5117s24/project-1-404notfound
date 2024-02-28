@@ -134,8 +134,11 @@ def art(id):
             "comment_id": row[0],
             "image_id": row[1],
             "user_id": row[2],
-            "comment": row[3]
+            "comment": row[3],
+            "user_profile": get_user_profile_pic(row[2])
         })
+
+        
     try:
         is_liked = check_like(image_details[0], session['user']['userinfo'].get('user_id'))[0]
         user_id = session['user']['userinfo'].get('user_id')
@@ -162,7 +165,13 @@ def other_user_profile(id):
     }
     print(id)
     print(user_data['profile_pic_url'])
-    return render_template('user_profile.html', user=user_data,session=session.get("user"))
+    try:
+        is_following = check_follow(session.get('user')['userinfo']['user_id'], id)
+        follower_id = session.get('user')['userinfo']['user_id']
+    except:
+        is_following = False
+        follower_id = -1
+    return render_template('user_profile.html', session=session.get('user'), follower_id=follower_id, user=user_data, is_following=is_following)
 
 @app.route("/user_profile")
 def user_profile():
