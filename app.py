@@ -1054,6 +1054,95 @@ def show_fans():
     followers = db.query_db(followers_sql, (user_id,))
     return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
 
+@app.route('/user/fans')
+def show_fans():
+    user_id = request.args.get('user_id')
+    user_info = session.get('user')
+    if not user_info or 'userinfo' not in user_info or 'user_id' not in user_info['userinfo']:
+        return redirect(url_for('login'))
+    following_sql = """
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.follower_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.following_id = %s;
+    """
+    following = db.query_db(following_sql, (user_id,))
+
+    # 查询关注当前用户的人
+    followers_sql = """
+    SELECT 
+        u.user_name, 
+        u.user_id, 
+        u.email, 
+        u.profile_pic_url, 
+        f.created_at,
+        d.description,
+        img.image_id,
+        img.title,
+        img.image_url
+    FROM 
+        follows f
+    JOIN 
+        users u ON f.following_id = u.user_id
+    LEFT JOIN
+        descriptions d ON u.user_id = d.user_id
+    LEFT JOIN (
+        SELECT 
+            i.user_id, 
+            i.image_id, 
+            i.title, 
+            i.image_url
+        FROM 
+            images i
+        INNER JOIN (
+            SELECT 
+                user_id, 
+                MAX(created_at) as max_created_at
+            FROM 
+                images
+            GROUP BY 
+                user_id
+        ) latest ON i.user_id = latest.user_id AND i.created_at = latest.max_created_at
+    ) img ON u.user_id = img.user_id
+    WHERE 
+        f.follower_id = %s;
+    """
+    followers = db.query_db(followers_sql, (user_id,))
+    print("following: ", following)
+    return render_template('follows.html', following=following, followers=followers,session=session.get("user"),)
+
 @app.route('/user/subs')
 def show_subscribtion():
     user_id = request.args.get('user_id')
@@ -1074,7 +1163,7 @@ def show_subscribtion():
     FROM 
         follows f
     JOIN 
-        users u ON f.following_id = u.user_id
+        users u ON f.follower_id = u.user_id
     LEFT JOIN
         descriptions d ON u.user_id = d.user_id
     LEFT JOIN (
