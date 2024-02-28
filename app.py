@@ -8,7 +8,17 @@ from flask import Flask, redirect, render_template, session, url_for, request
 import db_helper as db
 import boto3
 from flask_apscheduler import APScheduler
-
+import pandas as pd
+import numpy as np
+from surprise import Dataset, Reader, SVD, accuracy
+import pickle
+import tensorflow as tf 
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
+from sklearn.metrics.pairwise import cosine_similarity
+import requests
+from io import BytesIO
+import PIL
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
@@ -18,6 +28,8 @@ app.secret_key = env.get("APP_SECRET_KEY")
 
 with app.app_context():
         db.init_db_pool()
+        
+
 
 oauth = OAuth(app)
 
@@ -47,31 +59,85 @@ scheduler.start()
 
 @app.route("/")
 def home():
+    if 'user' not in session:
+
     # Fetch the artwork data
-    most_viewed = get_most_viewed()
-    trending = get_trending_artworks()
-    most_liked = get_most_liked()
+        most_viewed = get_most_viewed()
+        trending = get_trending_artworks()
+        most_liked = get_most_liked()
 
-    # Convert each list of tuples to a list of dictionaries
-    def convert_to_dicts(artworks):
-        return [
-            {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
-            for art in artworks
+        # Convert each list of tuples to a list of dictionaries
+        def convert_to_dicts(artworks):
+            return [
+                {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
+                for art in artworks
+            ]
+
+        all_arts = [
+            {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+            {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+            {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
         ]
+        
+        
+        return render_template(
+            "home.html",
+            session=session.get("user"),
+            pretty=json.dumps(session.get("user"), indent=4),
+            artworks=all_arts
+        )
+    else:
+        load_prediction_model()
 
-    all_arts = [
-        {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
-        {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
-        {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
-    ]
+        user_id = session['user']['userinfo'].get('user_id')
+        suprise_re = recommand_suprise(user_id)
+        similarity_re = recommend_similarity(user_id)
+        friend_re = get_friends_work(user_id)
+        most_viewed = get_most_viewed_for_user(user_id)
+        trending = get_trending_artworks_for_user(user_id)
+        most_liked = get_most_liked_for_user(user_id)
+        print("friend_re",friend_re, flush=True)
+
+        
+        def convert_to_dicts(artworks):
+            return [
+                {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
+                for art in artworks
+            ]
+        if len(friend_re) >2:
+            
+            all_arts = [
+                {"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)},
+                {"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)},
+                {"name": "based on your friend's work", "artworks": convert_to_dicts(friend_re)},
+                {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+                {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+                {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
+            ]
+            return render_template(
+                "home.html",
+                session=session.get("user"),
+                pretty=json.dumps(session.get("user"), indent=4),
+                artworks=all_arts
+            )
+        else:
+            all_arts = [
+                {"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)},
+                {"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)},
+                {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+                {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+                {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
+            ]
+            return render_template(
+                "home.html",
+                session=session.get("user"),
+                pretty=json.dumps(session.get("user"), indent=4),
+                artworks=all_arts
+            )
     
-    
-    return render_template(
-        "home.html",
-        session=session.get("user"),
-        pretty=json.dumps(session.get("user"), indent=4),
-        artworks=all_arts
-    )
+
+
+
 
 @app.route('/art/<id>')
 def art(id):
@@ -137,7 +203,6 @@ def art(id):
     except:
         is_liked = False
         user_id = -1
-    print("is_liked", is_liked)
     return render_template('art_page.html', is_liked = is_liked, session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj, user_id = user_id)
     
 
@@ -155,8 +220,7 @@ def other_user_profile(id):
         'profile_pic_url': get_user_profile_pic(user_id),
         'user_id': int(id)
     }
-    print(id)
-    print(user_data['profile_pic_url'])
+
     return render_template('user_profile.html', user=user_data,session=session.get("user"))
 
 @app.route("/user_profile")
@@ -183,7 +247,10 @@ def user_profile():
         'user_id': user_id
     }
     return render_template('user_profile.html', user=user_data,session=session.get('user'))
-
+def load_prediction_model():
+    global algo
+    with open('recommendation_model.pkl', 'rb') as file:
+        algo = pickle.load(file)
 def get_user_email(user_id):
     email = db.query_db(
         "SELECT email FROM users WHERE user_id = %s", (user_id,),one=True
@@ -266,13 +333,226 @@ def get_most_viewed():
     """
     artworks = db.query_db(sql)
     return artworks
-@scheduler.task('cron', id='calcular_similarity', hour=3, minute=0, misfire_grace_time=900)
-def calcular_similarity():
-    #TODO
-    pass
-def get_recent_artworks():
-    #TODO
-    pass
+def get_trending_artworks_for_user(user_id):
+    sql = """
+    SELECT i.*,
+           (COUNT(ii.user_id) FILTER (WHERE ii.liked) + 1) / 
+           POWER(EXTRACT(EPOCH FROM NOW() - i.created_at) / 3600 + 1, 1.8) AS score
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id
+    WHERE i.user_id = %s AND ii.user_id = %s AND ii.Viewed = FALSE
+    GROUP BY i.image_id
+    ORDER BY score DESC
+    LIMIT 10;
+    """
+
+    artworks = db.query_db(sql, (user_id, user_id))
+    return artworks
+def get_most_liked_for_user(user_id):
+    sql = """
+  SELECT i.*,
+       COALESCE(COUNT(ii.user_id) FILTER (WHERE ii.liked), 0) AS likes
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id AND ii.liked = TRUE
+    WHERE i.image_id NOT IN (
+        SELECT image_id 
+        FROM image_interactions 
+        WHERE user_id = %s AND viewed = TRUE
+    )
+    GROUP BY i.image_id
+    ORDER BY likes DESC, i.image_id  -- Added i.image_id for deterministic sorting
+    LIMIT 10;
+
+    """
+    artworks = db.query_db(sql, (user_id, ))
+    return artworks
+def get_most_viewed_for_user(user_id):
+    sql = """
+    SELECT i.*, 
+       COALESCE(SUM(CASE WHEN ii.viewed THEN 1 ELSE 0 END), 0) AS views
+    FROM images i
+    LEFT JOIN image_interactions ii ON i.image_id = ii.image_id AND ii.viewed = TRUE
+    WHERE i.image_id NOT IN (
+        SELECT image_id 
+        FROM image_interactions 
+        WHERE user_id = %s AND viewed = TRUE
+    )
+    GROUP BY i.image_id
+    ORDER BY views DESC
+    LIMIT 10;
+
+    """
+    artworks = db.query_db(sql, (user_id, ))
+    return artworks
+
+
+def get_interactions():
+    sql = """
+    SELECT user_id,image_id,viewed,liked FROM image_interactions
+    """
+    interactions = db.query_db(sql,)
+    return interactions
+
+@scheduler.task('cron', id='suprise_training', hour=3, minute=0, misfire_grace_time=900)
+def calcular_perference():
+    interactions =pd.DataFrame(get_interactions(),columns=['user_id','image_id','viewed','liked'])
+    interactions['viewed'] = interactions['viewed'].astype(int)
+    interactions['liked'] = interactions['liked'].astype(int)
+    total_views_likes = interactions.groupby('user_id')[['viewed', 'liked']].sum().reset_index()
+
+    total_views_likes.rename(columns={'viewed': 'total_views', 'liked': 'total_likes'}, inplace=True)
+    interactions = interactions.merge(total_views_likes, on='user_id')
+    interactions['weighted_rating'] = interactions.apply(
+        lambda row: row['liked'] * np.log(row['total_likes']+1 / row['total_views']+1) ,
+        axis=1
+    )
+    interactions.drop(columns=['viewed', 'liked', 'total_views', 'total_likes'], inplace=True)
+    for user_id,image_id,weighted_rating in interactions.values:
+        result = db.query_db(
+            'SELECT * FROM image_preference WHERE user_id = %s AND image_id = %s', (user_id, image_id)
+        )
+        if result:
+            db.modify_db(
+                "UPDATE image_preference SET score = %s WHERE user_id = %s AND image_id = %s", (weighted_rating, user_id, image_id)
+            )
+        else:
+            db.modify_db(
+                "INSERT INTO image_preference (user_id, image_id, score) VALUES (%s, %s, %s)",
+                (user_id, image_id, weighted_rating),
+            )
+
+    return interactions
+@app.route('/api/recomtest')
+def suprise_training():
+    interations = calcular_perference()
+    reader = Reader(rating_scale=(0, 1))
+    data = Dataset.load_from_df(interations[['user_id', 'image_id', 'weighted_rating']], reader)
+    trainset = data.build_full_trainset()
+    algo = SVD()
+    algo.fit(trainset)  
+    with open('recommendation_model.pkl', 'wb') as file:
+        pickle.dump(algo, file)
+    return "Success", 200
+def get_all_image_not_viewed(user_id):
+    sql = """
+    SELECT image_id FROM images
+    WHERE image_id NOT IN (SELECT image_id FROM image_interactions WHERE user_id = %s AND viewed = TRUE)
+
+    """
+    images = db.query_db(sql,(user_id,))
+    return images
+def recommand_suprise(user_id):
+    image_ids = get_all_image_not_viewed(user_id) 
+    predictions = [algo.predict(user_id, img_id).est for img_id in image_ids]
+    
+    top_recommendations = sorted(zip(image_ids, predictions), key=lambda x: x[1], reverse=True)[:10]
+    image_id_list = [image_id for image_id, _ in top_recommendations]
+    image_ids_tuple = tuple(image_id_list)
+
+    sql_query = "SELECT * FROM images WHERE image_id IN %s LIMIT 10"
+
+    top_images = db.query_db(sql_query, (image_ids_tuple,))
+    return top_images
+
+def extract_features(image_url):
+    resnet_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    image = requests.get(image_url)
+    image = load_img(BytesIO(image.content), target_size=(224, 224))
+    image = img_to_array(image)
+    image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+    image = preprocess_input(image)
+    features = resnet_model.predict(image)
+    return features
+
+@app.route('/api/get-recent-artworks/', methods=['GET'])
+@scheduler.task('cron', id='calculate_image_similarity', hour=3, minute=0, misfire_grace_time=900)
+def calculate_image_similarity():
+    images = db.query_db("SELECT image_id, image_url FROM images")
+
+    features = []
+    image_ids = []
+    for image_id, image_url in images:
+        result = extract_features(image_url)
+        features.append(result)
+        image_ids.append(image_id)
+
+    features = np.array(features).reshape(-1, 2048)
+    similarities = cosine_similarity(features)
+
+    for i in range(len(image_ids)):
+        for j in range(len(image_ids)):
+            if i != j:
+                have = db.query_db(
+                    "SELECT * FROM image_similarities WHERE image1_id = %s AND image2_id = %s",
+                    (image_ids[i], image_ids[j]),
+                )
+                if not have:
+                    db.modify_db(
+                        "INSERT INTO image_similarities (image1_id, image2_id, similarity) VALUES (%s, %s, %s)",
+                        (image_ids[i], image_ids[j], float(similarities[i, j])),
+                    )
+    return "Success", 200
+
+
+
+
+
+def recommend_similarity(user_id):
+    #based on user's perference and most recent viewed or liked, recommend similar images,exculde the ones user already liked or viewed
+    perference = db.query_db(
+        "SELECT image_id FROM image_preference WHERE user_id = %s ORDER BY score DESC LIMIT 7", (user_id,)
+    )
+    get_interactionn = db.query_db(
+        "SELECT image_id FROM image_interactions WHERE user_id = %s ORDER BY created_at DESC LIMIT 7", (user_id,)
+    )
+    preference_ids = [row[0] for row in perference]
+    interaction_ids = [row[0] for row in get_interactionn]
+    
+    combined_recommendations = preference_ids[:]
+    for id in interaction_ids:
+        if id not in combined_recommendations:
+            combined_recommendations.append(id)
+        if len(combined_recommendations) >= 10:
+            break
+    
+    recommended_images = db.query_db(
+        """SELECT images.* 
+        FROM images
+        JOIN (
+            SELECT DISTINCT ON (image2_id) image2_id
+            FROM image_similarities
+            WHERE image1_id = ANY(%s)
+            AND image2_id NOT IN (
+                SELECT image_id
+                FROM image_interactions
+                WHERE user_id = %s AND viewed = TRUE
+            )
+            ORDER BY image2_id, similarity DESC
+        ) AS sim_images ON images.image_id = sim_images.image2_id
+        LIMIT 10;""",
+        (combined_recommendations, user_id)
+    )
+    return recommended_images
+
+
+def get_friends_work(user_id):
+    
+        sql = """
+        SELECT images.*
+        FROM images
+        JOIN follows ON follows.following_id = images.user_id
+        LEFT JOIN image_interactions ON image_interactions.image_id = images.image_id AND image_interactions.user_id = follows.follower_id
+        WHERE follows.follower_id = %s
+        AND image_interactions.viewed = FALSE
+        ORDER BY images.created_at DESC;
+        """
+        artworks = db.query_db(sql, (user_id,))
+        return artworks
+
+
+
+    
+
 
 
 def get_friends_work(user_id):
@@ -286,7 +566,7 @@ def get_friends_work(user_id):
     AND image_interactions.viewed = FALSE
     ORDER BY images.created_at DESC;
     """
-    artworks = db.query_db(sql, (session['user']['userinfo']['user_id']))
+    artworks = db.query_db(sql, (user_id,))
     return artworks
 
 def check_follow(follower_id, following_id):
