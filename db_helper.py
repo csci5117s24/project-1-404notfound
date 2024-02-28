@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DATABASE_URL = os.getenv('EXTERNAL_DATABASE_URL')
+DATABASE_URL = os.getenv('INTERNAL_DATABASE_URL')
 
 db_pool = None
 
