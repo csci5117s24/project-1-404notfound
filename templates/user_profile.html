@@ -34,7 +34,7 @@
   </div>
 
     <script>
-      function deleteArtwork(artworkId) {
+      function deleteArtwork(event, artworkId) {
         if (!confirm('Are you sure you want to delete this artwork?')) {
           return; // Stop if the user cancels the action.
         }
@@ -49,7 +49,10 @@
             }
           })
           .catch(error => console.error('Error:', error));
+          event.preventDefault(); // This stops the link navigation.
       }
+
+
       function editDescription() {
         var currentDescription = document.getElementById('userDescription').innerText;
         var newDescription = prompt("Edit your description:", currentDescription);
@@ -108,6 +111,7 @@
                     const newFollowState = !is_following;
                     followButton.setAttribute('data-is-following', newFollowState.toString());
                 }
+                window.location.reload();
             } else {
                 // Handle the case where the API indicates failure
                 console.error(data.message);
@@ -139,7 +143,7 @@
               <!-- Delete button, initially hidden -->
               {% if session['userinfo'] %}
                 {% if session['userinfo']['user_id'] == user.user_id %}
-                  <button class="delete-btn" onclick="deleteArtwork('{{ artwork[0] }}')">X</button>
+                  <button class="delete-btn" onclick="deleteArtwork(event, '{{ artwork[0] }}')">X</button>
                 {%endif%}
               {%endif%}
             </div>
