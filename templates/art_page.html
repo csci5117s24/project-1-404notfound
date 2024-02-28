@@ -32,7 +32,7 @@
                         {% for comment in comments %}
                             <!--<li class="comment">User{{ comment.user_id }}: {{ comment.comment }}</li> -->
                             <li class="comment">
-                                <img class="profile-picture" src="{{ comment.user_profile }}" alt="User Profile Picture">
+                                <img class="profile-img" src="{{ comment.user_profile }}" alt="User Profile Picture">
                                 <span class="comment-text">User{{ comment.user_id }}: {{ comment.comment }}</span>
                             </li>
                         {% endfor %}
