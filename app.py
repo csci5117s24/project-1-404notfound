@@ -11,6 +11,7 @@ from flask_apscheduler import APScheduler
 import requests
 from openai import OpenAI
 import uuid
+import random
 
 
 
@@ -64,19 +65,102 @@ def home():
             for art in artworks
         ]
 
-    all_arts = [
-        {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
-        {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
-        {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
-    ]
+        all_arts = [
+            {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+            {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+            {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
+        ]
+        
+        
+        return render_template(
+            "home.html",
+            session=session.get("user"),
+            pretty=json.dumps(session.get("user"), indent=4),
+            artworks=all_arts
+        )
+    else:
+        load_prediction_model()
+
+        user_id = session['user']['userinfo'].get('user_id')
+        suprise_re = recommand_suprise(user_id)
+        similarity_re = recommend_similarity(user_id)
+        friend_re = get_friends_work(user_id)
+        most_viewed = get_most_viewed_for_user(user_id)
+        trending = get_trending_artworks_for_user(user_id)
+        most_liked = get_most_liked_for_user(user_id)
+        print("friend_re",friend_re, flush=True)
+        
+        
+        def convert_to_dicts(artworks):
+            return [
+                {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
+                for art in artworks
+            ]
+        if len(friend_re) >2:
+            
+            all_arts = [
+                {"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)},
+                {"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)},
+                {"name": "based on your friend's work", "artworks": convert_to_dicts(friend_re)},
+                {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
+                {"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)},
+                {"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)},
+            ]
+            return render_template(
+                "home.html",
+                session=session.get("user"),
+                pretty=json.dumps(session.get("user"), indent=4),
+                artworks=all_arts
+            )
+        else:
+            all_arts = []
+            if suprise_re:
+                all_arts.append({"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)})
+
+            if similarity_re:
+                all_arts.append({"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)})
+
+            if trending:
+                all_arts.append({"name": "Trending Artworks", "artworks": convert_to_dicts(trending)})
+
+            if most_liked:
+                all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
+
+            if most_viewed:
+                all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
+                
+            if len(all_arts) < 3:
+                potential_categories = ["most_viewed", "trending", "most_liked"]
+                while len(all_arts) < 3:
+                    selected_category = random.choice(potential_categories)
+                    
+                    # Fetch and add the selected category
+                    if selected_category == "most_viewed":
+                        most_viewed = get_most_viewed()  # Fetch data only if needed
+                        if most_viewed:  # Ensure there's data before adding
+                            all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
+                    elif selected_category == "trending":
+                        trending = get_trending_artworks()  # Fetch data only if needed
+                        if trending:  # Ensure there's data before adding
+                            all_arts.append({"name": "Trending Artworks", "artworks": convert_to_dicts(trending)})
+                    elif selected_category == "most_liked":
+                        most_liked = get_most_liked()  # Fetch data only if needed
+                        if most_liked:  # Ensure there's data before adding
+                            all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
+                    
+                    # Remove the selected category to avoid selecting it again
+                    potential_categories.remove(selected_category)
+
+            return render_template(
+                "home.html",
+                session=session.get("user"),
+                pretty=json.dumps(session.get("user"), indent=4),
+                artworks=all_arts
+            )
     
-    
-    return render_template(
-        "home.html",
-        session=session.get("user"),
-        pretty=json.dumps(session.get("user"), indent=4),
-        artworks=all_arts
-    )
+
+
+
 
 @app.route('/art/<id>')
 def art(id):

@@ -29,6 +29,9 @@
                 </div>
         </form>
     </div>
+    <div id="loadingIndicator" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; color: white; font-size: 20px;">
+        Processing...
+    </div>
 </div>
 
 <script>
@@ -76,6 +79,7 @@ window.onclick = function(event) {
 function generateImage(event){
     //event.preventDefault(); // Prevent form submission
     var promptText = document.getElementById('prompt').value;
+    document.getElementById('loadingIndicator').style.display = 'flex';
     
     var url = '/api/generate-image/';
     const data = {
@@ -101,6 +105,7 @@ function generateImage(event){
         uploadBox.style.backgroundPosition = 'center';
         document.querySelector('label[for="fileUpload"]').style.display = 'none'; // Hide the label if needed
         document.getElementById('imageUrl').value = data.image_url;
+        document.getElementById('loadingIndicator').style.display = 'none';
     })
 }
 </script>
