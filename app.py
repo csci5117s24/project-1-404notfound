@@ -112,39 +112,25 @@ def home():
                 for art in artworks
             ]
         all_arts = []
+        if suprise_re:
+            all_arts.append({"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)})
+
+        if similarity_re:
+            all_arts.append({"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)})
+
+        if trending:
+            all_arts.append({"name": "Trending Artworks", "artworks": convert_to_dicts(trending)})
+
+        if most_liked:
+            all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
+
+        if most_viewed:
+            all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
+            
         if len(friend_re) >2:
-            if suprise_re:
-                all_arts.append({"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)})
-
-            if similarity_re:
-                all_arts.append({"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)})
-
             if friend_re:
                 all_arts.append({"name": "based on your friend's work", "artworks": convert_to_dicts(friend_re)})
-            
-            if trending:
-                all_arts.append({"name": "Trending Artworks", "artworks": convert_to_dicts(trending)})
 
-            if most_liked:
-                all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
-
-            if most_viewed:
-                all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
-        else:
-            if suprise_re:
-                all_arts.append({"name": "based on your interaction", "artworks": convert_to_dicts(suprise_re)})
-
-            if similarity_re:
-                all_arts.append({"name": "based on your preference", "artworks": convert_to_dicts(similarity_re)})
-
-            if trending:
-                all_arts.append({"name": "Trending Artworks", "artworks": convert_to_dicts(trending)})
-
-            if most_liked:
-                all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
-
-            if most_viewed:
-                all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
 
         if len(all_arts) < 3:
             potential_categories = ["most_viewed", "trending", "most_liked"]
