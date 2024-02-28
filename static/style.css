@@ -450,7 +450,7 @@ button {
 }
 
 body {
-    padding-top: 50px;
+    padding-top: 100px;
     background: var(--background-color);
     margin: 0;
     font-family: var(--primary-font);
@@ -637,4 +637,61 @@ a:focus, button:focus {
     text-decoration: none; /* Optional: Removes underline from links */
     color: inherit; /* Optional: Ensures the text color matches the surrounding text */
     gap: 10px; /* Adds some space between the image and the text */
+}
+
+/* 基础布局样式 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
+
+.art-container {
+    margin-top: 1000px; /* 调整这个值以根据你的具体需求来下移页面内容 */
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+
+/* 卡片样式 */
+.grid-item {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+}
+
+.user-info {
+    padding: 20px;
+}
+
+.user-info p {
+    margin: 10px 0;
+}
+
+.user-info a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* 字体和颜色 */
+.user-info p {
+    color: #333;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
 }
