@@ -885,7 +885,7 @@ def upload_image():
         print("image", image)
         if image.filename == '':
             if image_url == '':
-                return "No selected file",  400
+                return redirect(url_for("user_profile",session=session.get("user")))
         
         if image or image_url:
             title = request.form.get("title", "")

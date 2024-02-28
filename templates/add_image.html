@@ -2,7 +2,7 @@
 <!-- Modal -->
 <div id="myModal" class="modal">
     <div class="modal-content">
-        <form action="{{ url_for('upload_image')}}" method="POST" enctype="multipart/form-data">
+        <form id="myForm" action="{{ url_for('upload_image')}}" method="POST" enctype="multipart/form-data">
                 <div class="top-section">
                     <div class="left-side">
                         <div class="upload-box">
@@ -19,9 +19,9 @@
                 </div>
                 <div class="middle-section">
                     <label for="title" style="margin-top: 5px;margin-bottom: 5px;">Title:</label><br>
-                    <input type="text" id="title" name="title" style="width: 95%; margin-top: 5px;margin-bottom: 5px;"><br>
+                    <input type="text" id="title" name="title" style="width: 95%; margin-top: 5px;margin-bottom: 5px;" required><br>
                     <label for="description" style="margin-top: 5px;margin-bottom: 5px;">description:</label><br>
-                    <textarea id="description" style="margin-top: 5px;margin-bottom: 5px;" name="description" rows="7" wrap="soft"></textarea>
+                    <textarea id="description" style="margin-top: 5px;margin-bottom: 5px;" name="description" rows="7" wrap="soft" required></textarea>
                 </div>
                 <div class="bottom-section">
                     <button type="submit" value="Upload">Upload</button>
@@ -39,6 +39,13 @@ function toggleModal() {
         modal.style.display = 'block';
     } else {
         modal.style.display = 'none';
+        document.getElementById('generateButton').style.display = '';
+        var uploadBox = document.querySelector('.upload-box');
+        uploadBox.style.backgroundImage = '';
+        uploadBox.style.backgroundSize = '';
+        uploadBox.style.backgroundPosition = '';
+        document.querySelector('label[for="fileUpload"]').style.display = '';
+        document.getElementById('myForm').reset();
     }
 }
 
@@ -54,8 +61,8 @@ function displayImage(input) {
             uploadBox.style.backgroundPosition = 'center';
             document.querySelector('label[for="fileUpload"]').style.display = 'none'; // Hide the label
         };
-
         reader.readAsDataURL(input.files[0]); // Read the selected file
+        document.getElementById('generateButton').style.display = 'none';
     }
 }
 
