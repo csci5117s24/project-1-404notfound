@@ -8,6 +8,17 @@ from flask import Flask, redirect, render_template, session, url_for, request, j
 import db_helper as db
 import boto3
 from flask_apscheduler import APScheduler
+import pandas as pd
+import numpy as np
+from surprise import Dataset, Reader, SVD, accuracy
+import pickle
+import tensorflow as tf 
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
+from sklearn.metrics.pairwise import cosine_similarity
+import requests
+from io import BytesIO
+import PIL
 import requests
 from openai import OpenAI
 import uuid
@@ -24,6 +35,8 @@ app.secret_key = env.get("APP_SECRET_KEY")
 
 with app.app_context():
         db.init_db_pool()
+        
+
 
 oauth = OAuth(app)
 
@@ -53,17 +66,19 @@ scheduler.start()
 
 @app.route("/")
 def home():
-    # Fetch the artwork data
-    most_viewed = get_most_viewed()
-    trending = get_trending_artworks()
-    most_liked = get_most_liked()
+    if 'user' not in session:
 
-    # Convert each list of tuples to a list of dictionaries
-    def convert_to_dicts(artworks):
-        return [
-            {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
-            for art in artworks
-        ]
+    # Fetch the artwork data
+        most_viewed = get_most_viewed()
+        trending = get_trending_artworks()
+        most_liked = get_most_liked()
+
+        # Convert each list of tuples to a list of dictionaries
+        def convert_to_dicts(artworks):
+            return [
+                {"image_id": art[0], "user_id": art[1], "title": art[2], "description": art[3], "image_url": art[4]}
+                for art in artworks
+            ]
 
         all_arts = [
             {"name": "Trending Artworks", "artworks": convert_to_dicts(trending)},
@@ -89,7 +104,7 @@ def home():
         trending = get_trending_artworks_for_user(user_id)
         most_liked = get_most_liked_for_user(user_id)
         print("friend_re",friend_re, flush=True)
-        
+
         
         def convert_to_dicts(artworks):
             return [
@@ -128,12 +143,12 @@ def home():
 
             if most_viewed:
                 all_arts.append({"name": "Most Viewed Artworks", "artworks": convert_to_dicts(most_viewed)})
-                
+
             if len(all_arts) < 3:
                 potential_categories = ["most_viewed", "trending", "most_liked"]
                 while len(all_arts) < 3:
                     selected_category = random.choice(potential_categories)
-                    
+
                     # Fetch and add the selected category
                     if selected_category == "most_viewed":
                         most_viewed = get_most_viewed()  # Fetch data only if needed
@@ -147,7 +162,7 @@ def home():
                         most_liked = get_most_liked()  # Fetch data only if needed
                         if most_liked:  # Ensure there's data before adding
                             all_arts.append({"name": "Most Liked Artworks", "artworks": convert_to_dicts(most_liked)})
-                    
+
                     # Remove the selected category to avoid selecting it again
                     potential_categories.remove(selected_category)
 
@@ -218,15 +233,17 @@ def art(id):
             "comment_id": row[0],
             "image_id": row[1],
             "user_id": row[2],
-            "comment": row[3]
+            "comment": row[3],
+            "user_profile": get_user_profile_pic(row[2])
         })
+
+        
     try:
         is_liked = check_like(image_details[0], session['user']['userinfo'].get('user_id'))[0]
         user_id = session['user']['userinfo'].get('user_id')
     except:
         is_liked = False
         user_id = -1
-    print("is_liked", is_liked)
     return render_template('art_page.html', is_liked = is_liked, session=session.get("user"), image_details=image_obj, comments=comments_obj,author_details=author_obj, user_id = user_id)
     
 
@@ -246,7 +263,13 @@ def other_user_profile(id):
     }
     print(id)
     print(user_data['profile_pic_url'])
-    return render_template('user_profile.html', user=user_data,session=session.get("user"))
+    try:
+        is_following = check_follow(session.get('user')['userinfo']['user_id'], id)
+        follower_id = session.get('user')['userinfo']['user_id']
+    except:
+        is_following = False
+        follower_id = -1
+    return render_template('user_profile.html', session=session.get('user'), follower_id=follower_id, user=user_data, is_following=is_following)
 
 @app.route("/user_profile")
 def user_profile():
@@ -272,7 +295,10 @@ def user_profile():
         'user_id': user_id
     }
     return render_template('user_profile.html', user=user_data,session=session.get('user'))
-
+def load_prediction_model():
+    global algo
+    with open('recommendation_model.pkl', 'rb') as file:
+        algo = pickle.load(file)
 def get_user_email(user_id):
     email = db.query_db(
         "SELECT email FROM users WHERE user_id = %s", (user_id,),one=True
@@ -584,7 +610,7 @@ def get_friends_work(user_id):
     ORDER BY images.created_at DESC;
 
     """
-    artworks = db.query_db(sql, (session['user']['userinfo']['user_id']))
+    artworks = db.query_db(sql, (user_id,))
     return artworks
 
 def check_follow(follower_id, following_id):
@@ -895,7 +921,7 @@ def upload_image():
         print("image", image)
         if image.filename == '':
             if image_url == '':
-                return "No selected file",  400
+                return redirect(url_for("user_profile",session=session.get("user")))
         
         if image or image_url:
             title = request.form.get("title", "")
