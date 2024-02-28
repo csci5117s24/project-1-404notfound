@@ -15,6 +15,12 @@ boto3 = "*"
 flask-apscheduler = "*"
 urllib3 = "==1.26.6"
 openai = "*"
+pandas = "*"
+numpy = "*"
+scikit-surprise = "*"
+tensorflow = "*"
+scikit-learn = "*"
+pillow = "*"
 
 [dev-packages]
 

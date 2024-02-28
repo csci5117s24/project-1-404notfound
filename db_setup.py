@@ -56,7 +56,6 @@ TABLES_SETUP_SQL = [
         interaction_id SERIAL PRIMARY KEY,
         user_id INT NOT NULL,
         image_id INT NOT NULL,
-        rating INT,
         viewed BOOLEAN DEFAULT FALSE,
         liked BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

@@ -20,6 +20,11 @@
       {% endfor %}
     </div>
   </div>
+  {% else %}
+  <div class="scrollable-row">
+    <h2>Your search did not match any documents...</h2>
+  </div>
+  
   {% endif %}
 {% endfor %}
 {% endblock %}
