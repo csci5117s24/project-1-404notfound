@@ -8,21 +8,13 @@ DATABASE_URL = os.getenv('EXTERNAL_DATABASE_URL')
 #delete all value in table descriptions
 
 TABLES_SETUP_SQL = [
-    """
-DROP TABLE IF EXISTS image_preference ;
-"""
-    """
-    CREATE TABLE image_preference (
-    preference_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    image_id INT NOT NULL,
-    score FLOAT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (image_id) REFERENCES images(image_id) ON DELETE CASCADE
-);
 
+    """
+    DELETE FROM images WHERE Image_id = 56;
 
+    """
+    """
+    DELETE FROM images WHERE Image_id = 40;
     """
 ]
 

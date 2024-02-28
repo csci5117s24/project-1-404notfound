@@ -466,7 +466,7 @@ def calcular_perference():
 @app.route('/api/recomtest')
 def suprise_training():
     interations = calcular_perference()
-    reader = Reader(rating_scale=(0, 1))
+    reader = Reader(rating_scale=(0, 5))
     data = Dataset.load_from_df(interations[['user_id', 'image_id', 'weighted_rating']], reader)
     trainset = data.build_full_trainset()
     algo = SVD()
@@ -500,6 +500,7 @@ def recommand_suprise(user_id):
 def extract_features(image_url):
     resnet_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
     image = requests.get(image_url)
+    print(image_url, flush=True)
     image = load_img(BytesIO(image.content), target_size=(224, 224))
     image = img_to_array(image)
     image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
