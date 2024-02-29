@@ -112,6 +112,6 @@ Please do not document required libraries. or libraries that are mentioned in th
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
 here:
-** stackoverflow 
+**  
 
 ...
