@@ -36,8 +36,10 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 
 ## Screenshots of Site
 
-### 1.Home page:
+### Home page:
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/AI%20Art%20Museum.png)
+- this page provides user with 3 persionalized recommendation and 3 nonpersonalized recommendatiom. user can view, upload, search and go to profile form this page.
+_
 
 ### Home Page for visitors.
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshots/homeForVisitor.png)
@@ -54,12 +56,15 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 - this page show default login pafge provided by auth0
 ### 2.User profile page:
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/user_profile.png)
+- this is to show detailed information about user.
 
 ### 3.Fans/subscription:
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/fans%3Asubscription.png)
+- user can check out their fans and subscritons. they can click on it to see details.
 
 ### 4.Upload:
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/upload.png)
+- this page also user to upload image they created or created image based on their prompt on the spot. 
 ## Mock-up 
 
 There are a few tools for mock-ups. Paper prototypes (low-tech, but effective and cheap), Digital picture edition software (gimp / photoshop / etc.), or dedicated tools like moqups.com (I'm calling out moqups here in particular since it seems to strike the best balance between "easy-to-use" and "wants your money" -- the free teir isn't perfect, but it should be sufficient for our needs with a little "creative layout" to get around the page-limit)
