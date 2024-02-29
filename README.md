@@ -66,7 +66,7 @@ _
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/upload.png)
 - this page allow user to upload image they created or creat image based on their prompt on the fly. 
 ### search
-![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshoots/search.png)
+![](https://github.com/csci5117s24/project-1-404notfound/screenshoots/search.png)
 - this page allow user to perfrom search. it will fuzzy search tiitle, prompt and details for a match
 
 ## Mock-up 
