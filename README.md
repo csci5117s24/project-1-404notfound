@@ -40,6 +40,8 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 along with a very brief caption:**
 
 ![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
+Home page:
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/AI%20Art%20Museum.png)
 
 
 ## Mock-up 
