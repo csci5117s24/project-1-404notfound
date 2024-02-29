@@ -41,7 +41,19 @@ along with a very brief caption:**
 
 ![](https://media.giphy.com/media/o0vwzuFwCGAFO/giphy.gif)
 
+### Home Page for visitors.
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshots/homeForVisitor.png)
+- In this page, vistor can view the art work, and non-personalized recommendation will be provided. 
 
+### Visitor Art Page
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshots/visitor_art_page.png)
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshots/visitor_art_page_2.png)
+- In this page, vistor can view the art work, including theautor, title, promopt and describtion about the art working, includind comments made by other user. visitor cannot make comments. 
+
+
+### log in page
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/screenshots/login.png)
+- this page show default login pafge provided by auth0
 ## Mock-up 
 
 There are a few tools for mock-ups. Paper prototypes (low-tech, but effective and cheap), Digital picture edition software (gimp / photoshop / etc.), or dedicated tools like moqups.com (I'm calling out moqups here in particular since it seems to strike the best balance between "easy-to-use" and "wants your money" -- the free teir isn't perfect, but it should be sufficient for our needs with a little "creative layout" to get around the page-limit)
