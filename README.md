@@ -39,7 +39,14 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 ### 1.Home page:
 ![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/AI%20Art%20Museum.png)
 
+### 2.User profile page:
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/user_profile.png)
 
+### 3.Fans/subscription:
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/fans%3Asubscription.png)
+
+### 4.Upload:
+![](https://github.com/csci5117s24/project-1-404notfound/blob/main/pics/upload.png)
 ## Mock-up 
 
 There are a few tools for mock-ups. Paper prototypes (low-tech, but effective and cheap), Digital picture edition software (gimp / photoshop / etc.), or dedicated tools like moqups.com (I'm calling out moqups here in particular since it seems to strike the best balance between "easy-to-use" and "wants your money" -- the free teir isn't perfect, but it should be sufficient for our needs with a little "creative layout" to get around the page-limit)
