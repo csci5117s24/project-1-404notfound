@@ -6,7 +6,7 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 
 * Team Name: 404notfound
 * App Name: AI Art Museum
-* App Link: <https://TODO.com/>
+* App Link: <https://project-1-404notfound.onrender.com/>
 
 ### Students
 
@@ -21,7 +21,8 @@ CSCI 5117, Spring 2024, [assignment description](https://canvas.umn.edu/courses/
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-* ...
+* Personalized recommendation system
+* 
 
 ## Testing Notes
 
