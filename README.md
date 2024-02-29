@@ -105,10 +105,13 @@ In this space please either provide images (around 4) showing your prototypes, O
 Please do not document required libraries. or libraries that are mentioned in the product requirements**
 
 * Library or service name: description of use
-* ...
+* AWS S3 for image storage
+* tensorflow resNET and suprise for recommendation training
+* openAI api for image generation
 
 **If there's anything else you would like to disclose about how your project
 relied on external code, expertise, or anything else, please disclose that
-here:**
+here:
+** stackoverflow 
 
 ...
